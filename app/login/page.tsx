@@ -23,7 +23,7 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const res = await fetch("https://crmapi.sandboxtechnology.in/api/auth/login", {
+            const res = await fetch(`${process.env.API_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
@@ -192,7 +192,7 @@ export default function LoginPage() {
                                 <label htmlFor="password" className="text-xs font-semibold text-[#0B2E1E] uppercase tracking-wider">
                                     Password
                                 </label>
-                                <Link href="/forgot-password" className="text-xs font-semibold text-[#1B633E] hover:underline cursor-pointer">
+                                <Link href="/forgot-password" className="text-xs font-semibold text-[#35877D] hover:underline cursor-pointer">
                                     Forgot password?
                                 </Link>
                             </div>
@@ -211,7 +211,7 @@ export default function LoginPage() {
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-[#1B633E] hover:bg-[#12452A] text-white font-medium h-11 gap-1.5 cursor-pointer"
+                            className="w-full bg-[#35877D] hover:bg-[#2c6f66] text-white font-medium h-11 gap-1.5 cursor-pointer"
                         >
                             {isLoading ? "Signing In..." : "Sign In"}
                             {!isLoading && <ArrowRight size={16} />}
@@ -221,7 +221,7 @@ export default function LoginPage() {
                     {/* Sign Up Link */}
                     <div className="text-center text-xs text-gray-500">
                         Don't have an account?{" "}
-                        <Link href="/register" className="text-[#1B633E] font-semibold hover:underline cursor-pointer">
+                        <Link href="/register" className="text-[#35877D] font-semibold hover:underline cursor-pointer">
                             Sign up
                         </Link>
                     </div>

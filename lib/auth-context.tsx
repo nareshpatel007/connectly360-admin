@@ -88,6 +88,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push("/login");
     };
 
+    const isPublicPage =
+        pathname === "/" ||
+        pathname === "/pricing" ||
+        pathname === "/contact" ||
+        pathname === "/privacy" ||
+        pathname === "/terms" ||
+        pathname === "/cookie-policy" ||
+        pathname === "/refund-policy" ||
+        pathname === "/faq" ||
+        pathname === "/login" ||
+        pathname === "/register" ||
+        pathname === "/forgot-password";
+
+    const showContent = isPublicPage || (token && !isLoading);
+
     return (
         <AuthContext.Provider
             value={{
@@ -99,7 +114,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 logout,
             }}
         >
-            {children}
+            {showContent ? (
+                children
+            ) : (
+                <div className="flex h-screen w-screen items-center justify-center bg-[#FAF8F5]">
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#35877D] border-t-transparent" />
+                        <p className="text-xs font-semibold text-gray-500 font-sans">Loading...</p>
+                    </div>
+                </div>
+            )}
         </AuthContext.Provider>
     );
 }

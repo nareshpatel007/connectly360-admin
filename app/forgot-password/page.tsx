@@ -21,7 +21,8 @@ export default function ForgotPasswordPage() {
         setIsLoading(true);
 
         try {
-            const res = await fetch("https://crmapi.sandboxtechnology.in/api/auth/forgot-password", {
+            const apiUrl = process.env.API_URL || "https://crmapi.sandboxtechnology.in/api";
+            const res = await fetch(`${apiUrl}/auth/forgot-password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
@@ -161,7 +162,7 @@ export default function ForgotPasswordPage() {
                                 <Button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="w-full bg-[#1B633E] hover:bg-[#12452A] text-white font-medium h-11 gap-1.5"
+                                    className="w-full bg-[#35877D] hover:bg-[#2c6f66] text-white font-medium h-11 gap-1.5"
                                 >
                                     {isLoading ? "Sending..." : "Send Reset Link"}
                                     {!isLoading && <ArrowRight size={16} />}
@@ -169,14 +170,14 @@ export default function ForgotPasswordPage() {
                             </form>
 
                             <div className="text-center text-xs">
-                                <Link href="/login" className="text-[#1B633E] font-semibold hover:underline">
+                                <Link href="/login" className="text-[#35877D] font-semibold hover:underline">
                                     Back to sign in
                                 </Link>
                             </div>
                         </>
                     ) : (
                         <div className="text-center space-y-5 py-4">
-                            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-[#1B633E] border border-emerald-100">
+                            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-[#35877D] border border-emerald-100">
                                 <CheckCircle2 size={24} />
                             </div>
                             <div className="space-y-2">
@@ -185,11 +186,11 @@ export default function ForgotPasswordPage() {
                                     We've emailed a password reset link to <strong>{email}</strong>. Please check your inbox and spam folder.
                                 </p>
                             </div>
-                            <Button onClick={() => setSubmitted(false)} className="w-full bg-[#1B633E] hover:bg-[#12452A] text-white font-medium h-11">
+                            <Button onClick={() => setSubmitted(false)} className="w-full bg-[#35877D] hover:bg-[#2c6f66] text-white font-medium h-11">
                                 Resend Email
                             </Button>
                             <div className="text-xs">
-                                <Link href="/login" className="text-[#1B633E] font-semibold hover:underline">
+                                <Link href="/login" className="text-[#35877D] font-semibold hover:underline">
                                     Back to sign in
                                 </Link>
                             </div>

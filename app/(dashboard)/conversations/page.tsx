@@ -23,7 +23,7 @@ export default function ConversationsPage() {
     <div className="space-y-6 h-[calc(100vh-6rem)] flex flex-col">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Conversations</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Inbox</h1>
           <p className="text-muted-foreground">All inbound and outbound WhatsApp messages.</p>
         </div>
       </div>

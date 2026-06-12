@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -132,7 +132,7 @@ export default function LandingPage() {
                 interest: "Mustard Oil (>100 qty)",
                 capturedData: "GSTIN: 07AAAAA1111A1Z1 | Acme Mills",
                 status: "Proposal",
-                statusColor: "bg-[#FCF8EC] text-[#12452A]"
+                statusColor: "bg-[#FCF8EC] text-[#2c6f66]"
             }
         }
     };
@@ -149,7 +149,7 @@ export default function LandingPage() {
     const roiMultiplier = Math.round(moneySaved / growthPlanPrice);
 
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-[#143d27] font-sans overflow-x-hidden selection:bg-[#1B633E] selection:text-white">
+        <div className="min-h-screen bg-[#FAF8F5] text-[#143d27] font-sans overflow-x-hidden selection:bg-[#35877D] selection:text-white">
 
             {/* Header */}
             <LandingHeader />
@@ -158,7 +158,7 @@ export default function LandingPage() {
 
                 {/* Hero Section */}
                 <section className="relative py-16 md:py-24 bg-gradient-to-b from-[#FAF8F5] via-[#FAF8F5] to-white overflow-hidden">
-                    <div className="absolute top-10 right-0 w-[550px] h-[550px] bg-radial-gradient from-[#1B633E]/6 via-[#1B633E]/1 to-transparent -z-10 rounded-full blur-3xl"></div>
+                    <div className="absolute top-10 right-0 w-[550px] h-[550px] bg-radial-gradient from-[#35877D]/6 via-[#35877D]/1 to-transparent -z-10 rounded-full blur-3xl"></div>
                     <div className="absolute bottom-10 left-0 w-[350px] h-[350px] bg-radial-gradient from-[#D99B26]/6 via-[#D99B26]/1 to-transparent -z-10 rounded-full blur-2xl"></div>
 
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
@@ -171,7 +171,7 @@ export default function LandingPage() {
                                 animate="show"
                                 variants={staggerContainer}
                             >
-                                <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FCF8EC] text-[#12452A] text-xs font-bold mb-6 border border-[#EAD098] shadow-sm">
+                                <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FCF8EC] text-[#2c6f66] text-xs font-bold mb-6 border border-[#EAD098] shadow-sm">
                                     <Sparkles size={13} className="text-[#D99B26] fill-[#D99B26]/15 animate-pulse" />
                                     Official Meta Verified Partner
                                 </motion.div>
@@ -186,14 +186,14 @@ export default function LandingPage() {
 
                                 <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 mb-8">
                                     {isAuthenticated ? (
-                                        <Button asChild size="lg" className="h-13 px-8 text-sm font-semibold rounded-xl bg-[#1B633E] hover:bg-[#12452A] text-white shadow-md hover:shadow-lg transition-all font-bold">
+                                        <Button asChild size="lg" className="h-13 px-8 text-sm font-semibold rounded-xl bg-[#35877D] hover:bg-[#2c6f66] text-white shadow-md hover:shadow-lg transition-all font-bold">
                                             <Link href="/dashboard">
                                                 Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
                                             </Link>
                                         </Button>
                                     ) : (
                                         <>
-                                            <Button asChild size="lg" className="h-13 px-8 text-sm font-semibold rounded-xl bg-[#1B633E] hover:bg-[#12452A] text-white shadow-md hover:shadow-lg transition-all font-bold">
+                                            <Button asChild size="lg" className="h-13 px-8 text-sm font-semibold rounded-xl bg-[#35877D] hover:bg-[#2c6f66] text-white shadow-md hover:shadow-lg transition-all font-bold">
                                                 <Link href="/register">
                                                     Start Free Trial <ArrowRight className="ml-2 h-4 w-4" />
                                                 </Link>
@@ -206,8 +206,8 @@ export default function LandingPage() {
                                 </motion.div>
 
                                 {/* Repetitive Questions Automated */}
-                                <motion.div variants={fadeUp} className="mb-8 p-4 bg-[#1B633E]/5 border border-[#1B633E]/10 rounded-2xl">
-                                    <p className="text-[10px] font-extrabold text-[#1B633E] uppercase tracking-wider mb-2.5">Auto-Answer Repetitive Customer Queries:</p>
+                                <motion.div variants={fadeUp} className="mb-8 p-4 bg-[#35877D]/5 border border-[#35877D]/10 rounded-2xl">
+                                    <p className="text-[10px] font-extrabold text-[#35877D] uppercase tracking-wider mb-2.5">Auto-Answer Repetitive Customer Queries:</p>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                         {[
                                             "What is the price?",
@@ -218,7 +218,7 @@ export default function LandingPage() {
                                             "Product information"
                                         ].map((q, idx) => (
                                             <div key={idx} className="flex items-center gap-1.5 text-xs font-semibold text-gray-700">
-                                                <CheckCircle2 size={13} className="text-[#1B633E] shrink-0" />
+                                                <CheckCircle2 size={13} className="text-[#35877D] shrink-0" />
                                                 <span>{q}</span>
                                             </div>
                                         ))}
@@ -233,7 +233,7 @@ export default function LandingPage() {
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.7, delay: 0.2 }}
                             >
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-0.5 border-t-2 border-dashed border-[#1B633E]/50 hidden sm:block z-0 pointer-events-none"></div>
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-0.5 border-t-2 border-dashed border-[#35877D]/50 hidden sm:block z-0 pointer-events-none"></div>
 
                                 {/* Screen A: WhatsApp Client Phone Simulator */}
                                 <div className="w-full max-w-[270px] bg-white rounded-[32px] p-2 shadow-xl border-4 border-gray-900 overflow-hidden flex-1 shrink-0 aspect-[9/18.5] flex flex-col z-10 mx-auto">
@@ -298,10 +298,10 @@ export default function LandingPage() {
                                     <div className="space-y-3.5">
                                         <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                                             <div className="flex items-center gap-1.5">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-[#1B633E]"></div>
+                                                <div className="w-2.5 h-2.5 rounded-full bg-[#35877D]"></div>
                                                 <span className="text-[10px] font-bold text-[#0B2E1E]">Connectly360 CRM</span>
                                             </div>
-                                            <span className="text-[8px] bg-emerald-50 text-[#1B633E] border border-emerald-200 px-1.5 py-0.5 rounded-full font-bold">
+                                            <span className="text-[8px] bg-emerald-50 text-[#35877D] border border-emerald-200 px-1.5 py-0.5 rounded-full font-bold">
                                                 Live Sync
                                             </span>
                                         </div>
@@ -309,12 +309,12 @@ export default function LandingPage() {
                                         <div className="bg-white border border-[#D99B26] rounded-xl p-3 shadow-xs">
                                             <div className="flex items-center justify-between">
                                                 <span className="text-[8px] font-extrabold tracking-wider text-gray-400 uppercase">Total CRM Leads</span>
-                                                <TrendingUp size={11} className="text-[#1B633E]" />
+                                                <TrendingUp size={11} className="text-[#35877D]" />
                                             </div>
                                             <p className="text-xl font-extrabold text-[#0B2E1E] mt-1">
                                                 {heroStep >= 4 ? 1426 : 1425}
                                             </p>
-                                            <p className="text-[8px] text-[#1B633E] font-bold mt-0.5">
+                                            <p className="text-[8px] text-[#35877D] font-bold mt-0.5">
                                                 {heroStep >= 4 ? "+1 qualified just now" : "+24 qualified today"}
                                             </p>
                                         </div>
@@ -367,7 +367,7 @@ export default function LandingPage() {
                 {/* Who We Serve Section */}
                 <section className="py-16 md:py-20 bg-[#0B2E1E] relative overflow-hidden">
                     {/* Decorative background elements */}
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#1B633E]/30 blur-3xl -z-0 pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#35877D]/30 blur-3xl -z-0 pointer-events-none" />
                     <div className="absolute bottom-0 left-0 w-[350px] h-[350px] rounded-full bg-[#D99B26]/10 blur-2xl -z-0 pointer-events-none" />
 
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto relative z-10">
@@ -444,76 +444,76 @@ export default function LandingPage() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {/* Product 1: CRM */}
-                            <Card className="p-6 border border-[#D99B26] hover:border-[#1B633E]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
+                            <Card className="p-6 border border-[#D99B26] hover:border-[#35877D]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
                                 <div className="space-y-4">
-                                    <div className="h-10 w-10 bg-emerald-50 text-[#1B633E] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <div className="h-10 w-10 bg-emerald-50 text-[#35877D] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                                         <Database size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#1B633E] transition-colors">CRM & Lead Pipelines</h3>
+                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#35877D] transition-colors">CRM & Lead Pipelines</h3>
                                         <p className="text-sm text-gray-600 font-semibold leading-relaxed mt-2">
                                             Track client directories, manage follow-ups, and organize deals. Route leads through structured pipeline stages: New, Contacted, Qualified, Proposal, Won, Lost.
                                         </p>
                                     </div>
                                 </div>
-                                <div className="border-t border-gray-100 pt-4 mt-6 flex items-center gap-1 text-[11px] font-bold text-[#1B633E]">
+                                <div className="border-t border-gray-100 pt-4 mt-6 flex items-center gap-1 text-[11px] font-bold text-[#35877D]">
                                     <span>Manage Contacts & Pipelines</span>
                                     <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
                                 </div>
                             </Card>
 
                             {/* Product 2: WhatsApp Integration */}
-                            <Card className="p-6 border border-[#D99B26] hover:border-[#1B633E]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
+                            <Card className="p-6 border border-[#D99B26] hover:border-[#35877D]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
                                 <div className="space-y-4">
-                                    <div className="h-10 w-10 bg-emerald-50 text-[#1B633E] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <div className="h-10 w-10 bg-emerald-50 text-[#35877D] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                                         <Smartphone size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#1B633E] transition-colors">Meta Embedded Signup</h3>
+                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#35877D] transition-colors">Meta Embedded Signup</h3>
                                         <p className="text-sm text-gray-600 font-semibold leading-relaxed mt-2">
                                             Onboard your WABA with a single click. Connect official numbers without manual tokens. Fully supports Meta Cloud API, multiple accounts, and verification.
                                         </p>
                                     </div>
                                 </div>
-                                <div className="border-t border-gray-100 pt-4 mt-6 flex items-center gap-1 text-[11px] font-bold text-[#1B633E]">
+                                <div className="border-t border-gray-100 pt-4 mt-6 flex items-center gap-1 text-[11px] font-bold text-[#35877D]">
                                     <span>One-Click Meta Signup</span>
                                     <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
                                 </div>
                             </Card>
 
                             {/* Product 3: AI Chatbot */}
-                            <Card className="p-6 border border-[#D99B26] hover:border-[#1B633E]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
+                            <Card className="p-6 border border-[#D99B26] hover:border-[#35877D]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
                                 <div className="space-y-4">
                                     <div className="h-10 w-10 bg-[#FCF8EC] text-[#D99B26] border border-[#EAD098] rounded-xl flex items-center justify-center shrink-0">
                                         <Bot size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#1B633E] transition-colors">AI Assistant</h3>
+                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#35877D] transition-colors">AI Assistant</h3>
                                         <p className="text-sm text-gray-600 font-semibold leading-relaxed mt-2">
                                             Auto-reply to FAQs using GPT models. Train the assistant by uploading PDFs, DOCXs, or TXTs. Features prompt logic and multi-language support.
                                         </p>
                                     </div>
                                 </div>
-                                <div className="border-t border-gray-100 pt-4 mt-6 flex items-center gap-1 text-[11px] font-bold text-[#1B633E]">
+                                <div className="border-t border-gray-100 pt-4 mt-6 flex items-center gap-1 text-[11px] font-bold text-[#35877D]">
                                     <span>Train Custom Knowledge</span>
                                     <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
                                 </div>
                             </Card>
 
                             {/* Product 4: Workflows */}
-                            <Card className="p-6 border border-[#D99B26] hover:border-[#1B633E]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
+                            <Card className="p-6 border border-[#D99B26] hover:border-[#35877D]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
                                 <div className="space-y-4">
-                                    <div className="h-10 w-10 bg-emerald-50 text-[#1B633E] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
+                                    <div className="h-10 w-10 bg-emerald-50 text-[#35877D] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                                         <Zap size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#1B633E] transition-colors">Automation Engine</h3>
+                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#35877D] transition-colors">Automation Engine</h3>
                                         <p className="text-sm text-gray-600 font-semibold leading-relaxed mt-2">
                                             Build keyword-based replies (e.g. price, catalog). Automate team assignments, follow-ups, and business hours with a no-code visual workflow editor.
                                         </p>
                                     </div>
                                 </div>
-                                <div className="border-t border-gray-100 pt-4 mt-6 flex items-center gap-1 text-[11px] font-bold text-[#1B633E]">
+                                <div className="border-t border-gray-100 pt-4 mt-6 flex items-center gap-1 text-[11px] font-bold text-[#35877D]">
                                     <span>Configure Automation</span>
                                     <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
                                 </div>
@@ -543,14 +543,14 @@ export default function LandingPage() {
                                             key={key}
                                             onClick={() => setActiveIndustry(key)}
                                             className={`p-4 text-left rounded-2xl border transition-all duration-300 min-w-[260px] sm:min-w-[300px] lg:min-w-0 lg:flex-1 snap-center shrink-0 flex items-start gap-3.5 ${isActive
-                                                ? "bg-white border-[#1B633E] shadow-md ring-1 ring-[#1B633E]/10 lg:scale-[1.01]"
-                                                : "bg-white/40 border-[#D99B26] hover:bg-white/70 hover:border-[#1B633E]/20"
+                                                ? "bg-white border-[#35877D] shadow-md ring-1 ring-[#35877D]/10 lg:scale-[1.01]"
+                                                : "bg-white/40 border-[#D99B26] hover:bg-white/70 hover:border-[#35877D]/20"
                                                 }`}
                                         >
                                             {/* Icon Indicator Box */}
                                             <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300 ${isActive
-                                                ? "bg-[#1B633E] text-white border-transparent"
-                                                : "bg-white border-[#EAE6DF] text-[#1B633E]"
+                                                ? "bg-[#35877D] text-white border-transparent"
+                                                : "bg-white border-[#EAE6DF] text-[#35877D]"
                                                 }`}>
                                                 {key === "ecommerce" && <ShoppingBag size={18} />}
                                                 {key === "realestate" && <Building2 size={18} />}
@@ -641,7 +641,7 @@ export default function LandingPage() {
                                                 {industryData[activeIndustry as keyof typeof industryData].crmFields.status}
                                             </span>
                                         </div>
-                                        <Button asChild size="sm" className="h-8.5 text-xs font-bold bg-[#1B633E] text-white rounded-lg">
+                                        <Button asChild size="sm" className="h-8.5 text-xs font-bold bg-[#35877D] text-white rounded-lg">
                                             <Link href={isAuthenticated ? "/dashboard" : "/register"}>View in CRM</Link>
                                         </Button>
                                     </div>
@@ -668,8 +668,8 @@ export default function LandingPage() {
 
                             <div className="relative flex flex-row justify-between items-center gap-4 z-10 py-3 min-w-[700px] lg:min-w-0">
                                 {/* Node 1: Trigger */}
-                                <div className="w-full max-w-[300px] bg-white border border-[#D99B26] hover:border-[#1B633E]/50 rounded-xl p-3.5 shadow-xs transition-all shrink-0">
-                                    <div className="flex items-center gap-1.5 text-[#1B633E] font-bold text-[10.5px] uppercase tracking-wider">
+                                <div className="w-full max-w-[300px] bg-white border border-[#D99B26] hover:border-[#35877D]/50 rounded-xl p-3.5 shadow-xs transition-all shrink-0">
+                                    <div className="flex items-center gap-1.5 text-[#35877D] font-bold text-[10.5px] uppercase tracking-wider">
                                         <Zap size={11} className="shrink-0" />
                                         <span>Trigger</span>
                                     </div>
@@ -681,7 +681,7 @@ export default function LandingPage() {
 
                                 {/* Flow Connection Line */}
                                 <div className="flex items-center justify-center shrink-0 mx-1">
-                                    <ArrowRight className="text-[#1B633E]" size={22} />
+                                    <ArrowRight className="text-[#35877D]" size={22} />
                                 </div>
 
                                 {/* Node 2: Logic Splitter */}
@@ -698,7 +698,7 @@ export default function LandingPage() {
 
                                 {/* Flow Connection Line */}
                                 <div className="flex items-center justify-center shrink-0 mx-1">
-                                    <ArrowRight className="text-[#1B633E]" size={22} />
+                                    <ArrowRight className="text-[#35877D]" size={22} />
                                 </div>
 
                                 {/* Node 3: AI Qualification Action */}
@@ -718,7 +718,7 @@ export default function LandingPage() {
                                 <span className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-1">
                                     <Code size={11} /> Drag & Drop builder canvas mockup
                                 </span>
-                                <Button asChild size="sm" className="bg-[#1B633E] hover:bg-[#12452A] text-white text-xs font-bold rounded-xl h-8 px-3">
+                                <Button asChild size="sm" className="bg-[#35877D] hover:bg-[#2c6f66] text-white text-xs font-bold rounded-xl h-8 px-3">
                                     <Link href={isAuthenticated ? "/dashboard" : "/register"}>Open Workflow Builder</Link>
                                 </Button>
                             </div>
@@ -745,7 +745,7 @@ export default function LandingPage() {
                                         <Label htmlFor="chats-range" className="text-sm font-extrabold text-[#0B2E1E]">
                                             Monthly Incoming Chats
                                         </Label>
-                                        <span className="text-sm font-extrabold text-[#1B633E] bg-[#FAF8F5] border border-[#D99B26] px-3 py-1 rounded-xl shadow-xs">
+                                        <span className="text-sm font-extrabold text-[#35877D] bg-[#FAF8F5] border border-[#D99B26] px-3 py-1 rounded-xl shadow-xs">
                                             {monthlyChats.toLocaleString()} chats
                                         </span>
                                     </div>
@@ -757,7 +757,7 @@ export default function LandingPage() {
                                         step="100"
                                         value={monthlyChats}
                                         onChange={(e) => setMonthlyChats(Number(e.target.value))}
-                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1B633E]"
+                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#35877D]"
                                     />
                                     <div className="flex justify-between text-xs text-gray-500 font-bold">
                                         <span>200</span>
@@ -772,7 +772,7 @@ export default function LandingPage() {
                                         <Label htmlFor="wage-range" className="text-sm font-extrabold text-[#0B2E1E]">
                                             Support Agent Wage (per Hour)
                                         </Label>
-                                        <span className="text-sm font-extrabold text-[#1B633E] bg-[#FAF8F5] border border-[#D99B26] px-3 py-1 rounded-xl shadow-xs">
+                                        <span className="text-sm font-extrabold text-[#35877D] bg-[#FAF8F5] border border-[#D99B26] px-3 py-1 rounded-xl shadow-xs">
                                             ₹{hourlyWage} / hr
                                         </span>
                                     </div>
@@ -784,7 +784,7 @@ export default function LandingPage() {
                                         step="20"
                                         value={hourlyWage}
                                         onChange={(e) => setHourlyWage(Number(e.target.value))}
-                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1B633E]"
+                                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#35877D]"
                                     />
                                     <div className="flex justify-between text-xs text-gray-500 font-bold">
                                         <span>₹100/hr</span>
@@ -852,7 +852,7 @@ export default function LandingPage() {
                                     onCheckedChange={setIsAnnual}
                                 />
                                 <Label htmlFor="home-billing-toggle" className="text-sm font-bold text-gray-600">
-                                    Annual <span className="ml-1.5 text-[10px] font-extrabold text-white bg-[#1B633E] px-2 py-0.5 rounded-full">Save 20%</span>
+                                    Annual <span className="ml-1.5 text-[10px] font-extrabold text-white bg-[#35877D] px-2 py-0.5 rounded-full">Save 20%</span>
                                 </Label>
                             </div>
                         </div>
@@ -879,7 +879,7 @@ export default function LandingPage() {
                                         "Sandbox Playground Access",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#1B633E] shrink-0 mt-0.5" />
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
                                             <span>{f}</span>
                                         </li>
                                     ))}
@@ -909,7 +909,7 @@ export default function LandingPage() {
                                         "14-Day Free Trial",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#1B633E] shrink-0 mt-0.5" />
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
                                             <span>{f}</span>
                                         </li>
                                     ))}
@@ -920,16 +920,16 @@ export default function LandingPage() {
                             </Card>
 
                             {/* Business */}
-                            <Card className="p-8 flex flex-col border-2 border-[#1B633E] bg-[#FAF8F5]/30 rounded-3xl shadow-md relative transform xl:-translate-y-2">
+                            <Card className="p-8 flex flex-col border-2 border-[#35877D] bg-[#FAF8F5]/30 rounded-3xl shadow-md relative transform xl:-translate-y-2">
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#D99B26] text-white px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
                                     Best Value
                                 </div>
                                 <div className="mb-5 mt-2">
-                                    <h3 className="text-xl font-extrabold text-[#1B633E] mb-1">Business</h3>
+                                    <h3 className="text-xl font-extrabold text-[#35877D] mb-1">Business</h3>
                                     <p className="text-sm text-gray-500 font-bold">Campaigns &amp; Collaboration</p>
                                 </div>
                                 <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-[#1B633E]">₹{isAnnual ? 1999 : 2499}</span>
+                                    <span className="text-4xl font-extrabold text-[#35877D]">₹{isAnnual ? 1999 : 2499}</span>
                                     <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
                                 </div>
                                 <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
@@ -942,12 +942,12 @@ export default function LandingPage() {
                                         "Workflow Automation Builder",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#1B633E] shrink-0 mt-0.5" />
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
                                             <span>{f}</span>
                                         </li>
                                     ))}
                                 </ul>
-                                <Button asChild className="w-full h-12 bg-[#1B633E] hover:bg-[#12452A] text-white rounded-xl text-sm font-bold shadow-md">
+                                <Button asChild className="w-full h-12 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-sm font-bold shadow-md">
                                     <Link href={isAuthenticated ? "/dashboard" : "/register"}>Upgrade to Business</Link>
                                 </Button>
                             </Card>
@@ -971,7 +971,7 @@ export default function LandingPage() {
                                         "1-Hour Priority SLA Support",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#1B633E] shrink-0 mt-0.5" />
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
                                             <span>{f}</span>
                                         </li>
                                     ))}
@@ -985,7 +985,7 @@ export default function LandingPage() {
 
                         {/* Link to full pricing page */}
                         <div className="text-center mt-10">
-                            <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm font-bold text-[#1B633E] hover:underline">
+                            <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm font-bold text-[#35877D] hover:underline">
                                 View full feature comparison <ArrowRight size={14} />
                             </Link>
                         </div>
@@ -1001,7 +1001,7 @@ export default function LandingPage() {
 
                         <Accordion type="single" collapsible className="w-full bg-white rounded-2xl border border-[#D99B26] px-6 py-2 shadow-sm">
                             <AccordionItem value="item-1">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#1B633E]">
+                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#35877D]">
                                     Do my customers need to download a new app?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
@@ -1009,7 +1009,7 @@ export default function LandingPage() {
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-2">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#1B633E]">
+                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#35877D]">
                                     Is this using the official Meta WhatsApp API?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
@@ -1017,7 +1017,7 @@ export default function LandingPage() {
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-3">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#1B633E]">
+                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#35877D]">
                                     Can we transition from AI bot to a human agent?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
@@ -1025,7 +1025,7 @@ export default function LandingPage() {
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-4">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#1B633E]">
+                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#35877D]">
                                     Is my conversational data secure?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">

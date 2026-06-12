@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useGetWhatsappStatus, useExchangeMetaToken, useDisconnectWhatsapp, getGetWhatsappStatusQueryKey } from "@workspace/api-client-react";
+import { useGetWhatsappStatus, useExchangeMetaToken, useDisconnectWhatsapp, getGetWhatsappStatusQueryKey, useListAutomations, useCreateAutomation, useDeleteAutomation } from "@workspace/api-client-react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, XCircle, Clock, Wifi, WifiOff, RefreshCcw, PhoneCall, Building2, Hash } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Wifi, WifiOff, RefreshCcw, PhoneCall, Building2, Hash, Plus, Trash2, Key, Loader2 } from "lucide-react";
 
 declare global {
     interface Window {
@@ -165,7 +166,7 @@ export default function WhatsAppIntegrationPage() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-12 items-start">
-                
+
                 {/* Left Column: Connection Setup & Status */}
                 <div className="lg:col-span-7 space-y-6">
                     {/* Connection Status Card */}
@@ -173,7 +174,7 @@ export default function WhatsAppIntegrationPage() {
                         <CardHeader className="border-b border-[#FAF8F5] pb-3.5">
                             <CardTitle className="text-base font-bold text-gray-900 flex items-center gap-2">
                                 {isConnected
-                                    ? <Wifi className="text-[#1B633E]" size={18} />
+                                    ? <Wifi className="text-[#35877D]" size={18} />
                                     : <WifiOff className="text-gray-400" size={18} />}
                                 Connection Status
                             </CardTitle>
@@ -190,7 +191,7 @@ export default function WhatsAppIntegrationPage() {
                                 <>
                                     <div className="flex items-center gap-3">
                                         <StatusIcon size={18} className={statusCfg.color} />
-                                        <Badge className={`text-xs font-bold px-2.5 py-0.5 border-none uppercase ${statusKey === "connected" ? "bg-emerald-50 text-[#1B633E]" :
+                                        <Badge className={`text-xs font-bold px-2.5 py-0.5 border-none uppercase ${statusKey === "connected" ? "bg-emerald-50 text-[#35877D]" :
                                             statusKey === "pending" ? "bg-amber-50 text-amber-800" :
                                                 statusKey === "failed" ? "bg-red-50 text-red-800" : "bg-[#FAF8F5] text-gray-500"
                                             }`}>
@@ -247,7 +248,7 @@ export default function WhatsAppIntegrationPage() {
                                 <Button
                                     onClick={launchEmbeddedSignup}
                                     disabled={!sdkLoaded || isConnecting || exchangeToken.isPending || !configReady || isLoadingConfig}
-                                    className="bg-[#1B633E] hover:bg-[#12452A] text-white font-semibold text-xs h-10 px-5 rounded-xl shadow-sm transition-all flex items-center gap-2 shrink-0 border-0 cursor-pointer"
+                                    className="bg-[#35877D] hover:bg-[#2c6f66] text-white font-semibold text-xs h-10 px-5 rounded-xl shadow-sm transition-all flex items-center gap-2 shrink-0 border-0 cursor-pointer"
                                 >
                                     <Wifi size={14} />
                                     {isConnecting || exchangeToken.isPending
@@ -279,6 +280,8 @@ export default function WhatsAppIntegrationPage() {
                             )}
                         </CardContent>
                     </Card>
+
+
                 </div>
 
                 {/* Right Column: Webhook Setup & Help */}
@@ -326,7 +329,7 @@ export default function WhatsAppIntegrationPage() {
                                 ].map((step, i) => (
                                     <div key={i} className="relative flex items-start">
                                         {/* Timeline circle indicator */}
-                                        <span className="absolute left-[-34px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#1B633E] text-white text-[10px] font-bold border-2 border-white shadow-sm">
+                                        <span className="absolute left-[-34px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#35877D] text-white text-[10px] font-bold border-2 border-white shadow-sm">
                                             {i + 1}
                                         </span>
                                         <div>

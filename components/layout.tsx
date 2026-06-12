@@ -3,18 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarProvider, SidebarTrigger, SidebarFooter } from "@/components/ui/sidebar";
-import { LayoutDashboard, MessageSquare, Users, Package, TrendingUp, Settings, BarChart3, Droplet, Plug, ArrowRight, Sparkles } from "lucide-react";
+import { LayoutDashboard, MessageSquare, Users, Package, TrendingUp, Settings, BarChart3, Droplet, Plug, ArrowRight, Sparkles, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
 
 const NAV_ITEMS = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: MessageSquare, label: "Conversations", href: "/conversations" },
-    { icon: Users, label: "Customers", href: "/customers" },
+    { icon: Sparkles, label: "Campaigns", href: "/campaigns" },
+    { icon: MessageSquare, label: "Inbox", href: "/conversations" },
+    { icon: Users, label: "Contacts", href: "/customers" },
     { icon: Package, label: "Products", href: "/products" },
-    { icon: TrendingUp, label: "Leads", href: "/leads" },
+    { icon: Cpu, label: "Automations", href: "/automations" },
     { icon: BarChart3, label: "Analytics", href: "/analytics" },
-    { icon: Plug, label: "WhatsApp", href: "/integrations/whatsapp" },
+    { icon: Plug, label: "WhatsApp Integration", href: "/integrations/whatsapp" },
     { icon: Settings, label: "Settings", href: "/settings" },
 ];
 
@@ -48,9 +48,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                             asChild
                                             isActive={isActive}
                                             tooltip={item.label}
-                                            className={isActive 
-                                                ? "!bg-[#1B633E] !text-white hover:!bg-[#12452A] hover:!text-white font-semibold rounded-xl shadow-sm transition-all" 
-                                                : "text-gray-600 hover:bg-[#FAF8F5] hover:text-[#1B633E] rounded-xl transition-all"}
+                                            className={isActive
+                                                ? "!bg-[#35877D] !text-white hover:!bg-[#2c6f66] hover:!text-white font-semibold rounded-xl shadow-sm transition-all"
+                                                : "text-gray-600 hover:bg-[#FAF8F5] hover:text-[#35877D] rounded-xl transition-all"}
                                         >
                                             <Link href={item.href} className="flex items-center gap-3">
                                                 <item.icon size={18} />
@@ -70,7 +70,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         <div className="bg-gradient-to-br from-[#FCF8EC] to-[#FAF1D6] border border-[#EAD098] rounded-xl p-3.5 space-y-2 shadow-sm relative overflow-hidden">
                             {/* Subtle gold flare background decoration */}
                             <div className="absolute right-[-10%] top-[-10%] w-16 h-16 rounded-full bg-[#D99B26]/10 blur-xl pointer-events-none" />
-                            
+
                             <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#785110] uppercase tracking-wider">
                                 <Sparkles size={14} className="text-[#D99B26] fill-[#D99B26]/20 animate-pulse" />
                                 Upgrade to Pro
@@ -78,7 +78,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             <p className="text-[11px] text-[#694B1B] leading-normal font-medium">
                                 Get premium features, custom branding & priority support.
                             </p>
-                            <Button size="sm" asChild className="w-full bg-[#1B633E] hover:bg-[#12452A] text-white font-semibold text-[11px] h-7.5 gap-1 shadow-sm mt-1.5 justify-between border-0">
+                            <Button size="sm" asChild className="w-full bg-[#35877D] hover:bg-[#2c6f66] text-white font-semibold text-[11px] h-7.5 gap-1 shadow-sm mt-1.5 justify-between border-0">
                                 <Link href="/settings">
                                     Upgrade Plan
                                     <ArrowRight size={10} />
@@ -88,7 +88,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                         {/* Profile Section */}
                         <div className="flex items-center gap-2.5 px-1 pt-1">
-                            <div className="h-9 w-9 shrink-0 rounded-full bg-[#1B633E] text-white flex items-center justify-center font-bold text-sm border border-emerald-800/20">
+                            <div className="h-9 w-9 shrink-0 rounded-full bg-[#35877D] text-white flex items-center justify-center font-bold text-sm border border-emerald-800/20">
                                 {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                             </div>
                             <div className="flex-1 min-w-0">

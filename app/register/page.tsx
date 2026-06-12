@@ -23,7 +23,7 @@ export default function RegisterPage() {
         setIsLoading(true);
 
         try {
-            const res = await fetch("https://crmapi.sandboxtechnology.in/api/auth/register", {
+            const res = await fetch(`${process.env.API_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, password }),
@@ -224,8 +224,8 @@ export default function RegisterPage() {
 
                         <Button
                             type="submit"
-                            disabled={isLoading || success}
-                            className="w-full bg-[#1B633E] hover:bg-[#12452A] text-white font-medium h-11 gap-1.5"
+                            disabled={isLoading}
+                            className="w-full bg-[#35877D] hover:bg-[#2c6f66] text-white font-medium h-11 gap-1.5"
                         >
                             {isLoading ? "Creating Account..." : success ? "Account Created!" : "Create Account"}
                             {!isLoading && !success && <ArrowRight size={16} />}
@@ -235,7 +235,7 @@ export default function RegisterPage() {
                     {/* Sign In Link */}
                     <div className="text-center text-xs text-gray-500">
                         Already have an account?{" "}
-                        <Link href="/login" className="text-[#1B633E] font-semibold hover:underline">
+                        <Link href="/login" className="text-[#35877D] font-semibold hover:underline">
                             Sign in
                         </Link>
                     </div>

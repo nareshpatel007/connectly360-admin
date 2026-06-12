@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -99,7 +99,7 @@ export default function PricingPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-[#143d27] font-sans overflow-x-hidden selection:bg-[#1B633E] selection:text-white">
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans overflow-x-hidden selection:bg-[#35877D] selection:text-white">
 
             {/* Header */}
             <LandingHeader />
@@ -121,16 +121,16 @@ export default function PricingPage() {
 
                         {/* Billing Switch */}
                         <div className="flex items-center justify-center gap-4 pt-6">
-                            <Label htmlFor="billing-toggle-page" className={`text-sm font-bold ${!isAnnual ? 'text-[#0B2E1E]' : 'text-gray-400'}`}>Monthly Billing</Label>
+                            <Label htmlFor="billing-toggle-page" className={`text-sm font-bold ${!isAnnual ? 'text-slate-900' : 'text-gray-400'}`}>Monthly Billing</Label>
                             <Switch
                                 id="billing-toggle-page"
                                 checked={isAnnual}
                                 onCheckedChange={setIsAnnual}
-                                className="data-[state=checked]:bg-[#1B633E]"
+                                className="data-[state=checked]:bg-[#35877D]"
                             />
-                            <Label htmlFor="billing-toggle-page" className={`text-sm font-bold flex items-center gap-2 ${isAnnual ? 'text-[#0B2E1E]' : 'text-gray-400'}`}>
+                            <Label htmlFor="billing-toggle-page" className={`text-sm font-bold flex items-center gap-2 ${isAnnual ? 'text-slate-900' : 'text-gray-400'}`}>
                                 Yearly Billing
-                                <span className="bg-[#FCF8EC] text-[#1D4ED8] text-[10px] px-2.5 py-0.5 rounded-full font-extrabold border border-[#EAD098]">Save 20%</span>
+                                <span className="bg-[#FCF8EC] text-[#35877D] text-[10px] px-2.5 py-0.5 rounded-full font-extrabold border border-slate-200">Save 20%</span>
                             </Label>
                         </div>
                     </div>
@@ -142,13 +142,13 @@ export default function PricingPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8">
 
                             {/* Starter */}
-                            <Card className="p-8 flex flex-col border border-[#D99B26] bg-white rounded-3xl shadow-sm relative">
+                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
                                 <div className="mb-5">
-                                    <h3 className="text-xl font-extrabold text-[#0B2E1E] mb-1">Starter</h3>
+                                    <h3 className="text-xl font-extrabold text-slate-900 mb-1">Starter</h3>
                                     <p className="text-sm text-gray-500 font-bold">Sandbox Playground</p>
                                 </div>
                                 <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-[#0B2E1E]">₹0</span>
+                                    <span className="text-4xl font-extrabold text-slate-900">₹0</span>
                                     <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
                                 </div>
                                 <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
@@ -160,7 +160,7 @@ export default function PricingPage() {
                                         "Sandbox Playground Access",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#1B633E] shrink-0 mt-0.5" />
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
                                             <span>{f}</span>
                                         </li>
                                     ))}
@@ -171,13 +171,13 @@ export default function PricingPage() {
                             </Card>
 
                             {/* Growth */}
-                            <Card className="p-8 flex flex-col border border-[#D99B26] bg-white rounded-3xl shadow-sm relative">
+                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
                                 <div className="mb-5">
-                                    <h3 className="text-xl font-extrabold text-[#0B2E1E] mb-1">Growth</h3>
+                                    <h3 className="text-xl font-extrabold text-slate-900 mb-1">Growth</h3>
                                     <p className="text-sm text-gray-500 font-bold">CRM & AI Bot</p>
                                 </div>
                                 <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-[#0B2E1E]">₹{isAnnual ? prices.growth.annual : prices.growth.monthly}</span>
+                                    <span className="text-4xl font-extrabold text-slate-900">₹{isAnnual ? prices.growth.annual : prices.growth.monthly}</span>
                                     <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
                                 </div>
                                 <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
@@ -190,7 +190,7 @@ export default function PricingPage() {
                                         "14-Day Free Trial",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#1B633E] shrink-0 mt-0.5" />
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
                                             <span>{f}</span>
                                         </li>
                                     ))}
@@ -201,16 +201,16 @@ export default function PricingPage() {
                             </Card>
 
                             {/* Business */}
-                            <Card className="p-8 flex flex-col border-2 border-[#1B633E] bg-[#FAF8F5]/30 rounded-3xl shadow-md relative transform xl:-translate-y-2">
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#D99B26] text-white px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
+                            <Card className="p-8 flex flex-col border-2 border-[#35877D] bg-[#60B187]/10 rounded-3xl shadow-md relative transform xl:-translate-y-2">
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#35877D] text-white px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
                                     Best Value
                                 </div>
                                 <div className="mb-5 mt-2">
-                                    <h3 className="text-xl font-extrabold text-[#1B633E] mb-1">Business</h3>
+                                    <h3 className="text-xl font-extrabold text-slate-900 mb-1">Business</h3>
                                     <p className="text-sm text-gray-500 font-bold">Campaigns & Collaboration</p>
                                 </div>
                                 <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-[#1B633E]">₹{isAnnual ? prices.business.annual : prices.business.monthly}</span>
+                                    <span className="text-4xl font-extrabold text-[#35877D]">₹{isAnnual ? prices.business.annual : prices.business.monthly}</span>
                                     <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
                                 </div>
                                 <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
@@ -223,24 +223,24 @@ export default function PricingPage() {
                                         "Workflow Automation Builder",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#1B633E] shrink-0 mt-0.5" />
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
                                             <span>{f}</span>
                                         </li>
                                     ))}
                                 </ul>
-                                <Button asChild className="w-full h-12 bg-[#1B633E] hover:bg-[#12452A] text-white rounded-xl text-sm font-bold shadow-md">
+                                <Button asChild className="w-full h-12 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-sm font-bold shadow-md">
                                     <Link href={isAuthenticated ? "/dashboard" : "/register"}>Upgrade to Business</Link>
                                 </Button>
                             </Card>
 
                             {/* Enterprise */}
-                            <Card className="p-8 flex flex-col border border-[#D99B26] bg-white rounded-3xl shadow-sm relative">
+                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
                                 <div className="mb-5">
-                                    <h3 className="text-xl font-extrabold text-[#0B2E1E] mb-1">Enterprise</h3>
+                                    <h3 className="text-xl font-extrabold text-slate-900 mb-1">Enterprise</h3>
                                     <p className="text-sm text-gray-555 font-bold">White-Label & Integrations</p>
                                 </div>
                                 <div className="mb-6 flex items-baseline">
-                                    <span className="text-3xl font-extrabold text-[#0B2E1E]">Custom Pricing</span>
+                                    <span className="text-3xl font-extrabold text-slate-900">Custom Pricing</span>
                                 </div>
                                 <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
                                     {[
@@ -252,7 +252,7 @@ export default function PricingPage() {
                                         "1-Hour Priority SLA Support",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#1B633E] shrink-0 mt-0.5" />
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
                                             <span>{f}</span>
                                         </li>
                                     ))}
@@ -267,22 +267,22 @@ export default function PricingPage() {
                 </section>
 
                 {/* Features Comparison Matrix Section */}
-                <section className="py-16 md:py-24 bg-white border-t border-[#D99B26]">
+                <section className="py-16 md:py-24 bg-white border-t border-slate-200">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
                         <div className="text-center mb-14">
-                            <h2 className="text-2xl font-extrabold text-[#0B2E1E] tracking-tight">Detailed Feature Matrix</h2>
-                            <p className="text-sm text-gray-550 font-medium mt-1.5">Review plan limits side-by-side to choose the right fit</p>
+                            <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Detailed Feature Matrix</h2>
+                            <p className="text-sm text-gray-500 font-medium mt-1.5">Review plan limits side-by-side to choose the right fit</p>
                         </div>
 
                         {/* Comparative Table container with horizontal scroll scrollbar for mobile */}
-                        <div className="overflow-x-auto rounded-3xl border border-[#D99B26] shadow-md bg-white">
+                        <div className="overflow-x-auto rounded-3xl border border-slate-200 shadow-md bg-white">
                             <table className="w-full min-w-[750px] text-left border-collapse">
                                 <thead>
-                                    <tr className="bg-[#FAF8F5] border-b border-[#D99B26] text-[#0B2E1E] text-sm font-bold">
+                                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-900 text-sm font-bold">
                                         <th className="p-5 w-[28%]">Capability Core Specs</th>
                                         <th className="p-5 w-[18%]">Starter</th>
                                         <th className="p-5 w-[18%]">Growth</th>
-                                        <th className="p-5 w-[18%] bg-[#1B633E]/5 border-x border-[#EAE6DF] text-[#1B633E]">Business</th>
+                                        <th className="p-5 w-[18%] bg-[#35877D]/5 border-x border-gray-150 text-[#35877D]">Business</th>
                                         <th className="p-5 w-[18%]">Enterprise</th>
                                     </tr>
                                 </thead>
@@ -290,17 +290,17 @@ export default function PricingPage() {
                                     {comparisonMatrix.map((cat, idx) => (
                                         <React.Fragment key={idx}>
                                             {/* Category Section Header Row */}
-                                            <tr className="bg-[#FAF8F5]/60">
-                                                <td colSpan={5} className="p-4 font-extrabold text-[#0B2E1E] uppercase tracking-wider text-[11px]">
+                                            <tr className="bg-slate-50/60">
+                                                <td colSpan={5} className="p-4 font-extrabold text-slate-900 uppercase tracking-wider text-[11px]">
                                                     {cat.category}
                                                 </td>
                                             </tr>
                                             {cat.features.map((feat, fIdx) => (
-                                                <tr key={fIdx} className="hover:bg-[#FAF8F5]/30 transition-colors">
-                                                    <td className="p-4.5 text-[#0B2E1E] font-bold text-sm">{feat.name}</td>
+                                                <tr key={fIdx} className="hover:bg-slate-50/30 transition-colors">
+                                                    <td className="p-4.5 text-slate-900 font-bold text-sm">{feat.name}</td>
                                                     <td className="p-4.5 text-sm">{feat.starter}</td>
                                                     <td className="p-4.5 text-sm">{feat.growth}</td>
-                                                    <td className="p-4.5 bg-emerald-50/10 border-x border-gray-100 font-bold text-[#1B633E] text-sm">{feat.business}</td>
+                                                    <td className="p-4.5 bg-[#60B187]/5 border-x border-gray-100 font-bold text-[#35877D] text-sm">{feat.business}</td>
                                                     <td className="p-4.5 text-sm">{feat.enterprise}</td>
                                                 </tr>
                                             ))}
@@ -313,15 +313,15 @@ export default function PricingPage() {
                 </section>
 
                 {/* FAQ Section */}
-                <section className="py-16 md:py-24 bg-[#FAF8F5] border-t border-[#D99B26]">
+                <section className="py-16 md:py-24 bg-slate-50 border-t border-slate-200">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-5xl mx-auto">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl font-extrabold text-[#0B2E1E] mb-4">Frequently Asked Questions</h2>
+                            <h2 className="text-3xl font-extrabold text-slate-900 mb-4">Frequently Asked Questions</h2>
                         </div>
 
-                        <Accordion type="single" collapsible className="w-full bg-white rounded-2xl border border-[#D99B26] px-6 py-2 shadow-sm">
+                        <Accordion type="single" collapsible className="w-full bg-white rounded-2xl border border-slate-200 px-6 py-2 shadow-sm">
                             <AccordionItem value="item-1">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#1B633E]">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
                                     Can I transition between plans at any time?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
@@ -329,23 +329,23 @@ export default function PricingPage() {
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-2">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#1B633E]">
-                                    What counts as a "monthly message volume"?
-                                </AccordionTrigger>
-                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
-                                    Each message sent by your AI responder, bulk broadcast campaigns, or manual agent responses counts towards your monthly quota volume. Free incoming chats from customers do not deduct from your limit.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-3">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#1B633E]">
-                                    Are there any setup fees or hidden API costs?
-                                </AccordionTrigger>
-                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
-                                    No, there are zero hidden signup or onboarding fees. For Meta's official Cloud API, WhatsApp provides 1,000 free service-initiated conversations each month per business account; any volume beyond that is billed directly by Meta.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-4">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#1B633E]">
+                                    <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                        What counts as a "monthly message volume"?
+                                    </AccordionTrigger>
+                                    <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                        Each message sent by your AI responder, bulk broadcast campaigns, or manual agent responses counts towards your monthly quota volume. Free incoming chats from customers do not deduct from your limit.
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="item-3">
+                                    <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                        Are there any setup fees or hidden API costs?
+                                    </AccordionTrigger>
+                                    <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                        No, there are zero hidden signup or onboarding fees. For Meta's official Cloud API, WhatsApp provides 1,000 free service-initiated conversations each month per business account; any volume beyond that is billed directly by Meta.
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="item-4">
+                                    <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
                                     Do you offer support during integration?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">

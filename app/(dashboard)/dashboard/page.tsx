@@ -33,7 +33,7 @@ export default function DashboardPage() {
                         <RefreshCw size={14} />
                         Refresh
                     </Button>
-                    <Button size="sm" asChild className="h-9 bg-[#1B633E] hover:bg-[#12452A] text-white gap-1.5 font-medium shadow-sm">
+                    <Button size="sm" asChild className="h-9 bg-[#35877D] hover:bg-[#2c6f66] text-white gap-1.5 font-medium shadow-sm">
                         <Link href="/integrations/whatsapp">
                             <Plus size={16} />
                             Connect WhatsApp
@@ -43,10 +43,10 @@ export default function DashboardPage() {
             </div>
 
             {/* Hero Dark Green Banner Card */}
-            <div className="relative bg-gradient-to-br from-[#0B2E1E] to-[#123F2A] border border-emerald-950 rounded-2xl p-6 md:p-8 text-[#E2EBE5] overflow-hidden shadow-lg">
+            <div className="relative bg-gradient-to-br from-[#35877D] to-[#2c6f66] border border-slate-200 rounded-2xl p-6 md:p-8 text-white overflow-hidden shadow-lg">
 
                 {/* Sparkles Badge */}
-                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase bg-[#185334] text-[#D99B26] border border-emerald-800 px-3 py-1 rounded-full mb-4">
+                <div className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase bg-white/10 text-white border border-white/20 px-3 py-1 rounded-full mb-4">
                     <Sparkles size={12} />
                     Pro Workspace Enabled
                 </div>
@@ -55,44 +55,44 @@ export default function DashboardPage() {
                     <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight">
                         Connect & Manage Customer Conversations with precision.
                     </h2>
-                    <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
+                    <p className="text-xs md:text-sm text-slate-100 leading-relaxed">
                         Design custom auto-reply flows, manage message queues, sync leads, and generate bulk WhatsApp notifications in just a few clicks.
                     </p>
                     <div className="flex items-center gap-3 pt-2">
-                        <Button size="sm" asChild className="bg-[#1B633E] hover:bg-[#12452A] text-white text-xs h-9 font-semibold px-4">
+                        <Button size="sm" asChild className="bg-white hover:bg-gray-100 text-[#35877D] text-xs h-9 font-semibold px-4 shadow-sm border-0">
                             <Link href="/integrations/whatsapp">Get Started</Link>
                         </Button>
-                        <Button size="sm" variant="outline" asChild className="border-gray-500/50 hover:bg-emerald-900/10 text-white text-xs h-9 font-semibold px-4">
+                        <Button size="sm" variant="outline" asChild className="border-white/40 hover:bg-white/10 text-white text-xs h-9 font-semibold px-4">
                             <Link href="/settings">View Tutorials</Link>
                         </Button>
                     </div>
                 </div>
 
                 {/* Banner Right tilted layout cards vector design */}
-                <div className="absolute right-[-2%] bottom-[-10%] w-[280px] h-[160px] bg-[#14532D] border border-emerald-800 rounded-2xl rotate-[-10deg] shadow-2xl opacity-20 p-4 flex flex-col justify-between hidden md:flex">
-                    <div className="w-6 h-6 rounded-full bg-emerald-700 p-1 flex items-center justify-center">
+                <div className="absolute right-[-2%] bottom-[-10%] w-[280px] h-[160px] bg-[#35877D]/30 border border-white/10 rounded-2xl rotate-[-10deg] shadow-2xl opacity-20 p-4 flex flex-col justify-between hidden md:flex">
+                    <div className="w-6 h-6 rounded-full bg-white/10 p-1 flex items-center justify-center">
                         <img src="/images/logo.png" alt="Logo" className="h-full w-auto object-contain brightness-0 invert" />
                     </div>
                     <div className="space-y-1.5">
-                        <div className="w-3/4 h-2 bg-[#0C321B] rounded-full" />
-                        <div className="w-1/2 h-2 bg-[#0C321B] rounded-full" />
+                        <div className="w-3/4 h-2 bg-white/10 rounded-full" />
+                        <div className="w-1/2 h-2 bg-white/10 rounded-full" />
                     </div>
                 </div>
-                <div className="absolute right-[10%] bottom-[-5%] w-[260px] h-[170px] bg-[#1B633E] border border-emerald-700 rounded-2xl rotate-[8deg] shadow-2xl opacity-40 p-4 flex flex-col justify-between hidden md:flex">
+                <div className="absolute right-[10%] bottom-[-5%] w-[260px] h-[170px] bg-[#35877D]/50 border border-white/20 rounded-2xl rotate-[8deg] shadow-2xl opacity-40 p-4 flex flex-col justify-between hidden md:flex">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-emerald-900 flex items-center justify-center">
+                            <div className="w-6 h-6 rounded-full bg-slate-900/30 flex items-center justify-center">
                                 <Users size={12} className="text-white" />
                             </div>
                             <span className="text-[10px] text-white font-medium">Customer Synced</span>
                         </div>
-                        <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#60B187]" />
                     </div>
                     <div className="space-y-1">
-                        <div className="w-full h-1.5 bg-[#0C321B]/30 rounded-full" />
-                        <div className="w-2/3 h-1.5 bg-[#0C321B]/30 rounded-full" />
+                        <div className="w-full h-1.5 bg-white/10 rounded-full" />
+                        <div className="w-2/3 h-1.5 bg-white/10 rounded-full" />
                     </div>
-                    <div className="text-[9px] text-emerald-200">Active Pipeline</div>
+                    <div className="text-[9px] text-teal-100">Active Pipeline</div>
                 </div>
 
             </div>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
                 <Card className="bg-white border border-[#EAE6DF] shadow-sm rounded-xl overflow-hidden flex flex-col min-h-[350px]">
                     <CardHeader className="flex flex-row items-center justify-between border-b border-[#FAF8F5] pb-3.5">
                         <CardTitle className="text-base font-bold text-gray-900">Recent Conversations</CardTitle>
-                        <Link href="/conversations" className="text-xs font-semibold text-[#1B633E] hover:underline flex items-center gap-0.5">
+                        <Link href="/conversations" className="text-xs font-semibold text-[#35877D] hover:underline flex items-center gap-0.5">
                             View All
                             <ChevronRight size={14} />
                         </Link>
@@ -185,7 +185,7 @@ export default function DashboardPage() {
                 <Card className="bg-white border border-[#EAE6DF] shadow-sm rounded-xl overflow-hidden flex flex-col min-h-[350px]">
                     <CardHeader className="flex flex-row items-center justify-between border-b border-[#FAF8F5] pb-3.5">
                         <CardTitle className="text-base font-bold text-gray-900">Recent Leads</CardTitle>
-                        <Link href="/leads" className="text-xs font-semibold text-[#1B633E] hover:underline flex items-center gap-0.5">
+                        <Link href="/leads" className="text-xs font-semibold text-[#35877D] hover:underline flex items-center gap-0.5">
                             View All
                             <ChevronRight size={14} />
                         </Link>
