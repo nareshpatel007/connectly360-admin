@@ -2,12 +2,47 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarProvider, SidebarTrigger, SidebarFooter } from "@/components/ui/sidebar";
-import { LayoutDashboard, MessageSquare, Users, Package, TrendingUp, Settings, BarChart3, Droplet, Plug, ArrowRight, Sparkles, Cpu } from "lucide-react";
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuItem,
+    SidebarMenuButton,
+    SidebarProvider,
+    SidebarTrigger,
+    SidebarFooter
+} from "@/components/ui/sidebar";
+import {
+    LayoutDashboard,
+    MessageSquare,
+    Users,
+    Package,
+    TrendingUp,
+    Settings,
+    BarChart3,
+    Droplet,
+    Plug,
+    ArrowRight,
+    Sparkles,
+    Cpu,
+    ChevronUp,
+    LogOut
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu";
 
 const NAV_ITEMS = [
+    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
     { icon: Sparkles, label: "Campaigns", href: "/campaigns" },
     { icon: MessageSquare, label: "Inbox", href: "/conversations" },
     { icon: Users, label: "Contacts", href: "/customers" },
@@ -33,12 +68,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex min-h-screen w-full bg-[#FAF8F5] text-[#143d27]">
                 <Sidebar className="border-r border-[#EAE6DF] bg-white">
                     {/* Sidebar Header */}
-                    <SidebarHeader className="p-4 flex flex-row items-center gap-2.5 border-b border-[#EAE6DF]">
-                        <img src="/images/logo.png" alt="Connectly360 Logo" className="h-12 w-auto object-contain" />
+                    <SidebarHeader className="p-5 flex flex-row items-center gap-2.5 border-b border-[#EAE6DF]/60 bg-white">
+                        <img src="/images/logo.png" alt="Connectly360 Logo" className="h-11 w-auto object-contain" />
                     </SidebarHeader>
 
                     {/* Sidebar Navigation */}
-                    <SidebarContent className="p-2 space-y-4">
+                    <SidebarContent className="p-3 space-y-4">
                         <SidebarMenu>
                             {NAV_ITEMS.map((item) => {
                                 const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
@@ -49,12 +84,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                             isActive={isActive}
                                             tooltip={item.label}
                                             className={isActive
-                                                ? "!bg-[#35877D] !text-white hover:!bg-[#2c6f66] hover:!text-white font-semibold rounded-xl shadow-sm transition-all"
-                                                : "text-gray-600 hover:bg-[#FAF8F5] hover:text-[#35877D] rounded-xl transition-all"}
+                                                ? "!bg-[#35877D] !text-white hover:!bg-[#2c6f66] hover:!text-white font-semibold rounded-xl shadow-[0_2px_8px_-1px_rgba(53,135,125,0.25)] transition-all duration-200 group"
+                                                : "text-[#0B2E1E]/75 hover:bg-[#35877D]/8 hover:text-[#35877D] rounded-xl transition-all duration-200 group"}
                                         >
-                                            <Link href={item.href} className="flex items-center gap-3">
-                                                <item.icon size={18} />
-                                                <span className="text-sm">{item.label}</span>
+                                            <Link href={item.href} className="flex items-center justify-between w-full">
+                                                <div className="flex items-center gap-3">
+                                                    <item.icon size={18} className={isActive ? "text-[#EAD098]" : "text-[#0B2E1E]/60 group-hover:text-[#35877D] transition-colors"} />
+                                                    <span className="text-sm font-medium">{item.label}</span>
+                                                </div>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -64,7 +101,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     </SidebarContent>
 
                     {/* Sidebar Footer */}
-                    <SidebarFooter className="p-3 border-t border-[#EAE6DF] space-y-4 bg-white">
+                    <SidebarFooter className="p-4 border-t border-[#EAE6DF]/60 space-y-4 bg-white">
 
                         {/* Upgrade to Pro Card */}
                         <div className="bg-gradient-to-br from-[#FCF8EC] to-[#FAF1D6] border border-[#EAD098] rounded-xl p-3.5 space-y-2 shadow-sm relative overflow-hidden">
@@ -86,25 +123,61 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             </Button>
                         </div>
 
-                        {/* Profile Section */}
-                        <div className="flex items-center gap-2.5 px-1 pt-1">
-                            <div className="h-9 w-9 shrink-0 rounded-full bg-[#35877D] text-white flex items-center justify-center font-bold text-sm border border-emerald-800/20">
-                                {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs font-semibold text-gray-900 truncate leading-tight">
-                                    {user?.name || "User"}
-                                </p>
-                                <p className="text-[9px] text-gray-400 truncate leading-tight">
-                                    {user?.email || ""}
-                                </p>
-                                <button
-                                    onClick={logout}
-                                    className="text-[9.5px] font-bold text-red-600 hover:underline mt-0.5 inline-block text-left"
+                        {/* Profile Section with Radix Dropdown */}
+                        <div className="pt-1">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="w-full flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-[#EAE6DF]/50 transition-all text-left focus:outline-none focus:ring-2 focus:ring-[#35877D]/20 group cursor-pointer">
+                                        <div className="h-9 w-9 shrink-0 rounded-full bg-[#35877D] text-white flex items-center justify-center font-bold text-sm border border-emerald-800/10 shadow-sm transition-transform duration-200 group-hover:scale-102">
+                                            {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-xs font-semibold text-[#0B2E1E] truncate leading-tight">
+                                                {user?.name || "User"}
+                                            </p>
+                                            <p className="text-[10px] text-slate-400 truncate leading-tight mt-0.5">
+                                                {user?.email || ""}
+                                            </p>
+                                        </div>
+                                        <ChevronUp size={15} className="text-slate-400 group-hover:text-[#35877D] transition-colors shrink-0" />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    className="w-56 p-1.5 border border-[#EAE6DF] bg-white rounded-xl shadow-lg animate-in fade-in-50 slide-in-from-bottom-2"
+                                    side="top"
+                                    align="start"
+                                    sideOffset={12}
                                 >
-                                    Sign out
-                                </button>
-                            </div>
+                                    <DropdownMenuLabel className="px-2 py-1.5">
+                                        <p className="text-[9px] font-bold text-slate-400 tracking-wider uppercase">Logged in as</p>
+                                        <p className="text-xs font-bold text-[#0B2E1E] mt-0.5 truncate">{user?.name || "User"}</p>
+                                        <p className="text-[10px] text-slate-500 truncate mt-0.5">{user?.email || ""}</p>
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator className="my-1 bg-[#EAE6DF]/60" />
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem asChild className="rounded-lg px-2 py-1.5 text-xs text-slate-600 focus:bg-[#FAF8F5] focus:text-[#35877D] cursor-pointer transition-colors">
+                                            <Link href="/settings" className="flex items-center gap-2 w-full">
+                                                <Settings size={14} />
+                                                <span>Account Settings</span>
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem asChild className="rounded-lg px-2 py-1.5 text-xs text-slate-600 focus:bg-[#FAF8F5] focus:text-[#35877D] cursor-pointer transition-colors">
+                                            <Link href="/integrations/whatsapp" className="flex items-center gap-2 w-full">
+                                                <Plug size={14} />
+                                                <span>WhatsApp Integration</span>
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                    <DropdownMenuSeparator className="my-1 bg-[#EAE6DF]/60" />
+                                    <DropdownMenuItem
+                                        onClick={logout}
+                                        className="rounded-lg px-2 py-1.5 text-xs text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer font-medium transition-colors flex items-center gap-2"
+                                    >
+                                        <LogOut size={14} />
+                                        <span>Sign out</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
 
                     </SidebarFooter>
@@ -121,8 +194,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         </div>
                     </header>
 
-                    <div className="flex-1 overflow-auto p-4 md:p-8">
-                        <div className="mx-auto max-w-6xl">
+                    <div className="flex-1 overflow-auto p-6 md:p-10">
+                        <div className="w-full">
                             {children}
                         </div>
                     </div>

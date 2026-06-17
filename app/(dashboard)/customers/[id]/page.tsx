@@ -135,8 +135,8 @@ export default function CustomerDetailPage() {
                                         </div>
 
                                         <div className={`relative max-w-[80%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap break-words ${isInbound
-                                                ? 'bg-card border border-border text-foreground rounded-tl-sm'
-                                                : 'bg-primary text-primary-foreground rounded-tr-sm shadow-sm'
+                                            ? 'bg-card border border-border text-foreground rounded-tl-sm'
+                                            : 'bg-primary text-primary-foreground rounded-tr-sm shadow-sm'
                                             }`}>
                                             {conv.message}
                                         </div>

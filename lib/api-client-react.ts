@@ -1,7 +1,7 @@
 import { useQuery, useMutation, UseQueryOptions } from "@tanstack/react-query";
 
 // Base API URL
-const API_BASE = process.env.API_URL || "/api";
+const API_BASE = "/api";
 
 async function apiFetch(url: string, options: RequestInit = {}) {
     const headers = {

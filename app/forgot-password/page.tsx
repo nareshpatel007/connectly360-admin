@@ -21,8 +21,7 @@ export default function ForgotPasswordPage() {
         setIsLoading(true);
 
         try {
-            const apiUrl = process.env.API_URL || "https://crmapi.sandboxtechnology.in/api";
-            const res = await fetch(`${apiUrl}/auth/forgot-password`, {
+            const res = await fetch(`/api/auth/forgot-password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),

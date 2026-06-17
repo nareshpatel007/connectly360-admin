@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, XCircle, Clock, Wifi, WifiOff, RefreshCcw, PhoneCall, Building2, Hash, Plus, Trash2, Key, Loader2 } from "lucide-react";
 
@@ -286,34 +285,6 @@ export default function WhatsAppIntegrationPage() {
 
                 {/* Right Column: Webhook Setup & Help */}
                 <div className="lg:col-span-5 space-y-6">
-                    {/* Webhook Info */}
-                    <Card className="bg-white border border-[#EAE6DF] shadow-sm rounded-xl overflow-hidden">
-                        <CardHeader className="border-b border-[#FAF8F5] pb-3.5">
-                            <CardTitle className="text-base font-bold text-gray-900">Webhook Configuration</CardTitle>
-                            <CardDescription className="text-xs text-gray-500">Set this URL in your Meta Developer Console to receive incoming messages.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="p-5 space-y-4">
-                            <div className="space-y-3">
-                                <div>
-                                    <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Callback URL</p>
-                                    <div className="bg-[#FAF8F5] border border-[#EAE6DF] rounded-xl p-3.5 text-xs text-[#0B2E1E] font-mono break-all relative select-all font-semibold">
-                                        {origin}/api/webhooks/whatsapp
-                                    </div>
-                                </div>
-                                <div>
-                                    <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Verify Token</p>
-                                    <div className="bg-[#FAF8F5] border border-[#EAE6DF] rounded-xl p-3.5 text-xs text-[#0B2E1E] font-mono relative select-all font-semibold">
-                                        {metaConfig?.verifyToken || "WHATSAPP_VERIFY_TOKEN"}
-                                    </div>
-                                </div>
-                            </div>
-                            <p className="text-[11px] text-gray-400 leading-relaxed">
-                                In the Meta Developer Console, navigate to <strong>WhatsApp &rarr; Configuration &rarr; Webhook</strong>. Paste the values above and subscribe to the <strong>messages</strong> field to start receiving messages.
-                            </p>
-                        </CardContent>
-                    </Card>
-
-                    {/* How It Works */}
                     <Card className="bg-white border border-[#EAE6DF] shadow-sm rounded-xl overflow-hidden">
                         <CardHeader className="border-b border-[#FAF8F5] pb-3.5">
                             <CardTitle className="text-base font-bold text-gray-900">How It Works</CardTitle>
