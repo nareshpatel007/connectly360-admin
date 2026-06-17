@@ -69,7 +69,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
     return (
         <SidebarProvider>
-            <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans">
+            <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans dashboard-theme">
                 {/* 1. TOP TRIAL WARNING BANNER */}
                 <div className="bg-[#1E293B] text-white py-2.5 px-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm font-semibold select-none shrink-0 z-50 shadow-sm border-b border-slate-800">
                     <div className="flex-1 text-center sm:text-left leading-normal">
@@ -91,8 +91,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     <div className="flex items-center gap-3">
                         <SidebarTrigger className="md:hidden mr-1" />
                         <Link href="/dashboard" className="flex items-center gap-2">
-                            <img src="/images/logo.png" alt="Connectly360 Logo" className="h-8 w-auto object-contain" />
-                            <span className="font-extrabold text-slate-900 text-sm tracking-tight">Connectly360</span>
+                            <img src="/images/logo.png" alt="Connectly360 Logo" className="h-9 w-auto object-contain" />
                         </Link>
                     </div>
 
@@ -189,7 +188,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </header>
 
                 {/* 3. SIDEBAR AND CONTENT LAYER */}
-                <div className="flex flex-grow w-full overflow-hidden">
+                <div className="flex flex-grow w-full overflow-hidden relative">
                     <Sidebar className="border-r border-slate-200 bg-white shrink-0 h-full z-30">
                         {/* Sidebar Navigation */}
                         <SidebarContent className="p-3 space-y-4">

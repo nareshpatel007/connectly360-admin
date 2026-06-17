@@ -104,16 +104,12 @@ export default function PricingPage() {
             {/* Header */}
             <LandingHeader />
 
-            <main className="pt-32">
+            <main className="pt-40">
                 {/* Hero Title Grid */}
                 <section className="relative pb-16 overflow-hidden">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto text-center space-y-4">
-                        <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FCF8EC] text-[#1D4ED8] text-xs font-bold border border-[#EAD098] shadow-sm">
-                            <Coins size={13} className="text-[#D99B26] fill-[#D99B26]/15" />
-                            Compare Pricing & Plans
-                        </span>
-                        <h1 className="text-4xl sm:text-5xl font-extrabold text-[#0B2E1E] leading-tight">
-                            Plans matching your business scale
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0B2E1E] leading-tight tracking-tight">
+                            Simple, transparent plans <span className="bg-gradient-to-r from-[#35877D] to-[#60B187] bg-clip-text text-transparent">built to scale</span>
                         </h1>
                         <p className="text-base text-gray-500 font-medium max-w-2xl mx-auto leading-relaxed">
                             Choose between a free sandbox setup, flexible workflow automation, or fully integrated custom solutions. Save 20% by paying annually.
@@ -166,7 +162,7 @@ export default function PricingPage() {
                                     ))}
                                 </ul>
                                 <Button asChild variant="outline" className="w-full h-12 border-[#EAE6DF] rounded-xl text-sm font-bold hover:bg-gray-50">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Get Started Free</Link>
+                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Start 7-day Trial</Link>
                                 </Button>
                             </Card>
 
@@ -196,7 +192,7 @@ export default function PricingPage() {
                                     ))}
                                 </ul>
                                 <Button asChild variant="outline" className="w-full h-12 border-[#EAE6DF] rounded-xl text-sm font-bold hover:bg-gray-50">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Start 14-day Trial</Link>
+                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Purchase plan</Link>
                                 </Button>
                             </Card>
 
@@ -229,7 +225,7 @@ export default function PricingPage() {
                                     ))}
                                 </ul>
                                 <Button asChild className="w-full h-12 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-sm font-bold shadow-md">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Upgrade to Business</Link>
+                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Purchase plan</Link>
                                 </Button>
                             </Card>
 
@@ -329,23 +325,23 @@ export default function PricingPage() {
                                 </AccordionContent>
                             </AccordionItem>
                             <AccordionItem value="item-2">
-                                    <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
-                                        What counts as a "monthly message volume"?
-                                    </AccordionTrigger>
-                                    <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
-                                        Each message sent by your AI responder, bulk broadcast campaigns, or manual agent responses counts towards your monthly quota volume. Free incoming chats from customers do not deduct from your limit.
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem value="item-3">
-                                    <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
-                                        Are there any setup fees or hidden API costs?
-                                    </AccordionTrigger>
-                                    <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
-                                        No, there are zero hidden signup or onboarding fees. For Meta's official Cloud API, WhatsApp provides 1,000 free service-initiated conversations each month per business account; any volume beyond that is billed directly by Meta.
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem value="item-4">
-                                    <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    What counts as a "monthly message volume"?
+                                </AccordionTrigger>
+                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                    Each message sent by your AI responder, bulk broadcast campaigns, or manual agent responses counts towards your monthly quota volume. Free incoming chats from customers do not deduct from your limit.
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-3">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    Are there any setup fees or hidden API costs?
+                                </AccordionTrigger>
+                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                    No, there are zero hidden signup or onboarding fees. For Meta's official Cloud API, WhatsApp provides 1,000 free service-initiated conversations each month per business account; any volume beyond that is billed directly by Meta.
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-4">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
                                     Do you offer support during integration?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">

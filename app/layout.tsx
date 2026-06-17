@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { AuthProvider } from "@/lib/auth-context";
 
+const jost = Jost({
+    variable: "--font-jost",
+    subsets: ["latin"],
+});
+
 const inter = Inter({
-    variable: "--font-sans",
+    variable: "--font-inter",
     subsets: ["latin"],
 });
 
@@ -49,7 +54,7 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+            className={`${jost.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
             suppressHydrationWarning
         >
             <body className="min-h-full bg-background text-foreground flex flex-col font-sans">

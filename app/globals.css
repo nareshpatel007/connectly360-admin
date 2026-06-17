@@ -50,7 +50,7 @@
   --color-sidebar-accent-border: var(--sidebar-accent-border);
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --font-sans: var(--font-sans), sans-serif;
+  --font-sans: var(--font-jost), sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: var(--font-mono), monospace;
 
@@ -174,5 +174,9 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  .dashboard-theme {
+    --font-sans: var(--font-inter), sans-serif;
   }
 }

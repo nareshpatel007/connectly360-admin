@@ -28,11 +28,8 @@ export function LandingHeader() {
             <header className="bg-white border-b border-gray-100 shadow-xs h-20 flex items-center justify-between px-6 md:px-12 w-full">
                 {/* Logo Section */}
                 <div className="flex items-center gap-2">
-                    <Link href="/" className="flex items-center gap-1.5 group">
-                        <svg className="w-8 h-8 text-[#35877D] transition-transform group-hover:scale-105" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M16 8V6a4 4 0 0 0-8 0v2H4v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8h-4zM9 6a3 3 0 0 1 6 0v2H9V6zm10 14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9h14v11z" />
-                        </svg>
-                        <span className="text-2xl font-black text-gray-900 tracking-tight">interakt</span>
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <img src="/images/logo.png" alt="Connectly360 Logo" className="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
                     </Link>
                 </div>
 
@@ -70,9 +67,9 @@ export function LandingHeader() {
                     {isAuthenticated ? (
                         <>
                             <span className="text-xs text-gray-500 font-semibold">Hello, {user?.name || "Admin"}</span>
-                            <Button asChild className="rounded-full px-6 py-5.5 bg-[#35877D] hover:bg-[#2c6f66] text-white transition-all shadow-sm font-extrabold text-sm flex items-center gap-1.5">
+                            <Button asChild size="sm" className="rounded-full px-4 py-2 h-9 bg-[#35877D] hover:bg-[#2c6f66] text-white transition-all shadow-sm font-extrabold text-xs flex items-center gap-1">
                                 <Link href="/dashboard">
-                                    Dashboard <ArrowRight size={14} />
+                                    Dashboard <ArrowRight size={12} />
                                 </Link>
                             </Button>
                         </>
@@ -81,20 +78,13 @@ export function LandingHeader() {
                             <Link href="/login" className="text-sm font-bold text-gray-700 hover:text-[#35877D] transition-colors">
                                 Login
                             </Link>
-                            <Button asChild className="rounded-full px-6 py-5.5 bg-[#35877D] hover:bg-[#2c6f66] text-white transition-all shadow-sm font-extrabold text-sm flex items-center gap-1.5">
+                            <Button asChild size="sm" className="rounded-full px-4 py-2 h-9 bg-[#35877D] hover:bg-[#2c6f66] text-white transition-all shadow-sm font-extrabold text-xs flex items-center gap-1">
                                 <Link href="/register">
-                                    Start Free Trial <ArrowRight size={14} />
+                                    Start Free Trial <ArrowRight size={12} />
                                 </Link>
                             </Button>
                         </>
                     )}
-
-                    {/* Language selector */}
-                    <div className="flex items-center gap-1 cursor-pointer hover:opacity-85 text-sm font-bold text-gray-700 pl-2 border-l border-gray-200">
-                        <span className="text-base">🇬🇧</span>
-                        <span>EN</span>
-                        <ChevronDown size={12} className="text-gray-400" />
-                    </div>
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -119,13 +109,13 @@ export function LandingHeader() {
                     <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
                         <Link href="/contact" className="text-center font-bold text-gray-700 p-2" onClick={() => setMobileMenuOpen(false)}>Demo</Link>
                         {isAuthenticated ? (
-                            <Button asChild className="w-full bg-[#35877D] text-white font-extrabold rounded-full py-5">
+                            <Button asChild className="w-full bg-[#35877D] text-white font-extrabold rounded-full py-3 text-sm">
                                 <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
                             </Button>
                         ) : (
                             <>
                                 <Link href="/login" className="text-center font-bold text-gray-700 p-2" onClick={() => setMobileMenuOpen(false)}>Login</Link>
-                                <Button asChild className="w-full bg-[#35877D] text-white font-extrabold rounded-full py-5">
+                                <Button asChild className="w-full bg-[#35877D] text-white font-extrabold rounded-full py-3 text-sm">
                                     <Link href="/register" onClick={() => setMobileMenuOpen(false)}>Start Free Trial</Link>
                                 </Button>
                             </>
