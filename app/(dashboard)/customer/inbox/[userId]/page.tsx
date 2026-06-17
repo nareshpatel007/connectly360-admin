@@ -15,8 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function CustomerDetailPage() {
     const params = useParams();
-    const id = params.id as string;
-    const customerId = id ? parseInt(id, 10) : 0;
+    const userId = params.userId as string;
+    const customerId = userId ? parseInt(userId, 10) : 0;
 
     const queryClient = useQueryClient();
     const [messageText, setMessageText] = useState("");

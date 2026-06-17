@@ -219,7 +219,7 @@ export default function CustomersPage() {
                     </TableCell>
                     <TableCell>
                       <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/customers/${customer.id}`}>View</Link>
+                        <Link href={`/customer/inbox/${customer.id}`}>View</Link>
                       </Button>
                     </TableCell>
                   </TableRow>
