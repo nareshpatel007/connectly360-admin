@@ -29,7 +29,8 @@ import {
     ChevronUp,
     LogOut,
     Bell,
-    Rocket
+    Rocket,
+    BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
@@ -50,6 +51,7 @@ const NAV_ITEMS = [
     { icon: Users, label: "Contacts", href: "/customers" },
     { icon: Package, label: "Products", href: "/products" },
     { icon: Cpu, label: "Automations", href: "/automations" },
+    { icon: BookOpen, label: "Knowledge Base", href: "/knowledge-base" },
     { icon: BarChart3, label: "Analytics", href: "/analytics" },
     { icon: Plug, label: "WhatsApp Integration", href: "/integrations/whatsapp" },
     { icon: Settings, label: "Settings", href: "/settings" },
@@ -71,16 +73,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <SidebarProvider>
             <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans dashboard-theme">
                 {/* 1. TOP TRIAL WARNING BANNER */}
-                <div className="bg-[#1E293B] text-white py-2.5 px-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm font-semibold select-none shrink-0 z-50 shadow-sm border-b border-slate-800">
+                <div className="bg-[#1E293B] text-white py-2.5 px-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm font-normal select-none shrink-0 z-50 shadow-sm border-b border-slate-800">
                     <div className="flex-1 text-center sm:text-left leading-normal">
-                        You have <span className="font-extrabold text-[#09B36E]">2 days</span> to explore this <span className="font-bold">Trial account</span>. Connect your preferred channel to unlock all features.
+                        You have <span className="font-medium text-[#378179]">2 days</span> to explore this <span className="font-medium">Trial account</span>. Connect your preferred channel to unlock all features.
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                        <Button size="sm" asChild className="bg-[#09B36E] hover:bg-[#079E61] text-white text-[11px] font-bold h-7.5 px-3 rounded-lg border-0 shadow-xs cursor-pointer">
+                        <Button size="sm" asChild className="bg-[#378179] hover:bg-[#079E61] text-white text-xs font-medium h-7.5 px-3 rounded-lg border-0 shadow-xs cursor-pointer">
                             <Link href="/integrations/whatsapp">Connect Channel</Link>
                         </Button>
-                        <Button size="sm" variant="outline" asChild className="text-white hover:text-white border-white/20 hover:bg-white/10 text-[11px] font-bold h-7.5 px-3 rounded-lg bg-transparent cursor-pointer">
-                            <Link href="/settings">Buy Now</Link>
+                        <Button size="sm" variant="outline" asChild className="text-white hover:text-white border-white/20 hover:bg-white/10 text-xs font-medium h-7.5 px-3 rounded-lg bg-transparent cursor-pointer">
+                            <Link href="/settings">Upgrade Plan</Link>
                         </Button>
                     </div>
                 </div>
@@ -98,33 +100,28 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     {/* Right side: Widgets and Actions */}
                     <div className="flex items-center gap-4">
                         {/* Quick start progress */}
-                        <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-500">
+                        <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-700">
                             <span>Quick start</span>
                             <div className="relative h-6 w-6 flex items-center justify-center">
                                 <svg className="absolute w-full h-full transform -rotate-90">
                                     <circle cx="12" cy="12" r="10" stroke="#E2E8F0" strokeWidth="2.5" fill="transparent" />
                                     <circle cx="12" cy="12" r="10" stroke="#09B36E" strokeWidth="2.5" fill="transparent" strokeDasharray="62.8" strokeDashoffset="47.1" />
                                 </svg>
-                                <span className="text-[9px] font-extrabold text-slate-800">1/4</span>
+                                <span className="text-[10px] font-semibold text-slate-800">1/4</span>
                             </div>
                         </div>
 
                         {/* Book a demo */}
-                        <Button variant="outline" asChild className="hidden sm:inline-flex border-[#09B36E] text-[#09B36E] hover:bg-[#EAF7F2] text-xs font-extrabold h-8 px-3.5 rounded-lg bg-transparent cursor-pointer">
-                            <Link href="https://connectly360.com" target="_blank">Book a demo</Link>
+                        <Button variant="outline" asChild className="hidden sm:inline-flex border-[#378179] text-[#378179] hover:bg-[#EAF7F2] text-xs font-medium h-8 px-3.5 rounded-lg bg-transparent cursor-pointer">
+                            <Link href="/book-demo" target="_blank">Book a demo</Link>
                         </Button>
 
                         <div className="h-4 w-px bg-slate-200 hidden sm:block" />
 
                         {/* Notifications (Bell Icon) */}
-                        <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg cursor-pointer">
-                            <Bell size={18} />
-                        </Button>
-
-                        {/* Warning/Rocket Badge with 5 alerts */}
                         <div className="relative">
                             <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg cursor-pointer">
-                                <Rocket size={18} />
+                                <Bell size={18} />
                             </Button>
                             <span className="absolute top-0.5 right-0.5 bg-red-500 text-white font-extrabold text-[9px] h-4.5 w-4.5 rounded-full flex items-center justify-center border border-white shadow-xs">
                                 5
@@ -137,10 +134,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <button className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-50 border border-transparent transition-all focus:outline-none cursor-pointer group">
-                                    <div className="h-8 w-8 rounded-full bg-[#09B36E] text-white flex items-center justify-center font-extrabold text-xs shadow-xs transition-transform duration-200 group-hover:scale-102">
+                                    <div className="h-8 w-8 rounded-full bg-[#378179] text-white flex items-center justify-center font-extrabold text-xs shadow-xs transition-transform duration-200 group-hover:scale-102">
                                         {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                                     </div>
-                                    <span className="hidden md:inline-block text-xs font-bold text-slate-800 group-hover:text-slate-900 truncate max-w-[100px]">
+                                    <span className="hidden md:inline-block text-xs font-medium text-slate-800 group-hover:text-slate-900 truncate max-w-[100px]">
                                         {user?.name || "User"}
                                     </span>
                                     <svg className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
@@ -155,8 +152,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                 sideOffset={8}
                             >
                                 <DropdownMenuLabel className="px-2 py-1.5">
-                                    <p className="text-[9px] font-bold text-slate-400 tracking-wider uppercase">Logged in as</p>
-                                    <p className="text-xs font-bold text-slate-900 mt-0.5 truncate">{user?.name || "User"}</p>
+                                    <p className="text-[9px] font-medium text-slate-400 tracking-wider uppercase">Logged in as</p>
+                                    <p className="text-xs font-semibold text-slate-900 mt-0.5 truncate">{user?.name || "User"}</p>
                                     <p className="text-[10px] text-slate-500 truncate mt-0.5">{user?.email || ""}</p>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator className="my-1 bg-slate-100" />
@@ -177,7 +174,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                 <DropdownMenuSeparator className="my-1 bg-slate-100" />
                                 <DropdownMenuItem
                                     onClick={logout}
-                                    className="rounded-lg px-2 py-1.5 text-xs text-red-600 focus:bg-red-50 focus:text-red-600 hover:bg-red-50 hover:text-red-600 cursor-pointer font-bold transition-colors flex items-center gap-2"
+                                    className="rounded-lg px-2 py-1.5 text-xs text-red-600 focus:bg-red-50 focus:text-red-600 hover:bg-red-50 hover:text-red-600 cursor-pointer font-semibold transition-colors flex items-center gap-2"
                                 >
                                     <LogOut size={14} />
                                     <span>Sign out</span>
@@ -202,13 +199,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                                 isActive={isActive}
                                                 tooltip={item.label}
                                                 className={isActive
-                                                    ? "!bg-[#09B36E]/10 !text-[#09B36E] hover:!bg-[#09B36E]/15 hover:!text-[#09B36E] font-bold rounded-xl transition-all duration-200 group"
+                                                    ? "!bg-[#378179]/10 !text-[#378179] hover:!bg-[#378179]/15 hover:!text-[#378179] font-bold rounded-xl transition-all duration-200 group"
                                                     : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-bold rounded-xl transition-all duration-200 group"}
                                             >
                                                 <Link href={item.href} className="flex items-center justify-between w-full">
                                                     <div className="flex items-center gap-3">
-                                                        <item.icon size={18} className={isActive ? "text-[#09B36E]" : "text-slate-400 group-hover:text-slate-600 transition-colors"} />
-                                                        <span className="text-xs font-bold">{item.label}</span>
+                                                        <item.icon size={18} className={isActive ? "text-[#378179]" : "text-slate-400 group-hover:text-slate-700 transition-colors"} />
+                                                        <span className="text-sm font-medium">{item.label}</span>
                                                     </div>
                                                 </Link>
                                             </SidebarMenuButton>
@@ -221,14 +218,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                         <SidebarFooter className="p-4 border-t border-slate-100 bg-white shrink-0">
                             {/* Upgrade to Pro Card */}
                             <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-xl p-3.5 space-y-2 shadow-xs relative overflow-hidden">
-                                <div className="flex items-center gap-1.5 text-xs font-extrabold text-slate-700 uppercase tracking-wider">
-                                    <Sparkles size={14} className="text-[#09B36E] fill-[#09B36E]/20 animate-pulse" />
+                                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                    <Sparkles size={14} className="text-[#378179] fill-[#378179]/20 animate-pulse" />
                                     Upgrade to Pro
                                 </div>
-                                <p className="text-[11px] text-slate-500 leading-normal font-bold">
+                                <p className="text-xs text-slate-700 leading-normal font-medium">
                                     Get premium features & priority support.
                                 </p>
-                                <Button size="sm" asChild className="w-full bg-[#09B36E] hover:bg-[#079E61] text-white font-bold text-[11px] h-7.5 gap-1 shadow-xs mt-1.5 justify-between border-0 cursor-pointer">
+                                <Button size="sm" asChild className="w-full bg-[#378179] hover:bg-[#079E61] text-white font-medium text-xs h-7.5 gap-1 shadow-xs mt-1.5 justify-between border-0 cursor-pointer">
                                     <Link href="/settings">
                                         Upgrade Plan
                                         <ArrowRight size={10} />

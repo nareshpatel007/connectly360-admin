@@ -449,3 +449,118 @@ export function useUpdateSettings() {
         },
     });
 }
+
+// -------------------------------------------------------------
+// Knowledge Base & AI Settings Types
+// -------------------------------------------------------------
+export interface KnowledgeBaseItem {
+    id: number;
+    tenant_id: number;
+    question: string;
+    answer: string;
+    status: number | boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AiSettings {
+    ai_auto_reply: boolean;
+    ai_system_prompt: string | null;
+}
+
+// -------------------------------------------------------------
+// Knowledge Base & AI Settings Hooks
+// -------------------------------------------------------------
+export function useListKnowledgeBase() {
+    return useQuery<KnowledgeBaseItem[]>({
+        queryKey: ["listKnowledgeBase"],
+        queryFn: async () => {
+            const res = await apiFetch(`${API_BASE}/knowledge-base`);
+            if (!res.ok) throw new Error("Failed to fetch knowledge base items");
+            return res.json();
+        },
+    });
+}
+
+export function useCreateKnowledgeBase() {
+    return useMutation({
+        mutationFn: async ({ data }: { data: { question: string; answer: string; status?: boolean } }) => {
+            const res = await apiFetch(`${API_BASE}/knowledge-base`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error("Failed to create knowledge base item");
+            return res.json();
+        },
+    });
+}
+
+export function useUpdateKnowledgeBase() {
+    return useMutation({
+        mutationFn: async ({ id, data }: { id: number; data: Partial<Omit<KnowledgeBaseItem, "id" | "tenant_id" | "created_at" | "updated_at">> }) => {
+            const res = await apiFetch(`${API_BASE}/knowledge-base/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error("Failed to update knowledge base item");
+            return res.json();
+        },
+    });
+}
+
+export function useDeleteKnowledgeBase() {
+    return useMutation({
+        mutationFn: async ({ id }: { id: number }) => {
+            const res = await apiFetch(`${API_BASE}/knowledge-base/${id}`, {
+                method: "DELETE",
+            });
+            if (!res.ok) throw new Error("Failed to delete knowledge base item");
+            return res.json();
+        },
+    });
+}
+
+export function useGetAiSettings() {
+    return useQuery<AiSettings>({
+        queryKey: ["getAiSettings"],
+        queryFn: async () => {
+            const res = await apiFetch(`${API_BASE}/ai-settings`);
+            if (!res.ok) throw new Error("Failed to fetch AI settings");
+            return res.json();
+        },
+    });
+}
+
+export function useUpdateAiSettings() {
+    return useMutation({
+        mutationFn: async ({ data }: { data: AiSettings }) => {
+            const res = await apiFetch(`${API_BASE}/ai-settings`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error("Failed to update AI settings");
+            return res.json();
+        },
+    });
+}
+
+export function useSimulateAiReply() {
+    return useMutation({
+        mutationFn: async ({ message, ai_system_prompt }: { message: string; ai_system_prompt?: string | null }) => {
+            const res = await apiFetch(`${API_BASE}/ai-settings/simulate`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message, ai_system_prompt }),
+            });
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to simulate AI response");
+            }
+            return res.json();
+        },
+    });
+}
+

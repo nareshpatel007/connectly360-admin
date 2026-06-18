@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { 
-    useGetWhatsappStatus, 
-    useExchangeMetaToken, 
-    useDisconnectWhatsapp, 
-    getGetWhatsappStatusQueryKey, 
-    useListAutomations, 
-    useCreateAutomation, 
+import {
+    useGetWhatsappStatus,
+    useExchangeMetaToken,
+    useDisconnectWhatsapp,
+    getGetWhatsappStatusQueryKey,
+    useListAutomations,
+    useCreateAutomation,
     useDeleteAutomation,
-    useUpdateAutomation 
+    useUpdateAutomation
 } from "@workspace/api-client-react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -22,19 +22,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { 
-    CheckCircle2, 
-    XCircle, 
-    Clock, 
-    Wifi, 
-    WifiOff, 
-    RefreshCcw, 
-    PhoneCall, 
-    Building2, 
-    Hash, 
-    Plus, 
-    Trash2, 
-    Key, 
+import {
+    CheckCircle2,
+    XCircle,
+    Clock,
+    Wifi,
+    WifiOff,
+    RefreshCcw,
+    PhoneCall,
+    Building2,
+    Hash,
+    Plus,
+    Trash2,
+    Key,
     Loader2,
     Zap,
     HelpCircle,
@@ -268,17 +268,17 @@ export default function WhatsAppIntegrationPage() {
                     <p className="text-xs text-slate-500 mt-1">Connect your WhatsApp Business API and configure automated auto-replies for incoming conversations.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={refreshStatus} 
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={refreshStatus}
                         className="border-[#EAE6DF] hover:bg-slate-100/80 rounded-xl flex items-center gap-2 text-xs font-semibold cursor-pointer h-9 px-4"
                     >
                         <RefreshCcw size={13} className={isLoadingStatus ? "animate-spin text-[#35877D]" : "text-slate-500"} />
                         Sync Status
                     </Button>
                     {isConnected && (
-                        <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-[#35877D] text-xs font-bold border border-emerald-100 shadow-xs">
+                        <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-[#35877D] text-xs font-medium border border-emerald-100 shadow-xs">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#35877D] opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#35877D]"></span>
@@ -292,15 +292,15 @@ export default function WhatsAppIntegrationPage() {
             {/* Radix Tabs Wrapper */}
             <Tabs defaultValue="settings" value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="bg-slate-100/80 p-1 rounded-xl mb-6 flex w-fit gap-1 border border-slate-200/50">
-                    <TabsTrigger 
-                        value="settings" 
-                        className="rounded-lg text-xs font-bold px-4 py-2 cursor-pointer transition-all data-[state=active]:bg-white data-[state=active]:text-[#35877D] data-[state=active]:shadow-xs text-slate-600 hover:text-[#35877D]"
+                    <TabsTrigger
+                        value="settings"
+                        className="rounded-lg text-xs font-medium px-4 py-2 cursor-pointer transition-all data-[state=active]:bg-white data-[state=active]:text-[#35877D] data-[state=active]:shadow-xs text-slate-600 hover:text-[#35877D]"
                     >
                         Connection & Webhooks
                     </TabsTrigger>
-                    <TabsTrigger 
-                        value="rules" 
-                        className="rounded-lg text-xs font-bold px-4 py-2 cursor-pointer transition-all data-[state=active]:bg-white data-[state=active]:text-[#35877D] data-[state=active]:shadow-xs text-slate-600 hover:text-[#35877D]"
+                    <TabsTrigger
+                        value="rules"
+                        className="rounded-lg text-xs font-medium px-4 py-2 cursor-pointer transition-all data-[state=active]:bg-white data-[state=active]:text-[#35877D] data-[state=active]:shadow-xs text-slate-600 hover:text-[#35877D]"
                     >
                         Auto-Reply Rules
                     </TabsTrigger>
@@ -309,10 +309,10 @@ export default function WhatsAppIntegrationPage() {
                 {/* TAB 1: CONNECTION & WEBHOOKS */}
                 <TabsContent value="settings" className="space-y-6 animate-in fade-in duration-200">
                     <div className="grid gap-6 lg:grid-cols-12 items-start">
-                        
+
                         {/* Left Side: status card */}
                         <div className="lg:col-span-7 space-y-6">
-                            
+
                             {/* Connection Status Card */}
                             <Card className="bg-white border border-[#EAE6DF] shadow-[0_2px_8px_-2px_rgba(10,30,10,0.04)] rounded-2xl overflow-hidden">
                                 <CardHeader className="border-b border-[#FAF8F5] pb-4">
@@ -326,7 +326,7 @@ export default function WhatsAppIntegrationPage() {
                                         </div>
                                         <div>
                                             <CardTitle className="text-sm font-bold text-[#0B2E1E]">Embedded Connection Status</CardTitle>
-                                            <CardDescription className="text-[11px] text-slate-400">Manage Meta Business credentials mapping.</CardDescription>
+                                            <CardDescription className="text-xs text-slate-400">Manage Meta Business credentials mapping.</CardDescription>
                                         </div>
                                     </div>
                                 </CardHeader>
@@ -341,7 +341,7 @@ export default function WhatsAppIntegrationPage() {
                                         <>
                                             <div className="flex items-center gap-3">
                                                 <StatusIcon size={18} className={statusCfg.color} />
-                                                <Badge className={`text-[10px] font-bold px-3 py-1 border rounded-lg shadow-xs uppercase tracking-wider ${statusCfg.badge}`}>
+                                                <Badge className={`text-xs font-medium px-3 py-1 border rounded-lg shadow-xs uppercase tracking-wider ${statusCfg.badge}`}>
                                                     {statusCfg.label}
                                                 </Badge>
                                             </div>
@@ -432,7 +432,7 @@ export default function WhatsAppIntegrationPage() {
                                     </div>
 
                                     {configReady && !sdkLoaded && (
-                                        <p className="text-[10px] text-slate-400 animate-pulse">Initializing Facebook Client JavaScript SDK...</p>
+                                        <p className="text-xs text-slate-400 animate-pulse">Initializing Facebook Client JavaScript SDK...</p>
                                     )}
                                 </CardContent>
                             </Card>
@@ -465,7 +465,7 @@ export default function WhatsAppIntegrationPage() {
                                         ].map((step, i) => (
                                             <div key={i} className="relative flex items-start">
                                                 {/* Timeline circle indicator */}
-                                                <span className="absolute left-[-34px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#35877D] text-white text-[10px] font-bold border-2 border-white shadow-sm shrink-0">
+                                                <span className="absolute left-[-34px] top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#35877D] text-white text-xs font-medium border-2 border-white shadow-sm shrink-0">
                                                     {i + 1}
                                                 </span>
                                                 <div>
@@ -490,7 +490,7 @@ export default function WhatsAppIntegrationPage() {
                 {/* TAB 2: AUTO-REPLY RULES */}
                 <TabsContent value="rules" className="space-y-6 animate-in fade-in duration-200">
                     <div className="grid gap-6 lg:grid-cols-12 items-start">
-                        
+
                         {/* Left Column: Automation Rules list */}
                         <div className="lg:col-span-8 space-y-6">
                             <Card className="bg-white border border-[#EAE6DF] shadow-[0_2px_8px_-2px_rgba(10,30,10,0.04)] rounded-2xl overflow-hidden">
@@ -499,7 +499,7 @@ export default function WhatsAppIntegrationPage() {
                                         <CardTitle className="text-sm font-bold text-[#0B2E1E]">Active Auto-Reply Rules</CardTitle>
                                         <CardDescription className="text-xs text-slate-400">Trigger automatic responses on incoming keyword matches.</CardDescription>
                                     </div>
-                                    <Badge className="bg-[#35877D]/10 text-[#35877D] font-bold border-none text-[11px] rounded-lg px-2.5 py-0.5">
+                                    <Badge className="bg-[#35877D]/10 text-[#35877D] font-bold border-none text-xs rounded-lg px-2.5 py-0.5">
                                         {automations ? automations.length : 0} Rules
                                     </Badge>
                                 </CardHeader>
@@ -515,7 +515,7 @@ export default function WhatsAppIntegrationPage() {
                                             <div className="h-12 w-12 rounded-2xl bg-[#35877D]/8 text-[#35877D] flex items-center justify-center mb-4">
                                                 <Zap size={22} />
                                             </div>
-                                            <h3 className="text-xs font-bold text-[#0B2E1E]">No auto-reply rules configured</h3>
+                                            <h3 className="text-xs font-medium text-[#0B2E1E]">No auto-reply rules configured</h3>
                                             <p className="text-slate-400 text-xs mt-1 max-w-sm leading-normal">
                                                 Add keywords to match incoming user messages and define automated replies (e.g. Price matching or greeting alerts).
                                             </p>
@@ -525,17 +525,17 @@ export default function WhatsAppIntegrationPage() {
                                             {automations.map((rule) => {
                                                 const ruleActive = rule.status === 1 || rule.status === true;
                                                 return (
-                                                    <div 
-                                                        key={rule.id} 
+                                                    <div
+                                                        key={rule.id}
                                                         className={`border rounded-xl p-4 transition-all duration-200 bg-white ${ruleActive ? "border-[#35877D]/30 shadow-[0_2px_6px_-3px_rgba(53,135,125,0.06)]" : "border-slate-200 bg-slate-50/40 opacity-70"}`}
                                                     >
                                                         <div className="flex items-start justify-between gap-4">
                                                             <div className="space-y-1.5">
                                                                 <div className="flex items-center gap-2 flex-wrap">
-                                                                    <h4 className="text-xs font-bold text-[#0B2E1E]">
+                                                                    <h4 className="text-xs font-medium text-[#0B2E1E]">
                                                                         {rule.name || "Auto-Reply Rule"}
                                                                     </h4>
-                                                                    <Badge className="bg-[#35877D]/8 text-[#35877D] border-0 text-[10px] font-semibold rounded px-2 py-0.5">
+                                                                    <Badge className="bg-[#35877D]/8 text-[#35877D] border-0 text-xs font-semibold rounded px-2 py-0.5">
                                                                         Keyword: "{rule.keyword}"
                                                                     </Badge>
                                                                 </div>
@@ -546,7 +546,7 @@ export default function WhatsAppIntegrationPage() {
 
                                                             {/* Actions column */}
                                                             <div className="flex items-center gap-3 shrink-0">
-                                                                <Switch 
+                                                                <Switch
                                                                     checked={ruleActive}
                                                                     onCheckedChange={() => handleToggleStatus(rule.id, rule.status)}
                                                                     className="cursor-pointer"
@@ -564,7 +564,7 @@ export default function WhatsAppIntegrationPage() {
                                                         </div>
 
                                                         {/* Bottom Rule Metrics */}
-                                                        <div className="mt-3.5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-semibold">
+                                                        <div className="mt-3.5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-semibold">
                                                             <span className="flex items-center gap-1 text-slate-500">
                                                                 <Zap size={11} className="text-[#35877D]" />
                                                                 Executed {rule.executed_count || 0} times
@@ -592,8 +592,8 @@ export default function WhatsAppIntegrationPage() {
                                 <CardContent className="p-6">
                                     <form onSubmit={handleCreateRule} className="space-y-4">
                                         <div className="space-y-1">
-                                            <Label htmlFor="ruleName" className="text-xs font-bold text-slate-500">Rule Name (Optional)</Label>
-                                            <Input 
+                                            <Label htmlFor="ruleName" className="text-xs font-medium text-slate-500">Rule Name (Optional)</Label>
+                                            <Input
                                                 id="ruleName"
                                                 type="text"
                                                 placeholder="e.g., Pricing Inquiry"
@@ -604,11 +604,11 @@ export default function WhatsAppIntegrationPage() {
                                         </div>
 
                                         <div className="space-y-1">
-                                            <Label htmlFor="ruleKeyword" className="text-xs font-bold text-slate-500 flex items-center justify-between">
+                                            <Label htmlFor="ruleKeyword" className="text-xs font-medium text-slate-500 flex items-center justify-between">
                                                 <span>Match Keyword</span>
                                                 <span className="text-[9.5px] font-medium text-slate-400 font-sans">Case-insensitive match</span>
                                             </Label>
-                                            <Input 
+                                            <Input
                                                 id="ruleKeyword"
                                                 type="text"
                                                 placeholder="e.g., price, cost, product"
@@ -620,8 +620,8 @@ export default function WhatsAppIntegrationPage() {
                                         </div>
 
                                         <div className="space-y-1">
-                                            <Label htmlFor="ruleReply" className="text-xs font-bold text-slate-500">Reply Message</Label>
-                                            <Textarea 
+                                            <Label htmlFor="ruleReply" className="text-xs font-medium text-slate-500">Reply Message</Label>
+                                            <Textarea
                                                 id="ruleReply"
                                                 rows={4}
                                                 placeholder="Write your automated WhatsApp response text here..."
