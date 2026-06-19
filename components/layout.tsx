@@ -11,26 +11,44 @@ import {
     SidebarMenuButton,
     SidebarProvider,
     SidebarTrigger,
-    SidebarFooter
+    SidebarFooter,
+    SidebarGroup,
+    SidebarMenuSub,
+    SidebarMenuSubItem,
+    SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
     LayoutDashboard,
     MessageSquare,
     Users,
-    Package,
-    TrendingUp,
     Settings,
     BarChart3,
-    Droplet,
     Plug,
     ArrowRight,
     Sparkles,
-    Cpu,
-    ChevronUp,
+    ChevronDown,
     LogOut,
     Bell,
-    Rocket,
-    BookOpen
+    BookOpen,
+    Bot,
+    Megaphone,
+    FileText,
+    Key,
+    Webhook,
+    PieChart,
+    Receipt,
+    CreditCard,
+    Wallet,
+    Shield,
+    Activity,
+    Building2,
+    MessageCircle,
+    BrainCircuit,
+    BellRing,
+    UserPlus,
+    Zap,
+    Target
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
@@ -43,19 +61,302 @@ import {
     DropdownMenuSeparator,
     DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
+import React, { useState } from "react";
 
-const NAV_ITEMS = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: Sparkles, label: "Campaigns", href: "/campaigns" },
-    { icon: MessageSquare, label: "Inbox", href: "/conversations" },
-    { icon: Users, label: "Contacts", href: "/customers" },
-    { icon: Package, label: "Products", href: "/products" },
-    { icon: Cpu, label: "Automations", href: "/automations" },
-    { icon: BookOpen, label: "Knowledge Base", href: "/knowledge-base" },
-    { icon: BarChart3, label: "Analytics", href: "/analytics" },
-    { icon: Plug, label: "WhatsApp Integration", href: "/integrations/whatsapp" },
-    { icon: Settings, label: "Settings", href: "/settings" },
+type SubItem = {
+    icon: React.ElementType;
+    label: string;
+    href: string;
+};
+
+type NavGroup = {
+    items: {
+        icon: React.ElementType;
+        label: string;
+        href: string;
+        subItems?: SubItem[];
+    }[];
+};
+
+const NAV_STRUCTURE: NavGroup[] = [
+    {
+        items: [
+            { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+        ],
+    },
+    {
+        items: [
+            {
+                icon: MessageSquare,
+                label: "Conversations",
+                href: "/conversations",
+                subItems: [
+                    { icon: MessageSquare, label: "Inbox", href: "/conversations" },
+                    { icon: Users, label: "Contacts", href: "/contacts" },
+                    { icon: Target, label: "Leads", href: "/leads" },
+                ],
+            },
+        ],
+    },
+    {
+        items: [
+            {
+                icon: Bot,
+                label: "AI & Automation",
+                href: "/ai-assistant",
+                subItems: [
+                    { icon: Bot, label: "AI Assistant", href: "/ai-assistant" },
+                    { icon: Zap, label: "Automations", href: "/automations" },
+                    { icon: BookOpen, label: "Knowledge Base", href: "/knowledge-base" },
+                ],
+            },
+        ],
+    },
+    {
+        items: [
+            {
+                icon: Megaphone,
+                label: "Marketing",
+                href: "/campaigns",
+                subItems: [
+                    { icon: Megaphone, label: "Campaigns", href: "/campaigns" },
+                    { icon: FileText, label: "Templates", href: "/marketing/templates" },
+                ],
+            },
+        ],
+    },
+    {
+        items: [
+            {
+                icon: Plug,
+                label: "Integrations",
+                href: "/integrations/whatsapp",
+                subItems: [
+                    { icon: MessageCircle, label: "WhatsApp", href: "/integrations/whatsapp" },
+                    { icon: Key, label: "API Keys", href: "/integrations/api-keys" },
+                    { icon: Webhook, label: "Webhooks", href: "/integrations/webhooks" },
+                ],
+            },
+        ],
+    },
+    {
+        items: [
+            {
+                icon: BarChart3,
+                label: "Reports",
+                href: "/analytics",
+                subItems: [
+                    { icon: PieChart, label: "Analytics", href: "/analytics" },
+                    { icon: BarChart3, label: "Usage Reports", href: "/reports/usage-reports" },
+                    { icon: Receipt, label: "Credit History", href: "/reports/credit-history" },
+                ],
+            },
+        ],
+    },
+    {
+        items: [
+            {
+                icon: CreditCard,
+                label: "Billing",
+                href: "/billing/subscription",
+                subItems: [
+                    { icon: CreditCard, label: "Subscription", href: "/billing/subscription" },
+                    { icon: Wallet, label: "Credits", href: "/billing/credits" },
+                    { icon: Sparkles, label: "Recharge Credits", href: "/billing/recharge-credits" },
+                    { icon: FileText, label: "Invoices", href: "/billing/invoices" },
+                ],
+            },
+        ],
+    },
+    {
+        items: [
+            {
+                icon: Building2,
+                label: "Workspace",
+                href: "/workspace/team-members",
+                subItems: [
+                    { icon: UserPlus, label: "Team Members", href: "/workspace/team-members" },
+                    { icon: Shield, label: "Roles & Permissions", href: "/workspace/roles-permissions" },
+                    { icon: Activity, label: "Activity Logs", href: "/workspace/activity-logs" },
+                ],
+            },
+        ],
+    },
+    {
+        items: [
+            {
+                icon: Settings,
+                label: "Settings",
+                href: "/settings",
+                subItems: [
+                    { icon: Building2, label: "Company Profile", href: "/settings/company-profile" },
+                    { icon: MessageCircle, label: "WhatsApp Settings", href: "/settings/whatsapp-settings" },
+                    { icon: BrainCircuit, label: "AI Settings", href: "/settings/ai-settings" },
+                    { icon: BellRing, label: "Notification Settings", href: "/settings/notification-settings" },
+                ],
+            },
+        ],
+    },
 ];
+
+function NavGroupSection({
+    group,
+    pathname,
+    openHref,
+    setOpenHref,
+}: {
+    group: NavGroup;
+    pathname: string;
+    openHref: string | null;
+    setOpenHref: (href: string | null) => void;
+}) {
+    return (
+        <SidebarGroup className="py-0 px-2">
+            <SidebarMenu>
+                {group.items.map((item) => {
+                    const hasSubItems = item.subItems && item.subItems.length > 0;
+
+                    if (!hasSubItems) {
+                        const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                        return (
+                            <SidebarMenuItem key={item.href}>
+                                <SidebarMenuButton
+                                    asChild
+                                    isActive={isActive}
+                                    tooltip={item.label}
+                                    className={isActive
+                                        ? "!bg-[#378179]/10 !text-[#378179] hover:!bg-[#378179]/15 hover:!text-[#378179] font-semibold rounded-xl transition-all duration-200 group"
+                                        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-medium rounded-xl transition-all duration-200 group"}
+                                >
+                                    <Link href={item.href} className="flex items-center gap-3 w-full">
+                                        <item.icon size={17} className={isActive ? "text-[#378179]" : "text-slate-400 group-hover:text-slate-700 transition-colors"} />
+                                        <span className="text-sm">{item.label}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        );
+                    }
+
+                    // Collapsible parent item
+                    const isParentActive = item.subItems!.some(
+                        sub => pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href))
+                    );
+
+                    return (
+                        <CollapsibleNavItem
+                            key={item.href}
+                            item={item}
+                            isParentActive={isParentActive}
+                            pathname={pathname}
+                            openHref={openHref}
+                            setOpenHref={setOpenHref}
+                        />
+                    );
+                })}
+            </SidebarMenu>
+        </SidebarGroup>
+    );
+}
+
+function CollapsibleNavItem({
+    item,
+    isParentActive,
+    pathname,
+    openHref,
+    setOpenHref,
+}: {
+    item: NavGroup["items"][0];
+    isParentActive: boolean;
+    pathname: string;
+    openHref: string | null;
+    setOpenHref: (href: string | null) => void;
+}) {
+    const open = openHref === item.href;
+    const setOpen = (next: boolean) => setOpenHref(next ? item.href : null);
+
+    return (
+        <Collapsible open={open} onOpenChange={setOpen} className="w-full">
+            <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                        isActive={isParentActive}
+                        tooltip={item.label}
+                        className={
+                            isParentActive
+                                ? "!bg-[#378179]/10 !text-[#378179] hover:!bg-[#378179]/15 hover:!text-[#378179] font-semibold rounded-xl transition-all duration-200 group cursor-pointer w-full"
+                                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-medium rounded-xl transition-all duration-200 group cursor-pointer w-full"
+                        }
+                    >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <item.icon
+                                size={17}
+                                className={isParentActive ? "text-[#378179] shrink-0" : "text-slate-400 group-hover:text-slate-700 transition-colors shrink-0"}
+                            />
+                            <span className="text-sm truncate">{item.label}</span>
+                        </div>
+                        <ChevronDown
+                            size={14}
+                            className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""} ${isParentActive ? "text-[#378179]" : "text-slate-400"}`}
+                        />
+                    </SidebarMenuButton>
+                </CollapsibleTrigger>
+
+                <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                    <SidebarMenuSub className="border-l border-slate-200 ml-4 pl-3 mt-1 gap-0.5">
+                        {item.subItems!.map((sub) => {
+                            const isSubActive = pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href));
+                            return (
+                                <SidebarMenuSubItem key={sub.href}>
+                                    <SidebarMenuSubButton
+                                        asChild
+                                        isActive={isSubActive}
+                                        className={
+                                            isSubActive
+                                                ? "!text-[#378179] !bg-[#378179]/8 font-semibold rounded-lg"
+                                                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                                        }
+                                    >
+                                        <Link href={sub.href} className="flex items-center gap-2.5">
+                                            <sub.icon
+                                                size={14}
+                                                className={isSubActive ? "text-[#378179] shrink-0" : "text-slate-400 shrink-0"}
+                                            />
+                                            <span className="text-xs font-medium">{sub.label}</span>
+                                        </Link>
+                                    </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                            );
+                        })}
+                    </SidebarMenuSub>
+                </CollapsibleContent>
+            </SidebarMenuItem>
+        </Collapsible>
+    );
+}
+
+function SidebarNav({ pathname }: { pathname: string }) {
+    // Find the initially-active collapsible item so it opens on first render
+    const initialOpen = NAV_STRUCTURE.flatMap(g => g.items)
+        .find(item => item.subItems?.some(
+            sub => pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href))
+        ))?.href ?? null;
+
+    const [openHref, setOpenHref] = useState<string | null>(initialOpen);
+
+    return (
+        <>
+            {NAV_STRUCTURE.map((group, i) => (
+                <NavGroupSection
+                    key={i}
+                    group={group}
+                    pathname={pathname}
+                    openHref={openHref}
+                    setOpenHref={setOpenHref}
+                />
+            ))}
+        </>
+    );
+}
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -82,7 +383,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             <Link href="/integrations/whatsapp">Connect Channel</Link>
                         </Button>
                         <Button size="sm" variant="outline" asChild className="text-white hover:text-white border-white/20 hover:bg-white/10 text-xs font-medium h-7.5 px-3 rounded-lg bg-transparent cursor-pointer">
-                            <Link href="/settings">Upgrade Plan</Link>
+                            <Link href="/billing/subscription">Upgrade Plan</Link>
                         </Button>
                     </div>
                 </div>
@@ -130,7 +431,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                         <div className="h-4 w-px bg-slate-200" />
 
-                        {/* User Profile dropdown menu (moved from sidebar footer) */}
+                        {/* User Profile dropdown menu */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <button className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-50 border border-transparent transition-all focus:outline-none cursor-pointer group">
@@ -159,7 +460,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                 <DropdownMenuSeparator className="my-1 bg-slate-100" />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem asChild className="rounded-lg px-2 py-1.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 focus:bg-slate-50 focus:text-slate-900 cursor-pointer transition-colors">
-                                        <Link href="/settings" className="flex items-center gap-2 w-full">
+                                        <Link href="/settings/company-profile" className="flex items-center gap-2 w-full">
                                             <Settings size={14} />
                                             <span>Account Settings</span>
                                         </Link>
@@ -188,31 +489,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <div className="flex flex-grow w-full overflow-hidden relative">
                     <Sidebar className="border-r border-slate-200 bg-white shrink-0 h-full z-30">
                         {/* Sidebar Navigation */}
-                        <SidebarContent className="p-3 space-y-4">
-                            <SidebarMenu>
-                                {NAV_ITEMS.map((item) => {
-                                    const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
-                                    return (
-                                        <SidebarMenuItem key={item.href}>
-                                            <SidebarMenuButton
-                                                asChild
-                                                isActive={isActive}
-                                                tooltip={item.label}
-                                                className={isActive
-                                                    ? "!bg-[#378179]/10 !text-[#378179] hover:!bg-[#378179]/15 hover:!text-[#378179] font-bold rounded-xl transition-all duration-200 group"
-                                                    : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-bold rounded-xl transition-all duration-200 group"}
-                                            >
-                                                <Link href={item.href} className="flex items-center justify-between w-full">
-                                                    <div className="flex items-center gap-3">
-                                                        <item.icon size={18} className={isActive ? "text-[#378179]" : "text-slate-400 group-hover:text-slate-700 transition-colors"} />
-                                                        <span className="text-sm font-medium">{item.label}</span>
-                                                    </div>
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    );
-                                })}
-                            </SidebarMenu>
+                        <SidebarContent className="py-3 space-y-1 overflow-y-auto">
+                            <SidebarNav pathname={pathname} />
                         </SidebarContent>
 
                         <SidebarFooter className="p-4 border-t border-slate-100 bg-white shrink-0">
@@ -223,10 +501,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                                     Upgrade to Pro
                                 </div>
                                 <p className="text-xs text-slate-700 leading-normal font-medium">
-                                    Get premium features & priority support.
+                                    Get premium features &amp; priority support.
                                 </p>
                                 <Button size="sm" asChild className="w-full bg-[#378179] hover:bg-[#079E61] text-white font-medium text-xs h-7.5 gap-1 shadow-xs mt-1.5 justify-between border-0 cursor-pointer">
-                                    <Link href="/settings">
+                                    <Link href="/billing/subscription">
                                         Upgrade Plan
                                         <ArrowRight size={10} />
                                     </Link>
