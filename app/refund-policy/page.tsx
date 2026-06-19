@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { LandingHeader } from "@/components/landing-header";
 import { LandingFooter } from "@/components/landing-footer";
@@ -11,7 +11,7 @@ export default function RefundPolicyPage() {
 
             <main className="pt-32 pb-24">
                 <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-5xl mx-auto">
-                    
+
                     {/* Header Banner */}
                     <div className="text-center space-y-4 mb-12">
                         <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FCF8EC] text-[#1D4ED8] text-xs font-bold border border-[#EAD098] shadow-sm">
@@ -31,7 +31,7 @@ export default function RefundPolicyPage() {
                         <section className="space-y-3">
                             <h2 className="text-xl font-extrabold text-[#0B2E1E]">1. Free Sandbox Trial Scope</h2>
                             <p className="text-sm text-gray-550 font-medium leading-relaxed">
-                                Connectly360 offers a completely free Starter Sandbox Plan and a 14-day free trial on the Growth Plan. We do not require credit card details to initiate sandbox accounts, ensuring you have ample opportunity to evaluate our node builders and CRM logs before spending anything.
+                                Connectly360 offers a completely free Starter Sandbox Plan and a 7-day free trial upon registration. We do not require credit card details to initiate sandbox accounts, ensuring you have ample opportunity to evaluate our node builders and CRM logs before spending anything.
                             </p>
                         </section>
 

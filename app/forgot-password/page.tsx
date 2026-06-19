@@ -42,10 +42,10 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-[#143d27] font-sans flex flex-col relative overflow-hidden">
+        <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col relative overflow-hidden">
             {/* Background Decorative Glow Elements */}
             <div className="absolute top-24 right-[-10%] w-[500px] h-[500px] bg-radial-gradient from-[#35877D]/5 via-[#35877D]/1 to-transparent -z-10 rounded-full blur-3xl pointer-events-none"></div>
-            <div className="absolute bottom-24 left-[-10%] w-[400px] h-[400px] bg-radial-gradient from-[#D99B26]/4 via-[#D99B26]/1 to-transparent -z-10 rounded-full blur-2xl pointer-events-none"></div>
+            <div className="absolute bottom-24 left-[-10%] w-[400px] h-[400px] bg-radial-gradient from-[#35877D]/4 via-[#35877D]/1 to-transparent -z-10 rounded-full blur-2xl pointer-events-none"></div>
 
             {/* Header */}
             <LandingHeader />
@@ -55,15 +55,15 @@ export default function ForgotPasswordPage() {
                     <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
 
                         {/* Left Side: Product Highlights (Simple Light Premium Background) */}
-                        <div className="lg:col-span-7 flex flex-col justify-between bg-gradient-to-br from-white via-slate-50/80 to-[#35877D]/5 border border-[#35877D]/10 p-8 md:p-12 lg:p-16 text-[#143d27] rounded-3xl min-h-[500px] shadow-sm relative">
+                        <div className="lg:col-span-7 flex flex-col justify-between bg-gradient-to-br from-white via-slate-50/80 to-[#35877D]/5 border border-[#35877D]/10 p-8 md:p-12 lg:p-16 text-slate-800 rounded-3xl min-h-[500px] shadow-sm relative">
                             {/* Inner Top Content */}
                             <div>
                                 {/* Core Marketing Copy */}
                                 <div className="space-y-4 max-w-xl">
-                                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-[#0B2E1E] leading-tight">
-                                        Turn WhatsApp Chats Into <span className="text-[#D99B26]">Qualified CRM Leads Automatically.</span>
+                                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                                        Turn WhatsApp Chats Into <span className="text-[#35877D]">Qualified CRM Leads Automatically.</span>
                                     </h1>
-                                    <p className="text-sm text-gray-555 leading-relaxed font-semibold">
+                                    <p className="text-sm text-slate-500 leading-relaxed font-semibold">
                                         Connectly360 natively integrates your entire sales and support pipeline, automating standard inquiries to save your team hours of work.
                                     </p>
                                 </div>
@@ -97,9 +97,9 @@ export default function ForgotPasswordPage() {
                             <div className="border-t border-[#35877D]/10 pt-6 mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <div>
                                     <p className="text-[10px] font-extrabold text-[#35877D] uppercase tracking-wider">Trusted Meta Partner</p>
-                                    <p className="text-xs text-gray-550 font-bold mt-0.5">Secure, reliable APIs compliant with WhatsApp policy</p>
+                                    <p className="text-xs text-slate-500 font-bold mt-0.5">Secure, reliable APIs compliant with WhatsApp policy</p>
                                 </div>
-                                <div className="flex items-center gap-1 bg-white border border-gray-150 px-3.5 py-1.5 rounded-full shadow-xs text-xs font-bold text-[#0B2E1E]">
+                                <div className="flex items-center gap-1 bg-white border border-gray-150 px-3.5 py-1.5 rounded-full shadow-xs text-xs font-bold text-slate-900">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     <span>Meta Verified Portal</span>
                                 </div>
@@ -109,13 +109,13 @@ export default function ForgotPasswordPage() {
                         {/* Right Side: Forgot Password Form */}
                         <div className="lg:col-span-5 flex flex-col justify-center items-center">
                             {/* Reset Password Card */}
-                            <Card className="w-full max-w-md bg-white/95 backdrop-blur-md border border-[#EAE6DF] shadow-2xl rounded-3xl overflow-hidden p-6 md:p-8 lg:p-10 space-y-6">
+                            <Card className="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-3xl overflow-hidden p-6 md:p-8 lg:p-10 space-y-6">
 
                                 {!submitted ? (
                                     <>
                                         <div className="text-center space-y-2">
-                                            <h2 className="text-2xl font-black tracking-tight text-[#0B2E1E]">Forgot Password?</h2>
-                                            <p className="text-sm text-gray-555 leading-normal font-semibold">
+                                            <h2 className="text-2xl font-black tracking-tight text-slate-900">Forgot Password?</h2>
+                                            <p className="text-sm text-slate-500 leading-normal font-semibold">
                                                 Enter your email address and we'll send you a link to reset your password.
                                             </p>
                                         </div>
@@ -128,8 +128,8 @@ export default function ForgotPasswordPage() {
 
                                         <form onSubmit={handleSubmit} className="space-y-5">
                                             <div className="space-y-1.5">
-                                                <label htmlFor="email" className="text-xs font-bold text-[#0B2E1E] uppercase tracking-wider">
-                                                    Email address
+                                                <label htmlFor="email" className="text-xs font-bold text-slate-900">
+                                                    Email Address
                                                 </label>
                                                 <Input
                                                     id="email"
@@ -137,7 +137,7 @@ export default function ForgotPasswordPage() {
                                                     required
                                                     disabled={isLoading}
                                                     placeholder="name@company.com"
-                                                    className="h-11 border-gray-200 focus-visible:ring-[#35877D] focus-visible:border-[#35877D] rounded-xl bg-[#FAF8F5] font-semibold"
+                                                    className="h-11 border-gray-200 focus-visible:ring-[#35877D] focus-visible:border-[#35877D] rounded-md bg-slate-50 font-semibold"
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                 />
@@ -164,8 +164,8 @@ export default function ForgotPasswordPage() {
                                             <CheckCircle2 size={24} />
                                         </div>
                                         <div className="space-y-2">
-                                            <h2 className="text-2xl font-bold tracking-tight text-[#0B2E1E]">Reset Link Sent!</h2>
-                                            <p className="text-sm text-gray-555 leading-normal max-w-sm mx-auto font-semibold">
+                                            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Reset Link Sent!</h2>
+                                            <p className="text-sm text-slate-500 leading-normal max-w-sm mx-auto font-semibold">
                                                 We've emailed a password reset link to <strong>{email}</strong>. Please check your inbox and spam folder.
                                             </p>
                                         </div>
@@ -200,8 +200,8 @@ function FeatureRow({ icon: Icon, title, description }: { icon: any; title: stri
                 <Icon size={16} />
             </div>
             <div>
-                <h4 className="text-xs font-bold text-[#0B2E1E] tracking-tight">{title}</h4>
-                <p className="text-[11px] text-gray-550 mt-1 leading-normal font-semibold">{description}</p>
+                <h4 className="text-xs font-bold text-slate-900 tracking-tight">{title}</h4>
+                <p className="text-[11px] text-slate-500 mt-1 leading-normal font-semibold">{description}</p>
             </div>
         </div>
     );

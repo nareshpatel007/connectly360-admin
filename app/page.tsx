@@ -132,7 +132,7 @@ export default function LandingPage() {
                 interest: "Mustard Oil (>100 qty)",
                 capturedData: "GSTIN: 07AAAAA1111A1Z1 | Acme Mills",
                 status: "Proposal",
-                statusColor: "bg-[#FCF8EC] text-[#2c6f66]"
+                statusColor: "bg-[#EAF7F2] text-[#35877D]"
             }
         }
     };
@@ -145,11 +145,11 @@ export default function LandingPage() {
     const rawHours = (monthlyChats * 8) / 60;
     const hoursSaved = Math.round(rawHours * 0.85);
     const moneySaved = Math.round(hoursSaved * hourlyWage);
-    const growthPlanPrice = 799;
-    const roiMultiplier = Math.round(moneySaved / growthPlanPrice);
+    const growthPlanPrice = isAnnual ? 799 : 999;
+    const roiMultiplier = Math.max(1, Math.round(moneySaved / growthPlanPrice));
 
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-[#143d27] font-sans overflow-x-hidden selection:bg-[#35877D] selection:text-white">
+        <div className="min-h-screen bg-slate-50 text-slate-800 font-sans overflow-x-hidden selection:bg-[#35877D] selection:text-white">
 
             {/* Header */}
             <LandingHeader />
@@ -157,7 +157,7 @@ export default function LandingPage() {
             <main className="pt-12">
 
                 {/* Hero Section */}
-                <section className="relative py-16 md:py-24 bg-gradient-to-b from-[#FAF8F5] via-[#FAF8F5] to-white overflow-hidden">
+                <section className="relative py-16 md:py-24 bg-gradient-to-b from-slate-50 via-slate-50/50 to-white overflow-hidden">
                     <div className="absolute top-10 right-0 w-[550px] h-[550px] bg-radial-gradient from-[#35877D]/6 via-[#35877D]/1 to-transparent -z-10 rounded-full blur-3xl"></div>
                     <div className="absolute bottom-10 left-0 w-[350px] h-[350px] bg-radial-gradient from-[#D99B26]/6 via-[#D99B26]/1 to-transparent -z-10 rounded-full blur-2xl"></div>
 
@@ -171,13 +171,13 @@ export default function LandingPage() {
                                 animate="show"
                                 variants={staggerContainer}
                             >
-                                <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FCF8EC] text-[#2c6f66] text-xs font-bold mb-6 border border-[#EAD098] shadow-sm">
-                                    <Sparkles size={13} className="text-[#D99B26] fill-[#D99B26]/15 animate-pulse" />
+                                <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF7F2] text-[#35877D] text-xs font-bold mb-6 border border-[#35877D]/20 shadow-sm">
+                                    <Sparkles size={13} className="text-[#35877D] fill-[#35877D]/15 animate-pulse" />
                                     Official Meta Verified Partner
                                 </motion.div>
 
-                                <motion.h1 variants={fadeUp} className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0B2E1E] leading-tight tracking-tight mb-6">
-                                    Turn WhatsApp Chats Into <span className="text-[#D99B26]">Qualified CRM Leads Automatically.</span>
+                                <motion.h1 variants={fadeUp} className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight mb-6">
+                                    Turn WhatsApp Chats Into <span className="text-[#35877D]">Qualified CRM Leads Automatically.</span>
                                 </motion.h1>
 
                                 <motion.p variants={fadeUp} className="text-base sm:text-lg text-gray-500 mb-8 max-w-xl leading-relaxed font-medium">
@@ -198,7 +198,7 @@ export default function LandingPage() {
                                                     Start Free Trial <ArrowRight className="ml-2 h-4 w-4" />
                                                 </Link>
                                             </Button>
-                                            <Button variant="outline" size="lg" asChild className="h-13 px-8 text-sm font-semibold rounded-xl border-[#EAE6DF] bg-white text-[#143d27] hover:bg-gray-50 font-bold">
+                                            <Button variant="outline" size="lg" asChild className="h-13 px-8 text-sm font-semibold rounded-xl border-slate-200 bg-white text-slate-800 hover:bg-gray-50 font-bold">
                                                 <a href="#playground">Try Live Playground</a>
                                             </Button>
                                         </>
@@ -294,24 +294,24 @@ export default function LandingPage() {
                                 </div>
 
                                 {/* Screen B: Connectly360 CRM Dashboard Simulator */}
-                                <div className="w-full max-w-[270px] bg-white/70 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-[#D99B26] flex-1 shrink-0 flex flex-col justify-between z-10 relative mx-auto">
+                                <div className="w-full max-w-[270px] bg-white/70 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-slate-200 flex-1 shrink-0 flex flex-col justify-between z-10 relative mx-auto">
                                     <div className="space-y-3.5">
                                         <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                                             <div className="flex items-center gap-1.5">
                                                 <div className="w-2.5 h-2.5 rounded-full bg-[#35877D]"></div>
-                                                <span className="text-[10px] font-bold text-[#0B2E1E]">Connectly360 CRM</span>
+                                                <span className="text-[10px] font-bold text-slate-900">Connectly360 CRM</span>
                                             </div>
                                             <span className="text-[8px] bg-emerald-50 text-[#35877D] border border-emerald-200 px-1.5 py-0.5 rounded-full font-bold">
                                                 Live Sync
                                             </span>
                                         </div>
 
-                                        <div className="bg-white border border-[#D99B26] rounded-xl p-3 shadow-xs">
+                                        <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-xs">
                                             <div className="flex items-center justify-between">
                                                 <span className="text-[8px] font-extrabold tracking-wider text-gray-400 uppercase">Total CRM Leads</span>
                                                 <TrendingUp size={11} className="text-[#35877D]" />
                                             </div>
-                                            <p className="text-xl font-extrabold text-[#0B2E1E] mt-1">
+                                            <p className="text-xl font-extrabold text-slate-900 mt-1">
                                                 {heroStep >= 4 ? 1426 : 1425}
                                             </p>
                                             <p className="text-[8px] text-[#35877D] font-bold mt-0.5">
@@ -321,9 +321,9 @@ export default function LandingPage() {
 
                                         <div className="space-y-2">
                                             <span className="text-[8px] font-extrabold tracking-wider text-gray-400 uppercase block">Active Leads Pipelines Log</span>
-                                            <div className="p-2.5 bg-white border border-[#D99B26] rounded-xl text-[9px] font-semibold flex items-center justify-between shadow-xs">
+                                            <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-[9px] font-semibold flex items-center justify-between shadow-xs">
                                                 <div className="flex items-center gap-1.5 min-w-0">
-                                                    <div className="h-5 w-5 rounded-full bg-[#FCF8EC] text-[#D99B26] border border-[#EAD098] flex items-center justify-center shrink-0">
+                                                    <div className="h-5 w-5 rounded-full bg-[#EAF7F2] text-[#35877D] border border-[#35877D]/20 flex items-center justify-center shrink-0">
                                                         L
                                                     </div>
                                                     <span className="truncate text-gray-700 font-extrabold">
@@ -342,12 +342,12 @@ export default function LandingPage() {
                                         </div>
                                     </div>
 
-                                    <div className="mt-4 bg-[#0B2E1E] text-white p-2.5 rounded-xl shadow-lg border border-emerald-950 flex items-center gap-2">
+                                    <div className="mt-4 bg-[#0d3530] text-white p-2.5 rounded-xl shadow-lg border border-[#0d3530]/80 flex items-center gap-2">
                                         <div className="h-5 w-5 rounded-full bg-emerald-800 flex items-center justify-center">
-                                            <Bot size={11} className="text-[#D99B26]" />
+                                            <Bot size={11} className="text-[#35877D]" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-[8px] font-bold text-[#D99B26] uppercase leading-tight">Live CRM Capture</p>
+                                            <p className="text-[8px] font-bold text-[#35877D] uppercase leading-tight">Live CRM Capture</p>
                                             <p className="text-[9px] text-gray-300 truncate">
                                                 {heroStep >= 4
                                                     ? "HubSpot Integration | HubSpot Sync Configured"
@@ -365,16 +365,16 @@ export default function LandingPage() {
                 </section>
 
                 {/* Who We Serve Section */}
-                <section className="py-16 md:py-20 bg-[#0B2E1E] relative overflow-hidden">
+                <section className="py-16 md:py-20 bg-[#0d3530] relative overflow-hidden">
                     {/* Decorative background elements */}
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#35877D]/30 blur-3xl -z-0 pointer-events-none" />
-                    <div className="absolute bottom-0 left-0 w-[350px] h-[350px] rounded-full bg-[#D99B26]/10 blur-2xl -z-0 pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-[350px] h-[350px] rounded-full bg-[#35877D]/10 blur-2xl -z-0 pointer-events-none" />
 
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto relative z-10">
                         {/* Header */}
                         <div className="text-center mb-12">
-                            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D99B26]/15 text-[#D99B26] text-xs font-bold border border-[#D99B26]/30 mb-4">
-                                <Sparkles size={12} className="fill-[#D99B26]/30" />
+                            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#35877D]/15 text-[#35877D] text-xs font-bold border border-[#35877D]/30 mb-4">
+                                <Sparkles size={12} className="fill-[#35877D]/30" />
                                 Industries We Power
                             </span>
                             <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
@@ -404,7 +404,7 @@ export default function LandingPage() {
                                     className={`group relative bg-gradient-to-br ${color} rounded-2xl p-5 ring-1 ${ring} hover:scale-[1.04] hover:ring-2 transition-all duration-300 cursor-default flex flex-col items-center text-center gap-3 shadow-lg`}
                                 >
                                     {/* Glow dot */}
-                                    <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-[#D99B26]/70 transition-colors duration-300" />
+                                    <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-[#35877D]/70 transition-colors duration-300" />
                                     {/* Icon */}
                                     <div className="h-11 w-11 rounded-xl bg-white/10 flex items-center justify-center text-white/90 group-hover:bg-white/20 transition-all duration-300 shadow-inner">
                                         {icon}
@@ -420,7 +420,7 @@ export default function LandingPage() {
                             <p className="text-sm text-gray-400 font-medium">
                                 Don&apos;t see your industry? Connectly360 works for <span className="text-white font-bold">any business</span> that communicates on WhatsApp.
                             </p>
-                            <Link href="/contact" className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#D99B26] hover:bg-[#b8821d] text-white text-sm font-bold transition-all shadow-md">
+                            <Link href="/contact" className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#35877D] hover:bg-[#2c6f66] text-white text-sm font-bold transition-all shadow-md">
                                 Talk to Us <ArrowRight size={14} />
                             </Link>
                         </div>
@@ -428,13 +428,13 @@ export default function LandingPage() {
                 </section>
 
                 {/* Core Products Section - The 4 pillars */}
-                <section id="products" className="py-16 md:py-24 bg-white border-y border-[#D99B26]">
+                <section id="products" className="py-16 md:py-24 bg-white border-y border-slate-200">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
                         <div className="text-center max-w-2xl mx-auto mb-16">
-                            <span className="text-[10px] font-extrabold bg-[#FCF8EC] text-[#785110] border border-[#EAD098] px-3 py-1 rounded-full uppercase tracking-wider">
+                            <span className="text-[10px] font-extrabold bg-[#EAF7F2] text-[#785110] border border-[#35877D]/20 px-3 py-1 rounded-full uppercase tracking-wider">
                                 All-In-One Unified Suite
                             </span>
-                            <h2 className="text-3xl font-extrabold text-[#0B2E1E] tracking-tight mt-4">
+                            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mt-4">
                                 Four Powerful Products. One Dashboard.
                             </h2>
                             <p className="text-base text-gray-500 font-medium leading-relaxed mt-3">
@@ -444,13 +444,13 @@ export default function LandingPage() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {/* Product 1: CRM */}
-                            <Card className="p-6 border border-[#D99B26] hover:border-[#35877D]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
+                            <Card className="p-6 border border-slate-200 hover:border-[#35877D]/30 bg-slate-50/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
                                 <div className="space-y-4">
                                     <div className="h-10 w-10 bg-emerald-50 text-[#35877D] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                                         <Database size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#35877D] transition-colors">CRM & Lead Pipelines</h3>
+                                        <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-[#35877D] transition-colors">CRM & Lead Pipelines</h3>
                                         <p className="text-sm text-gray-600 font-semibold leading-relaxed mt-2">
                                             Track client directories, manage follow-ups, and organize deals. Route leads through structured pipeline stages: New, Contacted, Qualified, Proposal, Won, Lost.
                                         </p>
@@ -463,13 +463,13 @@ export default function LandingPage() {
                             </Card>
 
                             {/* Product 2: WhatsApp Integration */}
-                            <Card className="p-6 border border-[#D99B26] hover:border-[#35877D]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
+                            <Card className="p-6 border border-slate-200 hover:border-[#35877D]/30 bg-slate-50/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
                                 <div className="space-y-4">
                                     <div className="h-10 w-10 bg-emerald-50 text-[#35877D] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                                         <Smartphone size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#35877D] transition-colors">Meta Embedded Signup</h3>
+                                        <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-[#35877D] transition-colors">Meta Embedded Signup</h3>
                                         <p className="text-sm text-gray-600 font-semibold leading-relaxed mt-2">
                                             Onboard your WABA with a single click. Connect official numbers without manual tokens. Fully supports Meta Cloud API, multiple accounts, and verification.
                                         </p>
@@ -482,13 +482,13 @@ export default function LandingPage() {
                             </Card>
 
                             {/* Product 3: AI Chatbot */}
-                            <Card className="p-6 border border-[#D99B26] hover:border-[#35877D]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
+                            <Card className="p-6 border border-slate-200 hover:border-[#35877D]/30 bg-slate-50/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
                                 <div className="space-y-4">
-                                    <div className="h-10 w-10 bg-[#FCF8EC] text-[#D99B26] border border-[#EAD098] rounded-xl flex items-center justify-center shrink-0">
+                                    <div className="h-10 w-10 bg-[#EAF7F2] text-[#35877D] border border-[#35877D]/20 rounded-xl flex items-center justify-center shrink-0">
                                         <Bot size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#35877D] transition-colors">AI Assistant</h3>
+                                        <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-[#35877D] transition-colors">AI Assistant</h3>
                                         <p className="text-sm text-gray-600 font-semibold leading-relaxed mt-2">
                                             Auto-reply to FAQs using GPT models. Train the assistant by uploading PDFs, DOCXs, or TXTs. Features prompt logic and multi-language support.
                                         </p>
@@ -501,13 +501,13 @@ export default function LandingPage() {
                             </Card>
 
                             {/* Product 4: Workflows */}
-                            <Card className="p-6 border border-[#D99B26] hover:border-[#35877D]/30 bg-[#FAF8F5]/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
+                            <Card className="p-6 border border-slate-200 hover:border-[#35877D]/30 bg-slate-50/10 hover:bg-white transition-all shadow-sm rounded-2xl flex flex-col justify-between group">
                                 <div className="space-y-4">
                                     <div className="h-10 w-10 bg-emerald-50 text-[#35877D] border border-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                                         <Zap size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-extrabold text-[#0B2E1E] group-hover:text-[#35877D] transition-colors">Automation Engine</h3>
+                                        <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-[#35877D] transition-colors">Automation Engine</h3>
                                         <p className="text-sm text-gray-600 font-semibold leading-relaxed mt-2">
                                             Build keyword-based replies (e.g. price, catalog). Automate team assignments, follow-ups, and business hours with a no-code visual workflow editor.
                                         </p>
@@ -523,11 +523,11 @@ export default function LandingPage() {
                 </section>
 
                 {/* Sandbox Playground Interactive Section */}
-                <section id="playground" className="py-16 md:py-24 bg-[#FAF8F5]">
+                <section id="playground" className="py-16 md:py-24 bg-slate-50">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
                         <div className="text-center max-w-2xl mx-auto mb-14">
-                            <h2 className="text-3xl font-extrabold text-[#0B2E1E] tracking-tight">Interactive Industry Playground</h2>
-                            <p className="text-base text-gray-550 font-medium leading-relaxed mt-2.5">
+                            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Interactive Industry Playground</h2>
+                            <p className="text-base text-slate-500 font-medium leading-relaxed mt-2.5">
                                 Select a pre-configured workflow tab below to see how our AI chat flows interact with customers and instantly sync formatted data directly to your CRM.
                             </p>
                         </div>
@@ -544,13 +544,13 @@ export default function LandingPage() {
                                             onClick={() => setActiveIndustry(key)}
                                             className={`p-4 text-left rounded-2xl border transition-all duration-300 min-w-[260px] sm:min-w-[300px] lg:min-w-0 lg:flex-1 snap-center shrink-0 flex items-start gap-3.5 ${isActive
                                                 ? "bg-white border-[#35877D] shadow-md ring-1 ring-[#35877D]/10 lg:scale-[1.01]"
-                                                : "bg-white/40 border-[#D99B26] hover:bg-white/70 hover:border-[#35877D]/20"
+                                                : "bg-white/40 border-slate-200 hover:bg-white/70 hover:border-[#35877D]/20"
                                                 }`}
                                         >
                                             {/* Icon Indicator Box */}
                                             <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-300 ${isActive
                                                 ? "bg-[#35877D] text-white border-transparent"
-                                                : "bg-white border-[#EAE6DF] text-[#35877D]"
+                                                : "bg-white border-slate-200 text-[#35877D]"
                                                 }`}>
                                                 {key === "ecommerce" && <ShoppingBag size={18} />}
                                                 {key === "realestate" && <Building2 size={18} />}
@@ -560,12 +560,12 @@ export default function LandingPage() {
                                             {/* Text Content */}
                                             <div className="space-y-1 flex-1 min-w-0">
                                                 <div className="flex items-center justify-between gap-2">
-                                                    <span className="text-[9px] font-extrabold bg-[#FCF8EC] text-[#785110] border border-[#EAD098] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                                    <span className="text-[9px] font-extrabold bg-[#EAF7F2] text-[#785110] border border-[#35877D]/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
                                                         {item.badge}
                                                     </span>
                                                 </div>
-                                                <h3 className="text-sm font-extrabold text-[#0B2E1E] mt-1.5">{item.title}</h3>
-                                                <p className="text-xs text-gray-550 font-medium mt-1 leading-relaxed">
+                                                <h3 className="text-sm font-extrabold text-slate-900 mt-1.5">{item.title}</h3>
+                                                <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
                                                     {key === "ecommerce" && "Auto-resolves pricing, shipping queries, and tracks live order status."}
                                                     {key === "realestate" && "Qualifies properties, solar requirements, budgets, and schedules site visits."}
                                                     {key === "wholesale" && "Handles bulk rates, catalog PDF requests, dealer inquiries, and GSTIN checks."}
@@ -577,7 +577,7 @@ export default function LandingPage() {
                             </div>
 
                             {/* Live Sandbox Widget */}
-                            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-white border border-[#D99B26] rounded-3xl p-5 shadow-lg relative min-h-[380px]">
+                            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-white border border-slate-200 rounded-3xl p-5 shadow-lg relative min-h-[380px]">
                                 {/* Chat Box Display */}
                                 <div className="bg-[#efeae2] rounded-2xl p-3 flex flex-col justify-between overflow-hidden">
                                     <div className="bg-[#075e54] text-white p-2 rounded-xl flex items-center gap-1.5 shrink-0 shadow-xs mb-3">
@@ -604,7 +604,7 @@ export default function LandingPage() {
                                 </div>
 
                                 {/* Sync CRM Fields Display */}
-                                <div className="flex flex-col justify-between border-t md:border-t-0 md:border-l border-[#D99B26] pt-4 md:pt-0 md:pl-5">
+                                <div className="flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-5">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <span className="text-[11px] font-extrabold tracking-wider text-gray-400 uppercase">Captured Lead Fields</span>
@@ -614,19 +614,19 @@ export default function LandingPage() {
                                         <div className="space-y-2.5">
                                             <div>
                                                 <span className="text-[9px] font-bold text-gray-500 uppercase">Lead Source</span>
-                                                <p className="text-sm font-extrabold text-[#0B2E1E]">
+                                                <p className="text-sm font-extrabold text-slate-900">
                                                     {industryData[activeIndustry as keyof typeof industryData].crmFields.leadSource}
                                                 </p>
                                             </div>
                                             <div>
                                                 <span className="text-[9px] font-bold text-gray-500 uppercase">Interest Scope</span>
-                                                <p className="text-sm font-extrabold text-[#0B2E1E]">
+                                                <p className="text-sm font-extrabold text-slate-900">
                                                     {industryData[activeIndustry as keyof typeof industryData].crmFields.interest}
                                                 </p>
                                             </div>
                                             <div>
                                                 <span className="text-[9px] font-bold text-gray-500 uppercase">Extracted Metadata</span>
-                                                <p className="text-sm font-extrabold text-[#D99B26]">
+                                                <p className="text-sm font-extrabold text-[#35877D]">
                                                     {industryData[activeIndustry as keyof typeof industryData].crmFields.capturedData}
                                                 </p>
                                             </div>
@@ -655,27 +655,27 @@ export default function LandingPage() {
                 <section id="workflow" className="py-12 md:py-16 bg-white">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
                         <div className="text-center max-w-2xl mx-auto mb-10">
-                            <h2 className="text-3xl font-extrabold text-[#0B2E1E] tracking-tight">Visual Workflow Builder</h2>
-                            <p className="text-base text-gray-550 font-medium leading-relaxed mt-2.5">
+                            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Visual Workflow Builder</h2>
+                            <p className="text-base text-slate-500 font-medium leading-relaxed mt-2.5">
                                 Design reply logic paths using intuitive linked nodes. Easily transition chats between AI agents, manual support seats, and API triggers.
                             </p>
                         </div>
 
                         {/* Interactive flow mockup (horizontal scroll scrollbar for mobile) */}
-                        <div className="bg-white border border-[#D99B26] rounded-3xl p-5 md:p-6 shadow-sm relative overflow-x-auto scrollbar-thin">
+                        <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 shadow-sm relative overflow-x-auto scrollbar-thin">
                             {/* Dot grid decoration */}
-                            <div className="absolute inset-0 bg-[radial-gradient(#EAE6DF_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
+                            <div className="absolute inset-0 bg-[radial-gradient(#E2E8F0_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
 
                             <div className="relative flex flex-row justify-between items-center gap-4 z-10 py-3 min-w-[700px] lg:min-w-0">
                                 {/* Node 1: Trigger */}
-                                <div className="w-full max-w-[300px] bg-white border border-[#D99B26] hover:border-[#35877D]/50 rounded-xl p-3.5 shadow-xs transition-all shrink-0">
+                                <div className="w-full max-w-[300px] bg-white border border-slate-200 hover:border-[#35877D]/50 rounded-xl p-3.5 shadow-xs transition-all shrink-0">
                                     <div className="flex items-center gap-1.5 text-[#35877D] font-bold text-[10.5px] uppercase tracking-wider">
                                         <Zap size={11} className="shrink-0" />
                                         <span>Trigger</span>
                                     </div>
-                                    <p className="text-xs font-extrabold text-[#0B2E1E] mt-1.5">Incoming WhatsApp Msg</p>
-                                    <div className="border border-dashed border-[#D99B26] rounded-lg p-1.5 bg-[#FAF8F5] text-xs font-semibold text-gray-555 mt-1.5 leading-normal">
-                                        Checks if msg matches: <span className="font-bold text-[#0B2E1E]">"price", "quote"</span>
+                                    <p className="text-xs font-extrabold text-slate-900 mt-1.5">Incoming WhatsApp Msg</p>
+                                    <div className="border border-dashed border-slate-200 rounded-lg p-1.5 bg-slate-50 text-xs font-semibold text-gray-555 mt-1.5 leading-normal">
+                                        Checks if msg matches: <span className="font-bold text-slate-900">"price", "quote"</span>
                                     </div>
                                 </div>
 
@@ -685,14 +685,14 @@ export default function LandingPage() {
                                 </div>
 
                                 {/* Node 2: Logic Splitter */}
-                                <div className="w-full max-w-[300px] bg-white border border-[#D99B26] hover:border-[#D99B26]/50 rounded-xl p-3.5 shadow-xs transition-all shrink-0">
-                                    <div className="flex items-center gap-1.5 text-[#D99B26] font-bold text-[10.5px] uppercase tracking-wider">
+                                <div className="w-full max-w-[300px] bg-white border border-slate-200 hover:border-slate-200/50 rounded-xl p-3.5 shadow-xs transition-all shrink-0">
+                                    <div className="flex items-center gap-1.5 text-[#35877D] font-bold text-[10.5px] uppercase tracking-wider">
                                         <Layers size={11} className="shrink-0" />
                                         <span>Logic Flow</span>
                                     </div>
-                                    <p className="text-xs font-extrabold text-[#0B2E1E] mt-1.5">Working Hours Filter</p>
-                                    <div className="border border-dashed border-[#D99B26] rounded-lg p-1.5 bg-[#FAF8F5] text-xs font-semibold text-gray-555 mt-1.5 leading-normal">
-                                        Branch route based on client time: <span className="font-bold text-[#0B2E1E]">Mon-Fri (9AM - 6PM)</span>
+                                    <p className="text-xs font-extrabold text-slate-900 mt-1.5">Working Hours Filter</p>
+                                    <div className="border border-dashed border-slate-200 rounded-lg p-1.5 bg-slate-50 text-xs font-semibold text-gray-555 mt-1.5 leading-normal">
+                                        Branch route based on client time: <span className="font-bold text-slate-900">Mon-Fri (9AM - 6PM)</span>
                                     </div>
                                 </div>
 
@@ -702,19 +702,19 @@ export default function LandingPage() {
                                 </div>
 
                                 {/* Node 3: AI Qualification Action */}
-                                <div className="w-full max-w-[300px] bg-[#0B2E1E] text-white border border-[#0B2E1E] rounded-xl p-3.5 shadow-xs hover:shadow-sm transition-all shrink-0">
-                                    <div className="flex items-center gap-1.5 text-[#D99B26] font-bold text-[10.5px] uppercase tracking-wider">
+                                <div className="w-full max-w-[300px] bg-[#0d3530] text-white border border-[#0B2E1E] rounded-xl p-3.5 shadow-xs hover:shadow-sm transition-all shrink-0">
+                                    <div className="flex items-center gap-1.5 text-[#35877D] font-bold text-[10.5px] uppercase tracking-wider">
                                         <Bot size={11} className="shrink-0" />
                                         <span>AI Action</span>
                                     </div>
                                     <p className="text-xs font-extrabold text-white mt-1.5">Qualify Lead & Email</p>
-                                    <div className="border border-dashed border-emerald-800 rounded-lg p-1.5 bg-[#0B2E1E] text-xs font-semibold text-emerald-100 mt-1.5 leading-normal">
+                                    <div className="border border-dashed border-emerald-800 rounded-lg p-1.5 bg-[#0d3530] text-xs font-semibold text-emerald-100 mt-1.5 leading-normal">
                                         AI auto-replies, requests email, and syncs to CRM pipeline tag.
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="border-t border-[#D99B26] mt-4 pt-4 flex justify-between items-center z-10 relative">
+                            <div className="border-t border-slate-200 mt-4 pt-4 flex justify-between items-center z-10 relative">
                                 <span className="text-[11px] font-bold text-gray-500 uppercase flex items-center gap-1">
                                     <Code size={11} /> Drag & Drop builder canvas mockup
                                 </span>
@@ -727,25 +727,25 @@ export default function LandingPage() {
                 </section>
 
                 {/* Sliding ROI Calculator Section */}
-                <section id="roi" className="py-16 md:py-24 bg-[#FAF8F5]">
+                <section id="roi" className="py-16 md:py-24 bg-slate-50">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
                         <div className="text-center max-w-2xl mx-auto mb-16">
-                            <h2 className="text-3xl font-extrabold text-[#0B2E1E] tracking-tight">Support ROI Calculator</h2>
-                            <p className="text-base text-gray-550 font-medium leading-relaxed mt-2.5">
+                            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Support ROI Calculator</h2>
+                            <p className="text-base text-slate-500 font-medium leading-relaxed mt-2.5">
                                 See how much time and money Connectly360 saves your business by automating 85% of standard WhatsApp inquiries. Slide the values below to evaluate your monthly ROI.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
                             {/* Sliders Container */}
-                            <div className="lg:col-span-7 bg-white border border-[#D99B26] rounded-3xl p-6 md:p-8 flex flex-col justify-center space-y-8">
+                            <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 md:p-8 flex flex-col justify-center space-y-8">
                                 {/* Monthly Inquiries Slider */}
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="chats-range" className="text-sm font-extrabold text-[#0B2E1E]">
+                                        <Label htmlFor="chats-range" className="text-sm font-extrabold text-slate-900">
                                             Monthly Incoming Chats
                                         </Label>
-                                        <span className="text-sm font-extrabold text-[#35877D] bg-[#FAF8F5] border border-[#D99B26] px-3 py-1 rounded-xl shadow-xs">
+                                        <span className="text-sm font-extrabold text-[#35877D] bg-slate-50 border border-slate-200 px-3 py-1 rounded-xl shadow-xs">
                                             {monthlyChats.toLocaleString()} chats
                                         </span>
                                     </div>
@@ -769,10 +769,10 @@ export default function LandingPage() {
                                 {/* Hourly Cost Slider */}
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="wage-range" className="text-sm font-extrabold text-[#0B2E1E]">
+                                        <Label htmlFor="wage-range" className="text-sm font-extrabold text-slate-900">
                                             Support Agent Wage (per Hour)
                                         </Label>
-                                        <span className="text-sm font-extrabold text-[#35877D] bg-[#FAF8F5] border border-[#D99B26] px-3 py-1 rounded-xl shadow-xs">
+                                        <span className="text-sm font-extrabold text-[#35877D] bg-slate-50 border border-slate-200 px-3 py-1 rounded-xl shadow-xs">
                                             ₹{hourlyWage} / hr
                                         </span>
                                     </div>
@@ -795,11 +795,11 @@ export default function LandingPage() {
                             </div>
 
                             {/* ROI Outputs Card */}
-                            <div className="lg:col-span-5 bg-[#0B2E1E] text-white rounded-3xl p-6 md:p-8 flex flex-col justify-between shadow-xl relative overflow-hidden">
+                            <div className="lg:col-span-5 bg-[#0d3530] text-white rounded-3xl p-6 md:p-8 flex flex-col justify-between shadow-xl relative overflow-hidden">
                                 <div className="absolute top-[-10%] right-[-10%] w-32 h-32 bg-emerald-800/10 rounded-full blur-xl pointer-events-none"></div>
 
                                 <div className="space-y-6">
-                                    <div className="flex items-center gap-2 text-[#D99B26] font-bold text-xs uppercase tracking-wide">
+                                    <div className="flex items-center gap-2 text-[#60B187] font-bold text-xs uppercase tracking-wide">
                                         <Coins size={14} />
                                         <span>Estimated Savings</span>
                                     </div>
@@ -811,18 +811,18 @@ export default function LandingPage() {
                                         </div>
                                         <div>
                                             <span className="text-xs text-gray-400 font-extrabold uppercase block leading-none">Monthly Money Saved</span>
-                                            <p className="text-4xl font-extrabold text-[#D99B26] tracking-tight mt-1">₹{moneySaved.toLocaleString()}</p>
+                                            <p className="text-4xl font-extrabold text-[#60B187] tracking-tight mt-1">₹{moneySaved.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="border-t border-emerald-950 pt-5 mt-6 space-y-4">
+                                <div className="border-t border-[#0d3530]/80 pt-5 mt-6 space-y-4">
                                     <div className="flex justify-between text-sm font-semibold text-gray-300">
                                         <span>Connectly360 Cost:</span>
                                         <span>₹{growthPlanPrice}/mo</span>
                                     </div>
-                                    <div className="flex justify-between items-center bg-[#0B2E1E] border border-emerald-800 px-3.5 py-2.5 rounded-xl">
-                                        <span className="text-xs font-bold text-[#D99B26] uppercase">Monthly ROI Yield</span>
+                                    <div className="flex justify-between items-center bg-[#0a2723] border border-[#35877D]/30 px-3.5 py-2.5 rounded-xl">
+                                        <span className="text-xs font-bold text-[#60B187] uppercase">Monthly ROI Yield</span>
                                         <span className="text-sm font-extrabold text-white">{roiMultiplier}x return</span>
                                     </div>
                                 </div>
@@ -836,11 +836,11 @@ export default function LandingPage() {
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
                         {/* Section Header */}
                         <div className="text-center max-w-2xl mx-auto mb-12">
-                            <h2 className="text-3xl font-extrabold text-[#0B2E1E] tracking-tight mt-4">
-                                Plans for Every Business Size
+                            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mt-4">
+                                Simple, Transparent Pricing
                             </h2>
                             <p className="text-base text-gray-500 font-medium leading-relaxed mt-3">
-                                Start free, scale as you grow. No hidden fees. Cancel anytime.
+                                Choose the plan that fits your growth. Save 20% by paying annually.
                             </p>
 
                             {/* Annual / Monthly Toggle */}
@@ -861,22 +861,24 @@ export default function LandingPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8">
 
                             {/* Starter */}
-                            <Card className="p-8 flex flex-col border border-[#D99B26] bg-white rounded-3xl shadow-sm relative">
+                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
                                 <div className="mb-5">
-                                    <h3 className="text-xl font-extrabold text-[#0B2E1E] mb-1">Starter</h3>
-                                    <p className="text-sm text-gray-500 font-bold">Sandbox Playground</p>
+                                    <span className="text-[10px] font-bold text-[#35877D] bg-[#35877D]/10 px-2 py-0.5 rounded-full uppercase tracking-wider">For Small Businesses</span>
+                                    <h3 className="text-xl font-extrabold text-slate-900 mt-2 mb-1">Starter</h3>
+                                    <p className="text-sm text-gray-500 font-bold">Essential WhatsApp automation</p>
                                 </div>
                                 <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-[#0B2E1E]">₹0</span>
+                                    <span className="text-4xl font-extrabold text-slate-900">₹{isAnnual ? 399 : 499}</span>
                                     <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
                                 </div>
                                 <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
                                     {[
+                                        "1,000 Monthly Credits",
                                         "1 WhatsApp Number",
-                                        "500 Conversations/month",
                                         "Basic Automation Flows",
-                                        "CRM Contact Management",
-                                        "Sandbox Playground Access",
+                                        "Shared Team Inbox",
+                                        "Contact & Lead Management",
+                                        "Welcome & Away Messages",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
                                             <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
@@ -884,62 +886,33 @@ export default function LandingPage() {
                                         </li>
                                     ))}
                                 </ul>
-                                <Button asChild variant="outline" className="w-full h-12 border-[#EAE6DF] rounded-xl text-sm font-bold hover:bg-gray-50">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Get Started Free</Link>
+                                <Button asChild variant="outline" className="w-full h-12 border-slate-200 rounded-xl text-sm font-bold hover:bg-gray-50">
+                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Get Started</Link>
                                 </Button>
                             </Card>
 
                             {/* Growth */}
-                            <Card className="p-8 flex flex-col border border-[#D99B26] bg-white rounded-3xl shadow-sm relative">
-                                <div className="mb-5">
-                                    <h3 className="text-xl font-extrabold text-[#0B2E1E] mb-1">Growth</h3>
-                                    <p className="text-sm text-gray-500 font-bold">CRM &amp; AI Bot</p>
-                                </div>
-                                <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-[#0B2E1E]">₹{isAnnual ? 799 : 999}</span>
-                                    <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
-                                </div>
-                                <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
-                                    {[
-                                        "1 WhatsApp Number",
-                                        "5,000 Conversations/month",
-                                        "AI Assistant",
-                                        "CRM & Lead Pipelines",
-                                        "Knowledge Base",
-                                        "14-Day Free Trial",
-                                    ].map((f) => (
-                                        <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
-                                            <span>{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Button asChild variant="outline" className="w-full h-12 border-[#EAE6DF] rounded-xl text-sm font-bold hover:bg-gray-50">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Start 14-day Trial</Link>
-                                </Button>
-                            </Card>
-
-                            {/* Business */}
-                            <Card className="p-8 flex flex-col border-2 border-[#35877D] bg-[#FAF8F5]/30 rounded-3xl shadow-md relative transform xl:-translate-y-2">
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#D99B26] text-white px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
-                                    Best Value
+                            <Card className="p-8 flex flex-col border border-[#35877D]/20 bg-[#35877D]/5 rounded-3xl shadow-sm relative transform xl:-translate-y-1">
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#35877D] text-white px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
+                                    Most Popular
                                 </div>
                                 <div className="mb-5 mt-2">
-                                    <h3 className="text-xl font-extrabold text-[#35877D] mb-1">Business</h3>
-                                    <p className="text-sm text-gray-500 font-bold">Campaigns &amp; Collaboration</p>
+                                    <span className="text-[10px] font-bold text-[#35877D] bg-white px-2 py-0.5 rounded-full uppercase tracking-wider">Most Popular</span>
+                                    <h3 className="text-xl font-extrabold text-slate-900 mt-2 mb-1">Growth</h3>
+                                    <p className="text-sm text-gray-500 font-bold">AI Bot & CRM workflows</p>
                                 </div>
                                 <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-[#35877D]">₹{isAnnual ? 1999 : 2499}</span>
+                                    <span className="text-4xl font-extrabold text-[#35877D]">₹{isAnnual ? 799 : 999}</span>
                                     <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
                                 </div>
                                 <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
                                     {[
-                                        "3 WhatsApp Numbers",
-                                        "25,000 Conversations/month",
-                                        "WhatsApp Broadcast Campaigns",
-                                        "Team Collaboration & Inbox",
-                                        "Advanced Analytics Dashboard",
+                                        "3,000 Monthly Credits",
+                                        "1 WhatsApp Number",
+                                        "GPT AI Assistant",
+                                        "Knowledge Base Training",
                                         "Workflow Automation Builder",
+                                        "Advanced Lead Pipelines",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
                                             <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
@@ -948,27 +921,29 @@ export default function LandingPage() {
                                     ))}
                                 </ul>
                                 <Button asChild className="w-full h-12 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-sm font-bold shadow-md">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Upgrade to Business</Link>
+                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Start Free Trial</Link>
                                 </Button>
                             </Card>
 
-                            {/* Enterprise */}
-                            <Card className="p-8 flex flex-col border border-[#D99B26] bg-white rounded-3xl shadow-sm relative">
+                            {/* Business */}
+                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
                                 <div className="mb-5">
-                                    <h3 className="text-xl font-extrabold text-[#0B2E1E] mb-1">Enterprise</h3>
-                                    <p className="text-sm text-gray-500 font-bold">White-Label &amp; Integrations</p>
+                                    <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-full uppercase tracking-wider">For Teams</span>
+                                    <h3 className="text-xl font-extrabold text-slate-900 mt-2 mb-1">Business</h3>
+                                    <p className="text-sm text-gray-500 font-bold">Campaigns & advanced analytics</p>
                                 </div>
                                 <div className="mb-6 flex items-baseline">
-                                    <span className="text-3xl font-extrabold text-[#0B2E1E]">Custom Pricing</span>
+                                    <span className="text-4xl font-extrabold text-slate-900">₹{isAnnual ? 1999 : 2499}</span>
+                                    <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
                                 </div>
                                 <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
                                     {[
-                                        "Unlimited WhatsApp Numbers",
-                                        "Unlimited Conversations",
-                                        "White-Label Platform",
-                                        "Custom API Integrations",
-                                        "Dedicated Onboarding Manager",
-                                        "1-Hour Priority SLA Support",
+                                        "10,000 Monthly Credits",
+                                        "3 WhatsApp Numbers",
+                                        "WhatsApp Broadcast Campaigns",
+                                        "10 Team Inbox Seats",
+                                        "Analytics & Performance Reports",
+                                        "API Access & Webhooks",
                                     ].map((f) => (
                                         <li key={f} className="flex items-start gap-2">
                                             <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
@@ -976,8 +951,38 @@ export default function LandingPage() {
                                         </li>
                                     ))}
                                 </ul>
-                                <Button asChild variant="outline" className="w-full h-12 border-[#EAE6DF] rounded-xl text-sm font-bold hover:bg-gray-50">
-                                    <Link href="/contact?plan=enterprise">Inquire Custom Setup</Link>
+                                <Button asChild variant="outline" className="w-full h-12 border-slate-200 rounded-xl text-sm font-bold hover:bg-gray-50">
+                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Upgrade Plan</Link>
+                                </Button>
+                            </Card>
+
+                            {/* Enterprise */}
+                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
+                                <div className="mb-5">
+                                    <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-full uppercase tracking-wider">Enterprise</span>
+                                    <h3 className="text-xl font-extrabold text-slate-900 mt-2 mb-1">Enterprise</h3>
+                                    <p className="text-sm text-gray-500 font-bold">White-label & custom scales</p>
+                                </div>
+                                <div className="mb-6 flex items-baseline">
+                                    <span className="text-3xl font-extrabold text-slate-900">Contact Sales</span>
+                                </div>
+                                <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
+                                    {[
+                                        "Unlimited WhatsApp Numbers",
+                                        "White-Label Reseller Solution",
+                                        "Dedicated Server Hosting",
+                                        "Custom Credit Packages",
+                                        "SLA & Dedicated Account Manager",
+                                        "Custom Integrations",
+                                    ].map((f) => (
+                                        <li key={f} className="flex items-start gap-2">
+                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
+                                            <span>{f}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Button asChild variant="outline" className="w-full h-12 border-slate-200 rounded-xl text-sm font-bold hover:bg-gray-50">
+                                    <Link href="/contact?plan=enterprise">Contact Us</Link>
                                 </Button>
                             </Card>
 
@@ -993,43 +998,75 @@ export default function LandingPage() {
                 </section>
 
                 {/* FAQ Section */}
-                <section className="py-16 md:py-24 bg-[#FAF8F5] border-t border-[#D99B26]">
+                <section className="py-16 md:py-24 bg-slate-50 border-t border-slate-200">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-5xl mx-auto">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl font-extrabold text-[#0B2E1E] mb-4">Frequently Asked Questions</h2>
+                            <h2 className="text-3xl font-extrabold text-slate-900 mb-4">Frequently Asked Questions</h2>
                         </div>
 
-                        <Accordion type="single" collapsible className="w-full bg-white rounded-2xl border border-[#D99B26] px-6 py-2 shadow-sm">
+                        <Accordion type="single" collapsible className="w-full bg-white rounded-2xl border border-slate-200 px-6 py-2 shadow-sm">
                             <AccordionItem value="item-1">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#35877D]">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    Can I upgrade or downgrade my plan at any time?
+                                </AccordionTrigger>
+                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                    Yes. You can upgrade, downgrade, or cancel your subscription directly from your Connectly360 dashboard workspace settings. Plan adjustments are prorated instantly.
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-2">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    How do credits work and what happens when I run out?
+                                </AccordionTrigger>
+                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                    Each plan includes a monthly quota of credits (1,000 for Starter, 3,000 for Growth, and 10,000 for Business). Credits are consumed based on actions like AI replies, knowledge base searches, and campaign messages. Incoming messages from customers are completely free. If you run out, you can buy top-up packs starting at ₹99.
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-3">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    Are there any hidden fees or extra WhatsApp charges?
+                                </AccordionTrigger>
+                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                    There are zero onboarding or setup fees. Official Meta WhatsApp Cloud API costs (outside of the 1,000 free conversation tier Meta provides monthly per business account) are billed directly by Meta. Connectly360 only charges your monthly subscription and any optional credit top-up packs.
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-4">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    Do you offer a free trial?
+                                </AccordionTrigger>
+                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                    Yes! We offer a 7-day free trial upon registration. This allows you to explore the AI Assistant, train the bot on your custom knowledge base, and build automated workflows.
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-5">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
                                     Do my customers need to download a new app?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
                                     No. Your customers chat directly inside their native WhatsApp application. They receive instant, accurate replies from our AI system without having to install any extra portals or sign up for account services.
                                 </AccordionContent>
                             </AccordionItem>
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#35877D]">
-                                    Is this using the official Meta WhatsApp API?
-                                </AccordionTrigger>
-                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
-                                    Yes. Connectly360 utilizes the official Meta Cloud API. This guarantees stable message delivery, prevents phone number ban issues, and provides you with the capability to verify your business and get the official WhatsApp green badge.
-                                </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-3">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#35877D]">
-                                    Can we transition from AI bot to a human agent?
+                            <AccordionItem value="item-6">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    Can we transition from the AI bot to a human agent?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
                                     Absolutely. If the AI agent encounters a complex query or if the user requests human assistance, the chat transitions seamlessly to your central inbox, and a notification is instantly triggered for your team on the dashboard.
                                 </AccordionContent>
                             </AccordionItem>
-                            <AccordionItem value="item-4">
-                                <AccordionTrigger className="text-left text-base font-bold text-[#0B2E1E] hover:text-[#35877D]">
-                                    Is my conversational data secure?
+                            <AccordionItem value="item-7">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    Can I connect my existing WhatsApp phone number?
                                 </AccordionTrigger>
                                 <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
-                                    Yes. We encrypt all messages in transit and at rest. Your customer data, contact logs, and business workflows are stored securely in compliant enterprise hosting systems and are never shared or sold.
+                                    Yes. You can use your existing WhatsApp number. However, you will need to delete any active WhatsApp App or WhatsApp Business App account associated with that number first so it can register with Meta&apos;s Cloud API.
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-8">
+                                <AccordionTrigger className="text-left text-base font-bold text-slate-900 hover:text-[#35877D]">
+                                    Is my business and conversational data secure?
+                                </AccordionTrigger>
+                                <AccordionContent className="text-gray-600 text-sm sm:text-base leading-relaxed font-semibold">
+                                    Yes. We encrypt all messages in transit and at rest. Your customer data, contact logs, training files, and business workflows are stored securely in compliant enterprise database hosts.
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
@@ -1037,7 +1074,7 @@ export default function LandingPage() {
                 </section>
 
                 {/* CTA Section */}
-                <section className="py-24 bg-[#0B2E1E] text-white relative overflow-hidden">
+                <section className="py-24 bg-[#0d3530] text-white relative overflow-hidden">
                     <div className="absolute inset-0 opacity-10 bg-radial-gradient from-[#D99B26] via-transparent to-transparent"></div>
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 relative z-10 text-center max-w-4xl mx-auto">
                         <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Supercharge your customer conversations today</h2>
@@ -1046,16 +1083,16 @@ export default function LandingPage() {
                         </p>
 
                         {isAuthenticated ? (
-                            <Button asChild size="lg" className="h-13 px-10 text-sm font-semibold rounded-xl bg-[#D99B26] hover:bg-[#b8821d] text-white shadow-lg">
+                            <Button asChild size="lg" className="h-13 px-10 text-sm font-semibold rounded-xl bg-[#35877D] hover:bg-[#2c6f66] text-white shadow-lg">
                                 <Link href="/dashboard">Go to Dashboard</Link>
                             </Button>
                         ) : (
-                            <Button asChild size="lg" className="h-13 px-10 text-sm font-semibold rounded-xl bg-[#D99B26] hover:bg-[#b8821d] text-white shadow-lg font-bold">
+                            <Button asChild size="lg" className="h-13 px-10 text-sm font-semibold rounded-xl bg-[#35877D] hover:bg-[#2c6f66] text-white shadow-lg font-bold">
                                 <Link href="/register">Start Your Free Trial</Link>
                             </Button>
                         )}
 
-                        <p className="mt-5 text-xs text-gray-400 font-semibold">No credit card required. 14-day free trial on the Growth plan.</p>
+                        <p className="mt-5 text-xs text-gray-400 font-semibold">No credit card required. 7-day free trial after registration on the Growth plan.</p>
                     </div>
                 </section>
             </main>

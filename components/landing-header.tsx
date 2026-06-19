@@ -15,11 +15,11 @@ export function LandingHeader() {
     return (
         <div className="w-full z-50 flex flex-col fixed top-0">
             {/* Top Webinar Banner */}
-            <div className="bg-[#00382b] text-white py-2 px-4 text-xs font-semibold text-center flex items-center justify-center gap-1.5 transition-colors border-b border-emerald-950/20">
+            <div className="bg-[#00382b] text-white py-2.5 px-4 text-xs font-normal text-center flex items-center justify-center gap-1.5 transition-colors border-b border-emerald-950/20">
                 <span>
-                    <span className="text-[#ebd25b] font-bold">[Webinar]</span> Build & Deploy Your AI Agent on WhatsApp in Less than a Day.{" "}
-                    <Link href="/register" className="underline hover:text-[#ebd25b] transition-colors ml-1">
-                        Register Now
+                    Start Sending Bulk Campaigns Today! 🎉{" "}
+                    <Link href="/pricing" className="underline hover:text-[#ebd25b] transition-colors ml-1">
+                        Pay ₹999 & Get 500 Messages Free.
                     </Link>
                 </span>
             </div>
@@ -60,13 +60,14 @@ export function LandingHeader() {
                 </nav>
 
                 {/* Right Actions Menu */}
-                <div className="hidden lg:flex items-center gap-6">
-                    <Link href="/contact" className="text-sm font-bold text-gray-700 hover:text-[#35877D] transition-colors">
-                        Demo
-                    </Link>
+                <div className="hidden lg:flex items-center gap-2">
                     {isAuthenticated ? (
                         <>
-                            <span className="text-xs text-gray-500 font-semibold">Hello, {user?.name || "Admin"}</span>
+                            <Button asChild variant="outline" size="sm" className="rounded-full px-4 py-2 h-9 border-[#35877D] text-[#35877D] hover:bg-[#EAF7F2] hover:text-[#2c6f66] bg-transparent transition-all font-extrabold text-xs">
+                                <Link href="/contact">
+                                    Need Help?
+                                </Link>
+                            </Button>
                             <Button asChild size="sm" className="rounded-full px-4 py-2 h-9 bg-[#35877D] hover:bg-[#2c6f66] text-white transition-all shadow-sm font-extrabold text-xs flex items-center gap-1">
                                 <Link href="/dashboard">
                                     Dashboard <ArrowRight size={12} />
@@ -75,12 +76,19 @@ export function LandingHeader() {
                         </>
                     ) : (
                         <>
-                            <Link href="/login" className="text-sm font-bold text-gray-700 hover:text-[#35877D] transition-colors">
-                                Login
-                            </Link>
+                            <Button asChild variant="outline" size="sm" className="rounded-full px-4 py-2 h-9 border-[#35877D] text-[#35877D] hover:bg-[#EAF7F2] hover:text-[#2c6f66] bg-transparent transition-all font-extrabold text-xs">
+                                <Link href="/contact">
+                                    Book a Demo
+                                </Link>
+                            </Button>
                             <Button asChild size="sm" className="rounded-full px-4 py-2 h-9 bg-[#35877D] hover:bg-[#2c6f66] text-white transition-all shadow-sm font-extrabold text-xs flex items-center gap-1">
                                 <Link href="/register">
                                     Start Free Trial <ArrowRight size={12} />
+                                </Link>
+                            </Button>
+                            <Button asChild variant="outline" size="sm" className="rounded-full px-4 py-2 h-9 border-[#35877D] text-[#35877D] hover:bg-[#EAF7F2] hover:text-[#2c6f66] bg-transparent transition-all font-extrabold text-xs">
+                                <Link href="/login">
+                                    Log In
                                 </Link>
                             </Button>
                         </>
