@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { UpgradeGuard } from "@/components/upgrade-guard";
 import {
     useListKnowledgeBase,
     useCreateKnowledgeBase,
@@ -277,7 +278,12 @@ export default function KnowledgeBasePage() {
     };
 
     return (
-        <div className="space-y-6">
+        <UpgradeGuard 
+            allowedPlans={["growth", "business", "enterprise"]} 
+            featureName="AI Knowledge Base" 
+            description="Train a custom AI agent on your business files and automate customer replies 24/7."
+        >
+            <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-800">AI Knowledge Base</h1>
@@ -824,5 +830,6 @@ export default function KnowledgeBasePage() {
             </Dialog>
 
         </div>
+        </UpgradeGuard>
     );
 }

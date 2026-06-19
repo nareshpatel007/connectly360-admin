@@ -9,6 +9,8 @@ interface User {
     name: string;
     email: string;
     role: string | null;
+    plan?: string;
+    trial_ends_at?: string | null;
 }
 
 interface AuthContextType {

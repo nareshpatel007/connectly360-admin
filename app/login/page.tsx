@@ -38,6 +38,8 @@ export default function LoginPage() {
                     name: data.data.name,
                     email: data.data.email,
                     role: data.data.role,
+                    plan: data.data.plan,
+                    trial_ends_at: data.data.trial_ends_at,
                 });
             } else {
                 setError(data.message || "Failed to log in.");

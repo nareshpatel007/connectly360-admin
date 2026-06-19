@@ -335,8 +335,51 @@ function CollapsibleNavItem({
 }
 
 function SidebarNav({ pathname }: { pathname: string }) {
+    const { user } = useAuth();
+    const plan = (user?.plan || "growth").toLowerCase();
+
+    // Dynamically filter NAV_STRUCTURE based on the user's plan
+    const filteredNav = NAV_STRUCTURE.map(group => {
+        const filteredItems = group.items.map(item => {
+            if (item.subItems) {
+                const filteredSubItems = item.subItems.filter(sub => {
+                    if (plan === "starter") {
+                        if (sub.href === "/ai-assistant") return false;
+                        if (sub.href === "/knowledge-base") return false;
+                        if (sub.href === "/integrations/api-keys") return false;
+                        if (sub.href === "/integrations/webhooks") return false;
+                        if (sub.href === "/workspace/roles-permissions") return false;
+                        if (sub.href === "/workspace/activity-logs") return false;
+                    }
+                    if (plan === "growth") {
+                        if (sub.href === "/integrations/api-keys") return false;
+                        if (sub.href === "/workspace/activity-logs") return false;
+                    }
+                    if (plan === "business") {
+                        if (sub.href === "/workspace/activity-logs") return false;
+                    }
+                    return true;
+                });
+
+                if (filteredSubItems.length === 0) return null;
+                return { ...item, subItems: filteredSubItems };
+            }
+
+            return item;
+        }).filter((item): item is NonNullable<typeof item> => item !== null);
+
+        // Hide Marketing and campaigns entirely for starter/growth
+        const hasMarketing = filteredItems.some(item => item.href.startsWith("/campaigns") || (item.subItems && item.subItems.some(s => s.href.startsWith("/campaigns"))));
+        if (hasMarketing && (plan === "starter" || plan === "growth")) {
+            return null;
+        }
+
+        if (filteredItems.length === 0) return null;
+        return { items: filteredItems };
+    }).filter((group): group is NonNullable<typeof group> => group !== null);
+
     // Find the initially-active collapsible item so it opens on first render
-    const initialOpen = NAV_STRUCTURE.flatMap(g => g.items)
+    const initialOpen = filteredNav.flatMap(g => g.items)
         .find(item => item.subItems?.some(
             sub => pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href))
         ))?.href ?? null;
@@ -345,7 +388,7 @@ function SidebarNav({ pathname }: { pathname: string }) {
 
     return (
         <>
-            {NAV_STRUCTURE.map((group, i) => (
+            {filteredNav.map((group, i) => (
                 <NavGroupSection
                     key={i}
                     group={group}
