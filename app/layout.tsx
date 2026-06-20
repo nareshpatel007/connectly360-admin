@@ -3,6 +3,7 @@ import { Inter, Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { AuthProvider } from "@/lib/auth-context";
+import { SupportChatWidget } from "@/components/support-chat";
 
 const jost = Jost({
     variable: "--font-jost",
@@ -59,7 +60,10 @@ export default function RootLayout({
         >
             <body className="min-h-full bg-background text-foreground flex flex-col font-sans">
                 <Providers>
-                    <AuthProvider>{children}</AuthProvider>
+                    <AuthProvider>
+                        {children}
+                        <SupportChatWidget />
+                    </AuthProvider>
                 </Providers>
             </body>
         </html>
