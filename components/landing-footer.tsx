@@ -63,6 +63,7 @@ export function LandingFooter() {
                     <div className="space-y-4">
                         <h4 className="font-extrabold text-sm text-[#0B2E1E] uppercase tracking-wider">Resources</h4>
                         <ul className="space-y-3 text-sm font-medium text-gray-455">
+                            <li><Link href="/blog" className="hover:text-[#35877D] transition-colors">Blog</Link></li>
                             <li><Link href="/privacy" className="hover:text-[#35877D] transition-colors">Privacy Policy</Link></li>
                             <li><Link href="/terms" className="hover:text-[#35877D] transition-colors">Terms of Service</Link></li>
                             <li><Link href="/cookie-policy" className="hover:text-[#35877D] transition-colors">Cookie Policy</Link></li>

@@ -289,7 +289,14 @@ export default function ConversationsPage() {
                                     {activeThread.customerName.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-semibold text-slate-800">{activeThread.customerName}</h3>
+                                    <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                                        <span>{activeThread.customerName}</span>
+                                        {activeThread.customerPhone && (
+                                            <span className="text-xs text-slate-400 font-normal">
+                                                ({activeThread.customerPhone})
+                                            </span>
+                                        )}
+                                    </h3>
                                     <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5 font-medium">
                                         <Bot size={11} className="text-[#378179]" />
                                         Bot Available

@@ -68,8 +68,8 @@ export default function LandingPage() {
     const heroMessages = [
         { sender: "client", text: "Hi! Can you check shipping status for order #2045?" },
         { sender: "bot", text: "Checking order #2045... 📦 Yes, it has shipped via BlueDart (Tracking: BD94028). Delivery expected tomorrow by 5 PM!" },
-        { sender: "client", text: "Perfect. Do you also sync this info to HubSpot CRM?" },
-        { sender: "bot", text: "Absolutely! Connectly360 auto-syncs customer profiles, interest history, and order statuses to HubSpot CRM in real-time. 🔄" },
+        { sender: "client", text: "Perfect. Do you also sync this info to our CRM?" },
+        { sender: "bot", text: "Absolutely! Connectly360 auto-syncs customer profiles, interest history, and order statuses to your CRM database in real-time. 🔄" },
         { sender: "client", text: "Awesome! Thanks for the instant support." },
         { sender: "bot", text: "You're welcome! Our AI agents handle inquiries 24/7 to keep your customer pipelines moving. 🚀" }
     ];
@@ -350,7 +350,7 @@ export default function LandingPage() {
                                             <p className="text-[8px] font-bold text-[#35877D] uppercase leading-tight">Live CRM Capture</p>
                                             <p className="text-[9px] text-gray-300 truncate">
                                                 {heroStep >= 4
-                                                    ? "HubSpot Integration | HubSpot Sync Configured"
+                                                    ? "CRM Integration | Customer Sync Configured"
                                                     : heroStep >= 2
                                                         ? "Order Status | Order ID #2045"
                                                         : "Active Session | Awaiting inquiry"}

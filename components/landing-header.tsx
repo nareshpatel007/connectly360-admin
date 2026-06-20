@@ -50,6 +50,9 @@ export function LandingHeader() {
                     <Link href="/pricing" className={`text-sm font-bold hover:text-[#35877D] transition-colors ${pathname === "/pricing" ? "text-[#35877D]" : "text-gray-700"}`}>
                         Pricing
                     </Link>
+                    <Link href="/blog" className={`text-sm font-bold hover:text-[#35877D] transition-colors ${pathname.startsWith("/blog") ? "text-[#35877D]" : "text-gray-700"}`}>
+                        Blog
+                    </Link>
                     <Link href="/contact" className={`text-sm font-bold hover:text-[#35877D] transition-colors ${pathname === "/contact" ? "text-[#35877D]" : "text-gray-700"}`}>
                         Partnerships
                     </Link>
@@ -77,7 +80,7 @@ export function LandingHeader() {
                     ) : (
                         <>
                             <Button asChild variant="outline" size="sm" className="rounded-full px-4 py-2 h-9 border-[#35877D] text-[#35877D] hover:bg-[#EAF7F2] hover:text-[#2c6f66] bg-transparent transition-all font-extrabold text-xs">
-                                <Link href="/contact">
+                                <Link href="/book-demo">
                                     Book a Demo
                                 </Link>
                             </Button>
@@ -112,10 +115,11 @@ export function LandingHeader() {
                     <span className="text-base font-bold text-gray-700 p-2 border-b border-gray-50">Integrations</span>
                     <Link href="/pricing" className="text-base font-bold text-gray-700 p-2 border-b border-gray-50" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
                     <Link href="/contact" className="text-base font-bold text-gray-700 p-2 border-b border-gray-50" onClick={() => setMobileMenuOpen(false)}>Partnerships</Link>
+                    <Link href="/blog" className="text-base font-bold text-gray-700 p-2 border-b border-gray-50" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
                     <span className="text-base font-bold text-gray-700 p-2 border-b border-gray-50">Resources</span>
 
                     <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
-                        <Link href="/contact" className="text-center font-bold text-gray-700 p-2" onClick={() => setMobileMenuOpen(false)}>Demo</Link>
+                        <Link href="/book-demo" className="text-center font-bold text-gray-700 p-2" onClick={() => setMobileMenuOpen(false)}>Demo</Link>
                         {isAuthenticated ? (
                             <Button asChild className="w-full bg-[#35877D] text-white font-extrabold rounded-full py-3 text-sm">
                                 <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>

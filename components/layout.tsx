@@ -457,7 +457,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                         {/* Book a demo */}
                         <Button variant="outline" asChild className="hidden sm:inline-flex border-[#378179] text-[#378179] hover:bg-[#EAF7F2] text-xs font-medium h-8 px-3.5 rounded-lg bg-transparent cursor-pointer">
-                            <Link href="/book-demo" target="_blank">Book a demo</Link>
+                            <Link href="/book-demo">Book a demo</Link>
                         </Button>
 
                         <div className="h-4 w-px bg-slate-200 hidden sm:block" />
