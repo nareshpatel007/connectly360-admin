@@ -413,23 +413,51 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
     const isInboxPage = pathname === "/conversations" || pathname.startsWith("/customer/inbox");
 
+    const plan = user?.plan?.toLowerCase();
+    const isFree = plan === "free";
+
+    let trialDaysRemaining = 0;
+    let isTrialExpired = false;
+    let hasTrialEnd = false;
+
+    if (isFree && user?.trial_ends_at) {
+        hasTrialEnd = true;
+        const trialEnd = new Date(user.trial_ends_at);
+        const now = new Date();
+        const diffTime = trialEnd.getTime() - now.getTime();
+        trialDaysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (trialDaysRemaining <= 0) {
+            isTrialExpired = true;
+        }
+    }
+
     return (
         <SidebarProvider>
             <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans dashboard-theme">
                 {/* 1. TOP TRIAL WARNING BANNER */}
-                <div className="bg-[#1E293B] text-white py-2.5 px-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm font-normal select-none shrink-0 z-50 shadow-sm border-b border-slate-800">
-                    <div className="flex-1 text-center sm:text-left leading-normal">
-                        You have <span className="font-medium text-[#378179]">2 days</span> to explore this <span className="font-medium">Trial account</span>. Connect your preferred channel to unlock all features.
+                {isFree && (
+                    <div className="bg-[#1E293B] text-white py-2.5 px-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm font-normal select-none shrink-0 z-50 shadow-sm border-b border-slate-800">
+                        <div className="flex-1 text-center sm:text-left leading-normal">
+                            {isTrialExpired ? (
+                                <span>Your free trial has <span className="font-semibold text-red-400">expired</span>. Upgrade your plan to restore full workspace access.</span>
+                            ) : hasTrialEnd ? (
+                                <span>You have <span className="font-medium text-[#378179]">{trialDaysRemaining} {trialDaysRemaining === 1 ? "day" : "days"}</span> to explore this <span className="font-medium">Trial account</span>. Connect your preferred channel to unlock all features.</span>
+                            ) : (
+                                <span>You are on a <span className="font-medium">Trial account</span>. Connect your preferred channel or upgrade to unlock all features.</span>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                            {!isTrialExpired && (
+                                <Button size="sm" asChild className="bg-[#378179] hover:bg-[#079E61] text-white text-xs font-medium h-7.5 px-3 rounded-lg border-0 shadow-xs cursor-pointer">
+                                    <Link href="/integrations/whatsapp">Connect Channel</Link>
+                                </Button>
+                            )}
+                            <Button size="sm" variant="outline" asChild className="text-white hover:text-white border-white/20 hover:bg-white/10 text-xs font-medium h-7.5 px-3 rounded-lg bg-transparent cursor-pointer">
+                                <Link href="/billing/subscription">Upgrade Plan</Link>
+                            </Button>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                        <Button size="sm" asChild className="bg-[#378179] hover:bg-[#079E61] text-white text-xs font-medium h-7.5 px-3 rounded-lg border-0 shadow-xs cursor-pointer">
-                            <Link href="/integrations/whatsapp">Connect Channel</Link>
-                        </Button>
-                        <Button size="sm" variant="outline" asChild className="text-white hover:text-white border-white/20 hover:bg-white/10 text-xs font-medium h-7.5 px-3 rounded-lg bg-transparent cursor-pointer">
-                            <Link href="/billing/subscription">Upgrade Plan</Link>
-                        </Button>
-                    </div>
-                </div>
+                )}
 
                 {/* 2. TOP HEADER BAR */}
                 <header className="h-14 border-b border-slate-200 bg-white flex items-center justify-between px-5 shrink-0 z-40 select-none shadow-xs">

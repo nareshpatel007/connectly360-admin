@@ -44,15 +44,7 @@ export default function DashboardPage() {
 
             if (result.status) {
                 // Refresh authentication session reactively
-                login(result.data.access_token, {
-                    id: result.data.user_id,
-                    tenant_id: result.data.tenant_id,
-                    name: result.data.name,
-                    email: result.data.email,
-                    role: result.data.role,
-                    plan: result.data.plan,
-                    trial_ends_at: result.data.trial_ends_at,
-                });
+                login(result.data.access_token);
             } else {
                 setActivationError(result.message || "Failed to activate plan.");
             }

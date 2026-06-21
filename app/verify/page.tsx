@@ -44,15 +44,7 @@ function VerifyContent() {
 
                     // Perform secure autologin
                     setTimeout(() => {
-                        login(data.data.access_token, {
-                            id: data.data.user_id,
-                            tenant_id: data.data.tenant_id,
-                            name: data.data.name,
-                            email: data.data.email,
-                            role: data.data.role,
-                            plan: data.data.plan,
-                            trial_ends_at: data.data.trial_ends_at,
-                        });
+                        login(data.data.access_token);
                     }, 1500);
                 } else {
                     setStatus("error");

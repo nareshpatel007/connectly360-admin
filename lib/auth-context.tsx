@@ -18,7 +18,7 @@ interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (token: string, user: User) => void;
+    login: (token: string) => void;
     logout: () => void;
 }
 
@@ -31,16 +31,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
 
+    const fetchProfile = async (authToken: string) => {
+        try {
+            const res = await fetch("/api/auth/profile", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${authToken}`
+                }
+            });
+            const data = await res.json();
+            if (data.status) {
+                const fetchedUser = data.data;
+                setUser({
+                    id: fetchedUser.id,
+                    tenant_id: fetchedUser.tenant_id,
+                    name: fetchedUser.name || `${fetchedUser.first_name || ""} ${fetchedUser.last_name || ""}`.trim() || "User",
+                    email: fetchedUser.email,
+                    role: fetchedUser.role,
+                    plan: fetchedUser.plan,
+                    trial_ends_at: fetchedUser.trial_ends_at
+                });
+            } else {
+                logout();
+            }
+        } catch (err) {
+            logout();
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
         // Load auth data from localStorage on mount
         const storedToken = localStorage.getItem("auth_token");
-        const storedUser = localStorage.getItem("auth_user");
+        // Ensure legacy auth_user is completely removed
+        localStorage.removeItem("auth_user");
 
-        if (storedToken && storedUser) {
+        if (storedToken) {
             setToken(storedToken);
-            setUser(JSON.parse(storedUser));
+            fetchProfile(storedToken);
+        } else {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     }, []);
 
     // Route protection logic
@@ -75,11 +107,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, [token, pathname, isLoading, router]);
 
-    const login = (newToken: string, newUser: User) => {
+    const login = (newToken: string) => {
         localStorage.setItem("auth_token", newToken);
-        localStorage.setItem("auth_user", JSON.stringify(newUser));
         setToken(newToken);
-        setUser(newUser);
+        setIsLoading(true);
+        fetchProfile(newToken);
         router.push("/dashboard");
     };
 
