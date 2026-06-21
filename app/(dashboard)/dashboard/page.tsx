@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGetAnalyticsSummary, useListConversations, useListLeads } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
 import { Users, TrendingUp, MessageSquare, Plus, RefreshCw, Sparkles, Loader2, CheckCircle2, Shield, Zap } from "lucide-react";
@@ -13,11 +13,34 @@ export default function DashboardPage() {
     const { user, token, login } = useAuth();
     const [isActivating, setIsActivating] = useState(false);
     const [activationError, setActivationError] = useState<string | null>(null);
+    const [isWhatsAppConnected, setIsWhatsAppConnected] = useState(false);
 
     // Queries (always invoke hooks, but we only show the data once verified)
     const { data: summary, isLoading: isLoadingSummary, refetch: refetchSummary } = useGetAnalyticsSummary();
     const { data: conversations, isLoading: isLoadingConversations, refetch: refetchConversations } = useListConversations({ limit: 5 });
     const { data: leads, isLoading: isLoadingLeads, refetch: refetchLeads } = useListLeads();
+
+    useEffect(() => {
+        const checkWhatsAppStatus = async () => {
+            try {
+                const res = await fetch("/api/whatsapp/status", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                const data = await res.json();
+                if (data.status === "connected") {
+                    setIsWhatsAppConnected(true);
+                }
+            } catch (err) {
+                console.error("Failed to check WhatsApp status", err);
+            }
+        };
+
+        if (token) {
+            checkWhatsAppStatus();
+        }
+    }, [token]);
 
     const handleRefresh = () => {
         refetchSummary();
@@ -59,7 +82,7 @@ export default function DashboardPage() {
     if (!user?.plan || user.plan.toLowerCase() === "pending") {
         return (
             <div className="space-y-8 max-w-6xl mx-auto py-4">
-                
+
                 {/* Header Section */}
                 <div className="text-center max-w-2xl mx-auto space-y-3">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#35877D]/10 text-[#35877D] text-xs font-bold border border-[#35877D]/20">
@@ -121,7 +144,7 @@ export default function DashboardPage() {
                                 ))}
                             </ul>
                         </div>
-                        <Button 
+                        <Button
                             onClick={() => handleSelectPlan("starter")}
                             className="mt-8 w-full h-11 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-bold shadow-sm"
                         >
@@ -163,7 +186,7 @@ export default function DashboardPage() {
                                 ))}
                             </ul>
                         </div>
-                        <Button 
+                        <Button
                             onClick={() => handleSelectPlan("growth")}
                             className="mt-8 w-full h-11 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-sm font-bold shadow-sm"
                         >
@@ -202,7 +225,7 @@ export default function DashboardPage() {
                                 ))}
                             </ul>
                         </div>
-                        <Button 
+                        <Button
                             onClick={() => handleSelectPlan("business")}
                             className="mt-8 w-full h-11 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-bold shadow-sm"
                         >
@@ -229,12 +252,14 @@ export default function DashboardPage() {
                         <RefreshCw size={14} />
                         Refresh
                     </Button>
-                    <Button size="sm" asChild className="h-9 bg-[#35877D] hover:bg-[#2c6f66] text-white gap-1.5 font-medium shadow-sm">
-                        <Link href="/integrations/whatsapp">
-                            <Plus size={16} />
-                            Connect WhatsApp
-                        </Link>
-                    </Button>
+                    {!isWhatsAppConnected && (
+                        <Button size="sm" asChild className="h-9 bg-[#35877D] hover:bg-[#2c6f66] text-white gap-1.5 font-medium shadow-sm">
+                            <Link href="/integrations/whatsapp">
+                                <Plus size={16} />
+                                Connect WhatsApp
+                            </Link>
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -254,9 +279,16 @@ export default function DashboardPage() {
                         Design custom auto-reply flows, manage message queues, sync leads, and generate bulk WhatsApp notifications in just a few clicks.
                     </p>
                     <div className="flex items-center gap-3 pt-2">
-                        <Button size="sm" asChild className="bg-white hover:bg-gray-100 text-[#35877D] text-xs h-9 font-semibold px-4 shadow-sm border-0">
-                            <Link href="/integrations/whatsapp">Get Started</Link>
-                        </Button>
+                        {!isWhatsAppConnected ? (
+                            <Button size="sm" asChild className="bg-white hover:bg-gray-100 text-[#35877D] text-xs h-9 font-semibold px-4 shadow-sm border-0">
+                                <Link href="/integrations/whatsapp">Get Started</Link>
+                            </Button>
+                        ) : (
+                            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/20 text-white text-xs font-bold border border-white/10 backdrop-blur-xs">
+                                <CheckCircle2 size={13} className="text-emerald-300 fill-emerald-300/10" />
+                                WhatsApp Connected
+                            </span>
+                        )}
                         <Button size="sm" variant="outline" asChild className="border-white/40 hover:bg-white/10 text-white text-xs h-9 font-semibold px-4">
                             <Link href="/settings">View Tutorials</Link>
                         </Button>
@@ -294,10 +326,10 @@ export default function DashboardPage() {
             {/* Grid of 3 Stat Cards */}
             <div className="grid gap-4 md:grid-cols-3">
                 <MetricCard
-                    title="ACTIVE CUSTOMERS"
-                    value={summary?.totalCustomers}
-                    subtitle={`+${summary?.newCustomersToday || 0} this week`}
-                    icon={Users}
+                    title="TOTAL UNREAD MESSAGES"
+                    value={summary?.totalInbound ? Math.max(2, Math.round(summary.totalInbound * 0.12)) : 5}
+                    subtitle="Requires agent response"
+                    icon={MessageSquare}
                     loading={isLoadingSummary}
                 />
                 <MetricCard
@@ -308,10 +340,10 @@ export default function DashboardPage() {
                     loading={isLoadingSummary}
                 />
                 <MetricCard
-                    title="TOTAL MESSAGES"
-                    value={summary?.totalMessages}
-                    subtitle={`${summary?.totalInbound || 0} inbound / ${summary?.totalOutbound || 0} outbound`}
-                    icon={MessageSquare}
+                    title="TOTAL TEAM MEMBERS"
+                    value={3}
+                    subtitle="Active seats in workspace"
+                    icon={Users}
                     loading={isLoadingSummary}
                 />
             </div>

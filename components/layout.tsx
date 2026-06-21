@@ -630,8 +630,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     {/* Main Content Area */}
                     <main className="flex-grow flex flex-col min-w-0 overflow-hidden bg-slate-50">
                         {/* We dynamically apply padding so Inbox pages get 100% width/height without any spacing, while other pages have standard padding */}
-                        <div className={`flex-1 w-full h-full overflow-auto ${isInboxPage ? "p-0" : "p-6 md:p-10"}`}>
-                            {children}
+                        <div className={`flex-1 w-full h-full overflow-auto ${isInboxPage ? "p-0" : "p-4 sm:p-6 lg:p-8 xl:p-10 text-sm xl:text-base"}`}>
+                            {isInboxPage ? (
+                                children
+                            ) : (
+                                <div className="max-w-7xl mx-auto w-full flex flex-col gap-6">
+                                    {children}
+                                </div>
+                            )}
                         </div>
                     </main>
                 </div>

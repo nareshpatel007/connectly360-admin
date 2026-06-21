@@ -74,24 +74,24 @@ export default function CreditsPage() {
             {/* Stats section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { 
-                        label: "Available Credits", 
-                        value: summary.available.toLocaleString(), 
-                        desc: "Ready to use immediately", 
+                    {
+                        label: "Available Credits",
+                        value: summary.available.toLocaleString(),
+                        desc: "Ready to use immediately",
                         icon: <Coins className="text-[#378179]" size={16} />,
                         bg: "bg-emerald-50/50 border-emerald-100"
                     },
-                    { 
-                        label: "Used Credits", 
-                        value: summary.used.toLocaleString(), 
-                        desc: "Consumed across all actions", 
+                    {
+                        label: "Used Credits",
+                        value: summary.used.toLocaleString(),
+                        desc: "Consumed across all actions",
                         icon: <ArrowDownLeft className="text-rose-500" size={16} />,
                         bg: "bg-rose-50/30 border-rose-100"
                     },
-                    { 
-                        label: "Total Credits", 
-                        value: summary.total.toLocaleString(), 
-                        desc: "Total allocated & purchased", 
+                    {
+                        label: "Total Credits",
+                        value: summary.total.toLocaleString(),
+                        desc: "Total allocated & purchased",
                         icon: <ArrowUpRight className="text-blue-500" size={16} />,
                         bg: "bg-blue-50/30 border-blue-100"
                     },
@@ -106,7 +106,7 @@ export default function CreditsPage() {
                             </div>
                             <p className="text-3xl font-black text-slate-950 mt-4 leading-none">{stat.value}</p>
                         </div>
-                        <p className="text-[10px] text-slate-450 font-semibold mt-3">{stat.desc}</p>
+                        <p className="text-xs text-slate-450 font-semibold mt-3">{stat.desc}</p>
                     </div>
                 ))}
             </div>
@@ -149,22 +149,20 @@ export default function CreditsPage() {
                                 return (
                                     <div key={log.id} className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50/30 transition-colors">
                                         <div className="col-span-3">
-                                            <span className={`px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wider border ${
-                                                log.action === "credit_purchase" || log.action === "subscription_purchase"
-                                                    ? "bg-purple-50 text-purple-700 border-purple-100"
-                                                    : log.action === "select_plan"
+                                            <span className={`px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wider border ${log.action === "credit_purchase" || log.action === "subscription_purchase"
+                                                ? "bg-purple-50 text-purple-700 border-purple-100"
+                                                : log.action === "select_plan"
                                                     ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                                                     : "bg-slate-50 text-slate-600 border-slate-200"
-                                            }`}>
+                                                }`}>
                                                 {log.action.replace("_", " ")}
                                             </span>
                                         </div>
                                         <div className="col-span-2 text-center">
-                                            <span className={`text-xs font-black px-2 py-0.5 rounded-md ${
-                                                isPositive 
-                                                    ? "bg-emerald-50 text-emerald-700 font-bold" 
-                                                    : "bg-rose-50/50 text-rose-600 font-bold"
-                                            }`}>
+                                            <span className={`text-xs font-black px-2 py-0.5 rounded-md ${isPositive
+                                                ? "bg-emerald-50 text-emerald-700 font-bold"
+                                                : "bg-rose-50/50 text-rose-600 font-bold"
+                                                }`}>
                                                 {isPositive ? `+${creditVal}` : `${creditVal}`}
                                             </span>
                                         </div>
