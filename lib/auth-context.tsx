@@ -58,7 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             pathname === "/faq" ||
             pathname === "/login" ||
             pathname === "/register" ||
-            pathname === "/forgot-password";
+            pathname === "/forgot-password" ||
+            pathname.startsWith("/verify");
 
         const isAuthPage =
             pathname === "/login" ||
@@ -101,7 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         pathname === "/faq" ||
         pathname === "/login" ||
         pathname === "/register" ||
-        pathname === "/forgot-password";
+        pathname === "/forgot-password" ||
+        pathname.startsWith("/verify");
 
     const showContent = isPublicPage || (token && !isLoading);
 

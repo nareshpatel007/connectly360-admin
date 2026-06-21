@@ -50,12 +50,12 @@ export default function ForgotPasswordPage() {
             {/* Header */}
             <LandingHeader />
 
-            <main className="flex-1 pt-40 pb-28 flex items-center justify-center z-10">
+            <main className="flex-1 pt-40 pb-14 md:pb-10 flex items-center justify-center z-10">
                 <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
                     <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
 
-                        {/* Left Side: Product Highlights (Simple Light Premium Background) */}
-                        <div className="lg:col-span-7 flex flex-col justify-between bg-gradient-to-br from-white via-slate-50/80 to-[#35877D]/5 border border-[#35877D]/10 p-8 md:p-12 lg:p-16 text-slate-800 rounded-3xl min-h-[500px] shadow-sm relative">
+                        {/* Left Side: Product Highlights (Simple White Premium Background) */}
+                        <div className="hidden lg:flex lg:col-span-7 flex-col justify-between bg-white border border-[#35877D]/10 p-8 md:p-12 lg:p-16 text-slate-800 rounded-3xl min-h-[500px] shadow-sm relative">
                             {/* Inner Top Content */}
                             <div>
                                 {/* Core Marketing Copy */}
@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
                                     <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
                                         Turn WhatsApp Chats Into <span className="text-[#35877D]">Qualified CRM Leads Automatically.</span>
                                     </h1>
-                                    <p className="text-sm text-slate-500 leading-relaxed font-semibold">
+                                    <p className="text-sm text-slate-500 leading-relaxed font-medium">
                                         Connectly360 natively integrates your entire sales and support pipeline, automating standard inquiries to save your team hours of work.
                                     </p>
                                 </div>
@@ -96,8 +96,8 @@ export default function ForgotPasswordPage() {
                             {/* Trust Badge Strip */}
                             <div className="border-t border-[#35877D]/10 pt-6 mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <div>
-                                    <p className="text-[10px] font-extrabold text-[#35877D] uppercase tracking-wider">Trusted Meta Partner</p>
-                                    <p className="text-xs text-slate-500 font-bold mt-0.5">Secure, reliable APIs compliant with WhatsApp policy</p>
+                                    <p className="text-xs font-medium text-[#35877D] uppercase tracking-wider">Trusted Meta Partner</p>
+                                    <p className="text-xs text-slate-500 font-medium mt-0.5">Secure, reliable APIs compliant with WhatsApp policy</p>
                                 </div>
                                 <div className="flex items-center gap-1 bg-white border border-gray-150 px-3.5 py-1.5 rounded-full shadow-xs text-xs font-bold text-slate-900">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -109,7 +109,7 @@ export default function ForgotPasswordPage() {
                         {/* Right Side: Forgot Password Form */}
                         <div className="lg:col-span-5 flex flex-col justify-center items-center">
                             {/* Reset Password Card */}
-                            <Card className="w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-3xl overflow-hidden p-6 md:p-8 lg:p-10 space-y-6">
+                            <Card className="w-full max-w-md bg-white border border-slate-200 shadow-md rounded-3xl overflow-hidden p-6 md:p-8 lg:p-10 space-y-6">
 
                                 {!submitted ? (
                                     <>
@@ -200,8 +200,8 @@ function FeatureRow({ icon: Icon, title, description }: { icon: any; title: stri
                 <Icon size={16} />
             </div>
             <div>
-                <h4 className="text-xs font-bold text-slate-900 tracking-tight">{title}</h4>
-                <p className="text-[11px] text-slate-500 mt-1 leading-normal font-semibold">{description}</p>
+                <h4 className="text-sm font-semibold text-slate-900 tracking-tight">{title}</h4>
+                <p className="text-xs text-slate-600 mt-1 leading-normal font-medium">{description}</p>
             </div>
         </div>
     );
