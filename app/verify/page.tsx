@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 
-export default function VerifyPage() {
+function VerifyContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
@@ -70,12 +70,12 @@ export default function VerifyPage() {
     return (
         <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center p-4">
             <div className="w-full max-w-md bg-white border border-[#EAE6DF] rounded-3xl p-8 shadow-sm text-center space-y-6">
-                
+
                 {/* Brand Logo Header */}
                 <div className="flex justify-center mb-2">
-                    <img 
-                        src="https://connectly360.sandboxtechnology.in/images/logo.png" 
-                        alt="Connectly360" 
+                    <img
+                        src="https://connectly360.sandboxtechnology.in/images/logo.png"
+                        alt="Connectly360"
                         className="h-10 w-auto object-contain"
                     />
                 </div>
@@ -114,13 +114,13 @@ export default function VerifyPage() {
                 {/* Action Buttons if Failed */}
                 {status === "error" && (
                     <div className="pt-4 flex flex-col gap-2">
-                        <Button 
+                        <Button
                             onClick={() => router.push("/login")}
                             className="w-full h-11 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-sm font-bold shadow-sm"
                         >
                             Back to Sign In
                         </Button>
-                        <Button 
+                        <Button
                             onClick={() => router.push("/")}
                             variant="outline"
                             className="w-full h-11 border-slate-200 hover:bg-slate-50 rounded-xl text-sm font-bold text-slate-700"
@@ -137,5 +137,20 @@ export default function VerifyPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function VerifyPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center p-4">
+                <div className="flex flex-col items-center gap-3">
+                    <Loader2 size={32} className="animate-spin text-[#35877D]" />
+                    <p className="text-xs font-semibold text-gray-550">Loading verification details...</p>
+                </div>
+            </div>
+        }>
+            <VerifyContent />
+        </Suspense>
     );
 }
