@@ -48,7 +48,6 @@ import {
     BellRing,
     UserPlus,
     Zap,
-    Target
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
@@ -93,7 +92,6 @@ const NAV_STRUCTURE: NavGroup[] = [
                 subItems: [
                     { icon: MessageSquare, label: "Inbox", href: "/conversations" },
                     { icon: Users, label: "Contacts", href: "/contacts" },
-                    { icon: Target, label: "Leads", href: "/leads" },
                 ],
             },
         ],
@@ -149,6 +147,7 @@ const NAV_STRUCTURE: NavGroup[] = [
                     { icon: PieChart, label: "Analytics", href: "/analytics" },
                     { icon: BarChart3, label: "Usage Reports", href: "/reports/usage-reports" },
                     { icon: Receipt, label: "Credit History", href: "/reports/credit-history" },
+                    { icon: Activity, label: "Activity Logs", href: "/reports/activity-logs" },
                 ],
             },
         ],
@@ -161,7 +160,6 @@ const NAV_STRUCTURE: NavGroup[] = [
                 href: "/billing/subscription",
                 subItems: [
                     { icon: CreditCard, label: "Subscription", href: "/billing/subscription" },
-                    { icon: Wallet, label: "Credits", href: "/billing/credits" },
                     { icon: Sparkles, label: "Recharge Credits", href: "/billing/recharge-credits" },
                     { icon: FileText, label: "Invoices", href: "/billing/invoices" },
                 ],
@@ -177,7 +175,6 @@ const NAV_STRUCTURE: NavGroup[] = [
                 subItems: [
                     { icon: UserPlus, label: "Team Members", href: "/workspace/team-members" },
                     { icon: Shield, label: "Roles & Permissions", href: "/workspace/roles-permissions" },
-                    { icon: Activity, label: "Activity Logs", href: "/workspace/activity-logs" },
                 ],
             },
         ],
@@ -190,8 +187,6 @@ const NAV_STRUCTURE: NavGroup[] = [
                 href: "/settings",
                 subItems: [
                     { icon: Building2, label: "Company Profile", href: "/settings/company-profile" },
-                    { icon: MessageCircle, label: "WhatsApp Settings", href: "/settings/whatsapp-settings" },
-                    { icon: BrainCircuit, label: "AI Settings", href: "/settings/ai-settings" },
                     { icon: BellRing, label: "Notification Settings", href: "/settings/notification-settings" },
                 ],
             },
@@ -349,14 +344,9 @@ function SidebarNav({ pathname }: { pathname: string }) {
                         if (sub.href === "/integrations/api-keys") return false;
                         if (sub.href === "/integrations/webhooks") return false;
                         if (sub.href === "/workspace/roles-permissions") return false;
-                        if (sub.href === "/workspace/activity-logs") return false;
                     }
                     if (plan === "growth") {
                         if (sub.href === "/integrations/api-keys") return false;
-                        if (sub.href === "/workspace/activity-logs") return false;
-                    }
-                    if (plan === "business") {
-                        if (sub.href === "/workspace/activity-logs") return false;
                     }
                     return true;
                 });

@@ -327,7 +327,7 @@ export default function DashboardPage() {
             <div className="grid gap-4 md:grid-cols-3">
                 <MetricCard
                     title="TOTAL UNREAD MESSAGES"
-                    value={summary?.totalInbound ? Math.max(2, Math.round(summary.totalInbound * 0.12)) : 5}
+                    value={summary?.totalUnreadMessages ?? 0}
                     subtitle="Requires agent response"
                     icon={MessageSquare}
                     loading={isLoadingSummary}
@@ -341,7 +341,7 @@ export default function DashboardPage() {
                 />
                 <MetricCard
                     title="TOTAL TEAM MEMBERS"
-                    value={3}
+                    value={summary?.totalTeamMembers ?? 1}
                     subtitle="Active seats in workspace"
                     icon={Users}
                     loading={isLoadingSummary}

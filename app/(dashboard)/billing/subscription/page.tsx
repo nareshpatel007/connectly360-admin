@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CreditCard, CheckCircle2, Sparkles, Loader2, Zap } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/hooks/use-toast";
+import { PageHeader } from "@/components/page-header";
 
 declare global {
     interface Window {
@@ -223,22 +224,18 @@ export default function SubscriptionPage() {
     return (
         <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto py-4">
             {/* Header section */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-[#378179]/10 flex items-center justify-center">
-                        <CreditCard size={20} className="text-[#378179]" />
+            <PageHeader
+                icon={CreditCard}
+                title="Membership Plans"
+                description="Select a membership plan below to upgrade your limits instantly."
+                actions={
+                    <div className="flex items-center gap-2 bg-slate-100/80 px-3.5 py-1.5 rounded-xl border border-slate-200/50">
+                        <Zap size={13} className="text-amber-500 fill-amber-500/20" />
+                        <span className="text-xs font-semibold text-slate-600">Current Workspace Plan:</span>
+                        <span className="text-xs font-bold text-[#378179] uppercase">{currentPlan}</span>
                     </div>
-                    <div>
-                        <h1 className="text-xl font-extrabold tracking-tight text-slate-900">Membership Plans</h1>
-                        <p className="text-xs text-slate-500 mt-0.5">Select a membership plan below to upgrade your limits instantly.</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2 bg-slate-100/80 px-3.5 py-1.5 rounded-xl border border-slate-200/50">
-                    <Zap size={13} className="text-amber-500 fill-amber-500/20" />
-                    <span className="text-xs font-semibold text-slate-600">Current Workspace Plan:</span>
-                    <span className="text-xs font-bold text-[#378179] uppercase">{currentPlan}</span>
-                </div>
-            </div>
+                }
+            />
 
             {/* Monthly / Yearly Billing Toggle */}
             <div className="flex justify-center items-center mt-2">

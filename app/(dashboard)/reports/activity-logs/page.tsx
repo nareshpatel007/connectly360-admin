@@ -1,31 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText, Loader2, CreditCard, Award, Search, SlidersHorizontal } from "lucide-react";
+import { Activity, Loader2, Search, SlidersHorizontal } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { PageHeader } from "@/components/page-header";
 
-interface InvoiceItem {
+interface LogItem {
     id: number;
-    payment_id: string | null;
-    order_id: string | null;
-    amount: string;
-    currency: string;
-    type: string;
-    plan: string | null;
-    credits: number | null;
-    status: string;
+    action: string;
+    description: string;
+    ip_address: string | null;
     created_at: string;
 }
 
-export default function InvoicesPage() {
+export default function ActivityLogsPage() {
     const { token } = useAuth();
-    const [invoices, setInvoices] = useState<InvoiceItem[]>([]);
+    const [logs, setLogs] = useState<LogItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     // Filter states
     const [searchQuery, setSearchQuery] = useState("");
-    const [typeFilter, setTypeFilter] = useState("all");
+    const [actionFilter, setActionFilter] = useState("all");
     const [dateFilter, setDateFilter] = useState("all");
 
     // Pagination states
@@ -33,55 +28,50 @@ export default function InvoicesPage() {
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
     useEffect(() => {
-        const fetchInvoices = async () => {
+        const fetchLogs = async () => {
             try {
-                const res = await fetch("/api/reports/invoices", {
+                const res = await fetch("/api/reports/activity-logs", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
                 });
                 const result = await res.json();
                 if (result.status) {
-                    setInvoices(result.data || []);
+                    setLogs(result.data || []);
                 }
             } catch (err) {
-                console.error("Failed to load invoices", err);
+                console.error("Failed to load activity logs", err);
             } finally {
                 setIsLoading(false);
             }
         };
 
         if (token) {
-            fetchInvoices();
+            fetchLogs();
         }
     }, [token]);
 
-    // Reset pagination when filters change
+    // Reset page when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, typeFilter, dateFilter]);
+    }, [searchQuery, actionFilter, dateFilter]);
 
     // Filter logic
-    const filteredInvoices = invoices.filter((inv) => {
-        // 1. Search Query
-        const invoiceNum = `INV-${String(inv.id).padStart(4, "0")}`;
-        const planName = inv.plan || "";
-        const creditsText = inv.credits ? `${inv.credits} credits` : "";
-        const matchesSearch = invoiceNum.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             (inv.payment_id || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             planName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             creditsText.toLowerCase().includes(searchQuery.toLowerCase());
+    const filteredLogs = logs.filter((log) => {
+        // 1. Search filter
+        const matchesSearch = log.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                             log.action.toLowerCase().includes(searchQuery.toLowerCase());
 
-        // 2. Type Filter
-        let matchesType = true;
-        if (typeFilter !== "all") {
-            matchesType = inv.type.toLowerCase() === typeFilter.toLowerCase();
+        // 2. Action filter
+        let matchesAction = true;
+        if (actionFilter !== "all") {
+            matchesAction = log.action.toLowerCase() === actionFilter.toLowerCase();
         }
 
-        // 3. Date Filter
+        // 3. Date filter
         let matchesDate = true;
         if (dateFilter !== "all") {
-            const logDate = new Date(inv.created_at);
+            const logDate = new Date(log.created_at);
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -102,22 +92,22 @@ export default function InvoicesPage() {
             }
         }
 
-        return matchesSearch && matchesType && matchesDate;
+        return matchesSearch && matchesAction && matchesDate;
     });
 
     // Pagination calculations
-    const totalEntries = filteredInvoices.length;
+    const totalEntries = filteredLogs.length;
     const totalPages = Math.ceil(totalEntries / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredInvoices.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = filteredLogs.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
         <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-4">
             <PageHeader
-                icon={FileText}
-                title="Billing Invoices"
-                description="Track your subscription payments, recharges, and billing history."
+                icon={Activity}
+                title="Activity Logs"
+                description="Audit log tracking all login, purchase, and workspace configuration changes."
             />
 
             {/* Filters Bar */}
@@ -126,28 +116,31 @@ export default function InvoicesPage() {
                     <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
                         type="text"
-                        placeholder="Search Invoice ID, Payment ID, Plan or Credits..."
+                        placeholder="Search event details or actions..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full h-10 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#35877D] focus:border-[#35877D]"
                     />
                 </div>
-                
+
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-1.5">
                         <SlidersHorizontal size={13} className="text-slate-400" />
                         <span className="text-[10px] font-bold text-slate-400 uppercase">Filters</span>
                     </div>
 
-                    {/* Type Filter */}
+                    {/* Action Filter */}
                     <select
-                        value={typeFilter}
-                        onChange={(e) => setTypeFilter(e.target.value)}
+                        value={actionFilter}
+                        onChange={(e) => setActionFilter(e.target.value)}
                         className="h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#35877D]"
                     >
-                        <option value="all">All Invoices</option>
-                        <option value="subscription">Subscriptions</option>
-                        <option value="credits">Credit Recharges</option>
+                        <option value="all">All Actions</option>
+                        <option value="login">Login Events</option>
+                        <option value="credit_purchase">Credit Purchase</option>
+                        <option value="credit_usage">Credit Usage</option>
+                        <option value="select_plan">Select Plan</option>
+                        <option value="subscription_purchase">Subscription Payment</option>
                     </select>
 
                     {/* Date Filter */}
@@ -169,17 +162,17 @@ export default function InvoicesPage() {
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-3">
                     <Loader2 className="animate-spin text-[#378179] h-8 w-8" />
-                    <p className="text-xs text-slate-400 font-medium font-sans">Loading invoices...</p>
+                    <p className="text-xs text-slate-400 font-semibold font-sans">Loading audit history...</p>
                 </div>
-            ) : filteredInvoices.length === 0 ? (
+            ) : filteredLogs.length === 0 ? (
                 <div className="text-center py-16 bg-white border border-slate-200 rounded-2xl flex flex-col items-center gap-3 shadow-xs">
                     <div className="h-10 w-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100">
-                        <FileText size={18} />
+                        <Activity size={18} />
                     </div>
                     <div>
-                        <h3 className="text-xs font-bold text-slate-800">No invoices match</h3>
+                        <h3 className="text-xs font-bold text-slate-800">No logs match</h3>
                         <p className="text-xs text-slate-400 mt-0.5 max-w-xs leading-normal">
-                            Try adjusting your filters or search terms.
+                            Try adjusting your filters or search keywords.
                         </p>
                     </div>
                 </div>
@@ -187,39 +180,32 @@ export default function InvoicesPage() {
                 <div className="space-y-4">
                     <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs">
                         <div className="grid grid-cols-12 gap-4 px-6 py-3.5 border-b border-slate-150 bg-slate-50/60 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">
-                            <span className="col-span-2">Invoice ID</span>
-                            <span className="col-span-4">Description</span>
-                            <span className="col-span-2">Payment ID</span>
-                            <span className="col-span-2">Amount</span>
-                            <span className="col-span-2">Date</span>
+                            <span className="col-span-3">Action</span>
+                            <span className="col-span-6">Description</span>
+                            <span className="col-span-3">Date &amp; Time</span>
                         </div>
                         <div className="divide-y divide-slate-100">
-                            {currentItems.map((inv) => (
-                                <div key={inv.id} className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50/30 transition-colors">
-                                    <div className="col-span-2 text-xs font-bold text-slate-900">
-                                        INV-{String(inv.id).padStart(4, "0")}
+                            {currentItems.map((log) => (
+                                <div key={log.id} className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50/30 transition-colors">
+                                    <div className="col-span-3">
+                                        <span className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider ${
+                                            log.action === "login"
+                                                ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                                                : log.action === "subscription_purchase" || log.action === "credit_purchase"
+                                                ? "bg-purple-50 text-purple-700 border border-purple-100"
+                                                : "bg-blue-50 text-blue-700 border border-blue-100"
+                                        }`}>
+                                            {log.action.replace("_", " ")}
+                                        </span>
                                     </div>
-                                    <div className="col-span-4 flex items-center gap-2">
-                                        {inv.type === "subscription" ? (
-                                            <div className="flex items-center gap-1.5 text-xs text-slate-700 font-semibold">
-                                                <Award size={14} className="text-[#378179]" />
-                                                <span>Upgrade: <span className="uppercase text-[#378179] font-bold">{inv.plan}</span></span>
-                                            </div>
-                                        ) : (
-                                            <div className="flex items-center gap-1.5 text-xs text-slate-700 font-semibold">
-                                                <CreditCard size={14} className="text-[#378179]" />
-                                                <span>Top-up: <span className="text-[#378179] font-bold">{inv.credits?.toLocaleString()} Credits</span></span>
-                                            </div>
+                                    <div className="col-span-6 text-xs text-slate-700 font-semibold leading-relaxed">
+                                        {log.description}
+                                        {log.ip_address && (
+                                            <span className="block text-[10px] text-slate-400 font-sans mt-0.5 font-normal">IP Address: {log.ip_address}</span>
                                         )}
                                     </div>
-                                    <div className="col-span-2 text-[11px] font-mono text-slate-500 font-semibold truncate select-all" title={inv.payment_id || ""}>
-                                        {inv.payment_id || "N/A"}
-                                    </div>
-                                    <div className="col-span-2 text-xs font-bold text-slate-950">
-                                        ₹{Number(inv.amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                    </div>
-                                    <div className="col-span-2 text-[11px] text-slate-400 font-semibold">
-                                        {new Date(inv.created_at).toLocaleDateString("en-IN")}
+                                    <div className="col-span-3 text-[11px] text-slate-400 font-semibold">
+                                        {new Date(log.created_at).toLocaleString("en-IN")}
                                     </div>
                                 </div>
                             ))}
@@ -244,7 +230,7 @@ export default function InvoicesPage() {
                             </select>
                             <span className="text-xs text-slate-500 font-semibold">entries</span>
                             <span className="text-xs text-slate-400 font-medium ml-4">
-                                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalEntries)} of {totalEntries} invoices
+                                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalEntries)} of {totalEntries} logs
                             </span>
                         </div>
 

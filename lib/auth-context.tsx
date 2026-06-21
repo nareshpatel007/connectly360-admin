@@ -167,10 +167,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             {showContent ? (
                 children
             ) : (
-                <div className="flex h-screen w-screen items-center justify-center bg-[#FAF8F5]">
-                    <div className="flex flex-col items-center gap-3">
-                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#35877D] border-t-transparent" />
-                        <p className="text-xs font-semibold text-gray-500 font-sans">Loading...</p>
+                <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-[#f2f8f7] to-[#e6f2f0]">
+                    <div className="flex flex-col items-center gap-4 p-8 rounded-3xl bg-white/40 backdrop-blur-lg border border-white/30 shadow-xl shadow-[#35877D]/5">
+                        <div className="relative flex items-center justify-center">
+                            {/* Glowing effect */}
+                            <div className="absolute inset-0 rounded-full bg-[#35877D]/20 blur-xl animate-pulse" />
+                            {/* Outer ring */}
+                            <div className="h-12 w-12 rounded-full border-4 border-[#35877D]/25 border-t-[#35877D] animate-spin" />
+                            {/* Inner ring spinning in reverse */}
+                            <div className="absolute h-6 w-6 rounded-full border-2 border-transparent border-t-[#35877D] border-b-[#35877D] animate-spin [animation-direction:reverse]" />
+                        </div>
+                        <p className="text-sm font-bold text-[#35877D] tracking-wide font-sans animate-pulse">
+                            Initializing your Workspace
+                        </p>
                     </div>
                 </div>
             )}

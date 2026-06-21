@@ -37,6 +37,8 @@ export interface AnalyticsSummary {
     totalMessages: number;
     totalInbound: number;
     totalOutbound: number;
+    totalUnreadMessages: number;
+    totalTeamMembers: number;
 }
 
 export interface Conversation {
@@ -47,6 +49,7 @@ export interface Conversation {
     message: string;
     direction: "inbound" | "outbound";
     intent?: string;
+    isRead?: number;
     createdAt: string;
 }
 
