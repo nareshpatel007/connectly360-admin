@@ -98,14 +98,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             pathname === "/register" ||
             pathname === "/forgot-password";
 
+        const planName = user?.plan?.toLowerCase();
+        const isFree = planName === "free";
+        let isTrialExpired = false;
+        if (isFree && user?.trial_ends_at) {
+            const trialEnd = new Date(user.trial_ends_at);
+            const now = new Date();
+            isTrialExpired = trialEnd.getTime() - now.getTime() <= 0;
+        }
+
         if (!token && !isPublicPage) {
             // Redirect to login if not authenticated and not on a public page
             router.push("/login");
         } else if (token && isAuthPage) {
             // Redirect to dashboard home if already logged in and visiting auth pages
             router.push("/dashboard");
+        } else if (token && isTrialExpired && !isPublicPage && pathname !== "/billing/subscription") {
+            // Redirect to subscription page if trial is expired
+            router.push("/billing/subscription");
         }
-    }, [token, pathname, isLoading, router]);
+    }, [token, user, pathname, isLoading, router]);
 
     const login = (newToken: string) => {
         localStorage.setItem("auth_token", newToken);

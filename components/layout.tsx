@@ -431,6 +431,43 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         }
     }
 
+    if (isTrialExpired) {
+        return (
+            <div className="flex flex-col h-screen w-full overflow-x-hidden bg-slate-50 text-slate-900 font-sans">
+                {/* Header carrying the logo and Logout option */}
+                <header className="h-14 border-b border-slate-200 bg-white flex items-center justify-between px-6 shrink-0 z-40 select-none shadow-sm">
+                    <div className="flex items-center gap-2">
+                        <img src="/images/logo.png" alt="Connectly360 Logo" className="h-9 w-auto object-contain" />
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <span className="text-xs text-red-500 font-bold bg-red-50 border border-red-100 rounded-lg px-2.5 py-1">
+                            Trial Expired
+                        </span>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={logout}
+                            className="rounded-xl px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 hover:text-red-600 cursor-pointer font-semibold transition-colors flex items-center gap-1.5 bg-transparent border-0"
+                        >
+                            <LogOut size={14} />
+                            <span>Sign out</span>
+                        </Button>
+                    </div>
+                </header>
+                {/* Main Content (Subscription Page) */}
+                <main className="flex-grow overflow-y-auto overflow-x-hidden p-6 md:p-12 max-w-7xl mx-auto w-full">
+                    <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8 text-center shadow-xs">
+                        <h2 className="text-sm font-bold text-red-800">Your Free Trial Has Expired</h2>
+                        <p className="text-sm text-red-700 mt-1 leading-relaxed">
+                            To continue using your workspace, templates, custom node auto-replies, and messaging automation features, please choose one of our paid plans below.
+                        </p>
+                    </div>
+                    {children}
+                </main>
+            </div>
+        );
+    }
+
     return (
         <SidebarProvider>
             <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans dashboard-theme">
