@@ -29,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ContactCrmPanel, StageBadge, CrmContact, StageKey, STAGES } from "@/components/contacts/contact-crm-panel";
 
 export default function CustomersPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -55,6 +56,13 @@ export default function CustomersPage() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+
+    // CRM Panel
+    const [crmContact, setCrmContact] = useState<CrmContact | null>(null);
+    const [isCrmOpen, setIsCrmOpen] = useState(false);
+    // Local overrides for stage & attributes (so table updates instantly)
+    const [stageOverrides, setStageOverrides] = useState<Record<number, StageKey>>({});
+    const [attrsOverrides, setAttrsOverrides] = useState<Record<number, Record<string, string>>>({});
 
     // Filter & Sort customers
     const filteredCustomers = (customers?.filter(customer =>
@@ -291,6 +299,31 @@ export default function CustomersPage() {
         setCity("");
     };
 
+    const openCrmPanel = (customer: Customer) => {
+        const c: CrmContact = {
+            id: customer.id,
+            name: customer.name,
+            phone: customer.phone,
+            city: customer.city,
+            stage: (stageOverrides[customer.id] ?? (customer as any).stage ?? "new_lead") as StageKey,
+            custom_attributes: attrsOverrides[customer.id] ?? (customer as any).custom_attributes ?? {},
+            createdAt: customer.createdAt,
+            messageCount: (customer as any).messageCount,
+        };
+        setCrmContact(c);
+        setIsCrmOpen(true);
+    };
+
+    const handleCrmStageChange = (id: number, stage: StageKey) => {
+        setStageOverrides(prev => ({ ...prev, [id]: stage }));
+        setCrmContact(prev => prev && prev.id === id ? { ...prev, stage } : prev);
+    };
+
+    const handleCrmAttrsChange = (id: number, attrs: Record<string, string>) => {
+        setAttrsOverrides(prev => ({ ...prev, [id]: attrs }));
+        setCrmContact(prev => prev && prev.id === id ? { ...prev, custom_attributes: attrs } : prev);
+    };
+
     return (
         <div className="space-y-6">
             {/* Header Section */}
@@ -507,8 +540,12 @@ export default function CustomersPage() {
                                     const { flag, display } = formatPhoneNumber(customer.phone);
                                     const isSelected = selectedIds.includes(customer.id);
                                     return (
-                                        <TableRow key={customer.id} className="hover:bg-slate-50/40 text-slate-650">
-                                            <TableCell className="pl-6 py-3">
+                                        <TableRow
+                                            key={customer.id}
+                                            className="hover:bg-slate-50/40 text-slate-650 cursor-pointer"
+                                            onClick={() => openCrmPanel(customer)}
+                                        >
+                                            <TableCell className="py-3" onClick={e => e.stopPropagation()}>
                                                 <Checkbox
                                                     checked={isSelected}
                                                     onCheckedChange={(checked) => handleSelect(customer.id, !!checked)}
@@ -517,12 +554,12 @@ export default function CustomersPage() {
                                             </TableCell>
                                             <TableCell className="py-3">
                                                 <div className="flex flex-col">
-                                                    <Link
-                                                        href={`/customers/inbox/${customer.id}`}
-                                                        className="text-slate-700 hover:text-blue-800 hover:underline font-semibold text-xs transition-colors"
+                                                    <button
+                                                        onClick={e => { e.stopPropagation(); openCrmPanel(customer); }}
+                                                        className="text-slate-700 hover:text-[#35877D] hover:underline font-semibold text-xs transition-colors text-left cursor-pointer"
                                                     >
                                                         {customer.name || "WhatsApp User"}
-                                                    </Link>
+                                                    </button>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="py-3 text-slate-700 text-xs font-semibold">
@@ -536,32 +573,31 @@ export default function CustomersPage() {
                                                 </span>
                                             </TableCell>
                                             <TableCell className="py-3">
-                                                <span className="text-xs font-semibold border border-[#378179]/50 text-slate-700 bg-[#378179]/20 px-2 py-0.5 rounded-md">
-                                                    New Lead
-                                                </span>
+                                                <StageBadge stage={stageOverrides[customer.id] ?? (customer as any).stage ?? "new_lead"} />
                                             </TableCell>
                                             <TableCell className="py-3">
                                                 <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                                                    <span className="bg-slate-50 text-slate-600 px-2 py-0.5 rounded font-medium border border-slate-200">
-                                                        lead_stage: New Lead
-                                                    </span>
-                                                    <span className="bg-slate-50 text-slate-600 px-2 py-0.5 rounded font-medium border border-slate-200 max-w-[120px] truncate">
-                                                        contact_owner: {customer.name ? customer.name.split(" ")[0] : "Admin"}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => toast.info(`Attributes for ${customer.name || 'User'}: lead_stage=New Lead, contact_owner=Admin`)}
-                                                        className="text-blue-600 hover:text-blue-800 font-semibold hover:underline bg-transparent border-0 cursor-pointer ml-1 text-xs"
-                                                    >
-                                                        Show all attributes
-                                                    </button>
+                                                    {Object.entries(attrsOverrides[customer.id] ?? (customer as any).custom_attributes ?? {}).slice(0, 2).map(([k, v]) => (
+                                                        <span key={k} className="bg-slate-50 text-slate-600 px-2 py-0.5 rounded font-medium border border-slate-200 max-w-[130px] truncate">
+                                                            {k}: {String(v)}
+                                                        </span>
+                                                    ))}
+                                                    {Object.keys(attrsOverrides[customer.id] ?? (customer as any).custom_attributes ?? {}).length > 2 && (
+                                                        <span className="text-[10px] font-semibold text-[#35877D] cursor-pointer hover:underline" onClick={e => { e.stopPropagation(); openCrmPanel(customer); }}>
+                                                            +{Object.keys(attrsOverrides[customer.id] ?? (customer as any).custom_attributes ?? {}).length - 2} more
+                                                        </span>
+                                                    )}
+                                                    {Object.keys(attrsOverrides[customer.id] ?? (customer as any).custom_attributes ?? {}).length === 0 && (
+                                                        <span className="text-[10px] text-slate-400 italic">Click row to add</span>
+                                                    )}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="py-3 text-right pr-6">
+                                            <TableCell className="py-3 text-right pr-6" onClick={e => e.stopPropagation()}>
                                                 <div className="flex items-center justify-end gap-1">
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        onClick={() => openEditDialog(customer)}
+                                                        onClick={() => openCrmPanel(customer)}
                                                         className="h-8 w-8 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg cursor-pointer"
                                                     >
                                                         <Edit2 size={13} />
@@ -897,6 +933,15 @@ export default function CustomersPage() {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            {/* CRM Slide-over Panel */}
+            <ContactCrmPanel
+                contact={crmContact}
+                isOpen={isCrmOpen}
+                onClose={() => setIsCrmOpen(false)}
+                onStageChange={handleCrmStageChange}
+                onAttributesChange={handleCrmAttrsChange}
+            />
 
         </div>
     );
