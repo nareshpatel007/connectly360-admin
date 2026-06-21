@@ -11,6 +11,7 @@ interface User {
     role: string | null;
     plan?: string;
     trial_ends_at?: string | null;
+    credits?: number;
 }
 
 interface AuthContextType {
@@ -49,7 +50,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     email: fetchedUser.email,
                     role: fetchedUser.role,
                     plan: fetchedUser.plan,
-                    trial_ends_at: fetchedUser.trial_ends_at
+                    trial_ends_at: fetchedUser.trial_ends_at,
+                    credits: fetchedUser.credits
                 });
             } else {
                 logout();

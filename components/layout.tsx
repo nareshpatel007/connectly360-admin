@@ -508,6 +508,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                     {/* Right side: Widgets and Actions */}
                     <div className="flex items-center gap-4">
+                        {/* Credits Balance display */}
+                        <Link href="/billing/recharge-credits" className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#378179]/5 border border-[#378179]/10 hover:bg-[#378179]/10 transition-all cursor-pointer text-xs font-bold text-[#378179]">
+                            <Zap size={13} className="fill-[#378179]/20 text-[#378179]" />
+                            <span>{user?.credits !== undefined ? Number(user.credits).toLocaleString() : 0} Credits</span>
+                        </Link>
+
                         {/* Quick start progress */}
                         <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-700">
                             <span>Quick start</span>
