@@ -60,7 +60,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 type SubItem = {
     icon: React.ElementType;
@@ -393,7 +394,50 @@ function SidebarNav({ pathname }: { pathname: string }) {
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const { user, logout } = useAuth();
+    const { token, user, logout } = useAuth();
+
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    const fetchNotifications = async () => {
+        if (!token) return;
+        try {
+            const res = await fetch("/api/notifications", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.status) {
+                setNotifications(data.notifications || []);
+                const unread = (data.notifications || []).filter((n: any) => !n.is_read).length;
+                setUnreadCount(unread);
+            }
+        } catch (err) {
+            console.error("Failed to fetch notifications", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchNotifications();
+        const interval = setInterval(fetchNotifications, 10000); // Poll every 10 seconds
+        return () => clearInterval(interval);
+    }, [token]);
+
+    const handleReadAll = async () => {
+        if (!token) return;
+        try {
+            const res = await fetch("/api/notifications/read-all", {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.status) {
+                fetchNotifications();
+                toast.success("All notifications marked as read.");
+            }
+        } catch (err) {
+            console.error("Failed to mark all as read", err);
+        }
+    };
 
     // If the page is login, register, or forgot-password, we don't render the sidebar layout wrapper!
     const isAuthPage = pathname === "/login" || pathname === "/register" || pathname === "/forgot-password";
@@ -504,34 +548,90 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             <span>{user?.credits !== undefined ? Number(user.credits).toLocaleString() : 0} Credits</span>
                         </Link>
 
-                        {/* Quick start progress */}
-                        <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-700">
-                            <span>Quick start</span>
-                            <div className="relative h-6 w-6 flex items-center justify-center">
-                                <svg className="absolute w-full h-full transform -rotate-90">
-                                    <circle cx="12" cy="12" r="10" stroke="#E2E8F0" strokeWidth="2.5" fill="transparent" />
-                                    <circle cx="12" cy="12" r="10" stroke="#09B36E" strokeWidth="2.5" fill="transparent" strokeDasharray="62.8" strokeDashoffset="47.1" />
-                                </svg>
-                                <span className="text-[10px] font-semibold text-slate-800">1/4</span>
-                            </div>
-                        </div>
-
                         {/* Book a demo */}
-                        <Button variant="outline" asChild className="hidden sm:inline-flex border-[#378179] text-[#378179] hover:bg-[#EAF7F2] text-xs font-medium h-8 px-3.5 rounded-lg bg-transparent cursor-pointer">
-                            <Link href="/book-demo">Book a demo</Link>
-                        </Button>
+                        {(isFree || !plan || plan === "free") && (
+                            <Button variant="outline" asChild className="hidden sm:inline-flex border-[#378179] text-[#378179] hover:bg-[#EAF7F2] text-xs font-medium h-8 px-3.5 rounded-lg bg-transparent cursor-pointer">
+                                <Link href="/book-demo">Book a demo</Link>
+                            </Button>
+                        )}
 
                         <div className="h-4 w-px bg-slate-200 hidden sm:block" />
 
                         {/* Notifications (Bell Icon) */}
-                        <div className="relative">
-                            <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg cursor-pointer">
-                                <Bell size={18} />
-                            </Button>
-                            <span className="absolute top-0.5 right-0.5 bg-red-500 text-white font-extrabold text-[9px] h-4.5 w-4.5 rounded-full flex items-center justify-center border border-white shadow-xs">
-                                5
-                            </span>
-                        </div>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <div className="relative cursor-pointer">
+                                    <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg cursor-pointer">
+                                        <Bell size={18} />
+                                    </Button>
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-0.5 right-0.5 bg-red-500 text-white font-extrabold text-[9px] h-4.5 w-4.5 rounded-full flex items-center justify-center border border-white shadow-xs">
+                                            {unreadCount}
+                                        </span>
+                                    )}
+                                </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                className="w-80 p-2 border border-slate-200 bg-white rounded-xl shadow-lg z-50 flex flex-col gap-1"
+                                side="bottom"
+                                align="end"
+                            >
+                                <div className="flex items-center justify-between px-2 py-1">
+                                    <span className="text-xs font-bold text-slate-800">Notifications</span>
+                                    {unreadCount > 0 && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleReadAll();
+                                            }}
+                                            className="text-[10px] text-[#378179] font-bold hover:underline bg-transparent border-0 cursor-pointer"
+                                        >
+                                            Mark all as read
+                                        </button>
+                                    )}
+                                </div>
+                                <DropdownMenuSeparator className="my-1" />
+                                <div className="max-h-64 overflow-y-auto divide-y divide-slate-100 flex flex-col">
+                                    {notifications.length === 0 ? (
+                                        <div className="py-8 px-4 flex flex-col items-center justify-center text-center select-none animate-in fade-in-50 duration-300">
+                                            <div className="h-10 w-10 rounded-xl bg-[#378179]/5 border border-[#378179]/10 flex items-center justify-center text-[#378179] mb-2.5 shadow-xs">
+                                                <Bell size={16} />
+                                            </div>
+                                            <p className="text-xs font-bold text-slate-800">All caught up!</p>
+                                            <p className="text-xs text-slate-500 mt-1 max-w-[300px] leading-normal font-normal">
+                                                No new notifications. We'll let you know when workspace updates happen.
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        notifications.slice(0, 5).map((n) => (
+                                            <div
+                                                key={n.id}
+                                                className={`p-2 hover:bg-slate-50 transition-colors flex flex-col gap-0.5 rounded-lg ${!n.is_read ? 'bg-slate-50/50' : ''}`}
+                                            >
+                                                <div className="flex items-start justify-between gap-2">
+                                                    <span className="text-xs font-bold text-slate-800 truncate">{n.title}</span>
+                                                    {!n.is_read && (
+                                                        <span className="h-1.5 w-1.5 rounded-full bg-[#378179] shrink-0 mt-1" />
+                                                    )}
+                                                </div>
+                                                <p className="text-[10.5px] text-slate-500 leading-normal">{n.message}</p>
+                                                <span className="text-[9px] text-slate-450 font-medium">
+                                                    {new Date(n.created_at).toLocaleDateString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+                                                </span>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                                <DropdownMenuSeparator className="my-1" />
+                                <Button
+                                    asChild
+                                    variant="ghost"
+                                    className="w-full text-center text-xs font-bold text-[#378179] hover:bg-[#378179]/5 rounded-lg py-1.5 h-auto cursor-pointer border-0"
+                                >
+                                    <Link href="/notifications">View all notifications</Link>
+                                </Button>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
 
                         <div className="h-4 w-px bg-slate-200" />
 
