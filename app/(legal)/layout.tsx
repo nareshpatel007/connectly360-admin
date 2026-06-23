@@ -14,6 +14,6 @@ export const metadata: Metadata = {
     },
 };
 
-export default function AuthLayout({ children }: { children: ReactNode }) {
+export default function LegalLayout({ children }: { children: ReactNode }) {
     return children;
 }
