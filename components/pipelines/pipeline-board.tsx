@@ -98,8 +98,11 @@ function StageColumn({
         setIsOver(false);
         const idStr = e.dataTransfer.getData("text/plain");
         const leadId = parseInt(idStr, 10);
-        if (!isNaN(leadId) && leadId !== draggingId) {
-            onLeadMoved(leadId, column.id);
+        if (!isNaN(leadId)) {
+            const alreadyInColumn = leads.some((l) => l.id === leadId);
+            if (!alreadyInColumn) {
+                onLeadMoved(leadId, column.id);
+            }
         }
         setDraggingId(null);
     }
