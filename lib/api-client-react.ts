@@ -70,6 +70,14 @@ export interface Lead {
     createdAt: string;
 }
 
+export interface LeadStageHistory {
+    id: number;
+    fromStatus: string | null;
+    toStatus: string;
+    userName?: string | null;
+    createdAt: string;
+}
+
 export interface WhatsappStatus {
     status: "connected" | "pending" | "failed" | "disconnected";
     displayName?: string;
@@ -216,6 +224,20 @@ export function useDeleteLead() {
         },
     });
 }
+
+export function useGetLeadHistory(leadId: number | null | undefined) {
+    return useQuery<LeadStageHistory[]>({
+        queryKey: ["getLeadHistory", leadId],
+        queryFn: async () => {
+            if (!leadId) return [];
+            const res = await apiFetch(`${API_BASE}/leads/${leadId}/history`);
+            if (!res.ok) throw new Error("Failed to fetch lead history");
+            return res.json();
+        },
+        enabled: !!leadId,
+    });
+}
+
 
 
 // WhatsApp Integration
