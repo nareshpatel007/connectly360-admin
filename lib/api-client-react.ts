@@ -616,3 +616,116 @@ export function useSimulateAiReply() {
     });
 }
 
+// -------------------------------------------------------------
+// Message Template Types
+// -------------------------------------------------------------
+export interface MessageTemplate {
+    id: number;
+    name: string;
+    category: 'Marketing' | 'Utility' | 'Authentication';
+    language: string;
+    header_type?: 'none' | 'text' | 'image' | 'video' | 'document' | null;
+    header_content?: string | null;
+    header_media_url?: string | null;
+    body_text: string;
+    footer_text?: string | null;
+    buttons?: TemplateButton[] | null;
+    status?: string;
+    rejection_reason?: string | null;
+    submission_error?: string | null;
+    quality_score?: string | null;
+    meta_template_id?: string | null;
+    sample_values?: TemplateSampleValues | null;
+    created_at?: string;
+}
+
+export type TemplateButton =
+  | { type: 'QUICK_REPLY'; text: string }
+  | { type: 'URL'; text: string; url: string; example?: string }
+  | { type: 'PHONE_NUMBER'; text: string; phone_number: string }
+  | { type: 'COPY_CODE'; text: string; example: string };
+
+export interface TemplateSampleValues {
+  body?: string[];
+  header?: string[];
+}
+
+// -------------------------------------------------------------
+// Message Template Hooks
+// -------------------------------------------------------------
+export function useListTemplates() {
+    return useQuery<MessageTemplate[]>({
+        queryKey: ["listTemplates"],
+        queryFn: async () => {
+            const res = await apiFetch(`${API_BASE}/whatsapp/templates`);
+            if (!res.ok) throw new Error("Failed to fetch message templates");
+            return res.json();
+        },
+    });
+}
+
+export function useCreateTemplate() {
+    return useMutation({
+        mutationFn: async ({ data }: { data: Omit<MessageTemplate, "id" | "status" | "created_at"> }) => {
+            const res = await apiFetch(`${API_BASE}/whatsapp/templates/submit`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || errorData.message || "Failed to submit template");
+            }
+            return res.json();
+        },
+    });
+}
+
+export function useUpdateTemplate() {
+    return useMutation({
+        mutationFn: async ({ id, data }: { id: number; data: Partial<Omit<MessageTemplate, "id" | "name" | "language" | "created_at">> }) => {
+            const res = await apiFetch(`${API_BASE}/whatsapp/templates/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || errorData.message || "Failed to update template");
+            }
+            return res.json();
+        },
+    });
+}
+
+export function useDeleteTemplate() {
+    return useMutation({
+        mutationFn: async ({ id }: { id: number }) => {
+            const res = await apiFetch(`${API_BASE}/whatsapp/templates/${id}`, {
+                method: "DELETE",
+            });
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || errorData.message || "Failed to delete template");
+            }
+            return res.json();
+        },
+    });
+}
+
+export function useSyncTemplates() {
+    return useMutation({
+        mutationFn: async () => {
+            const res = await apiFetch(`${API_BASE}/whatsapp/templates/sync`, {
+                method: "POST",
+            });
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || errorData.message || "Failed to sync templates");
+            }
+            return res.json();
+        },
+    });
+}
+
+
