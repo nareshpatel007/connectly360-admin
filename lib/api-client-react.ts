@@ -64,9 +64,9 @@ export interface Lead {
     id: number;
     customerName?: string;
     phone: string;
-    quantity?: number;
     location?: string;
     status: "new" | "contacted" | "converted" | "lost";
+    custom_attributes?: Record<string, string>;
     createdAt: string;
 }
 
@@ -190,6 +190,33 @@ export function useUpdateLead() {
         },
     });
 }
+
+export function useCreateLead() {
+    return useMutation({
+        mutationFn: async ({ data }: { data: Omit<Lead, "id" | "createdAt"> }) => {
+            const res = await apiFetch(`${API_BASE}/leads`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+            if (!res.ok) throw new Error("Failed to create lead");
+            return res.json();
+        },
+    });
+}
+
+export function useDeleteLead() {
+    return useMutation({
+        mutationFn: async ({ id }: { id: number }) => {
+            const res = await apiFetch(`${API_BASE}/leads/${id}`, {
+                method: "DELETE",
+            });
+            if (!res.ok) throw new Error("Failed to delete lead");
+            return res.json();
+        },
+    });
+}
+
 
 // WhatsApp Integration
 export function useGetWhatsappStatus(options?: any) {

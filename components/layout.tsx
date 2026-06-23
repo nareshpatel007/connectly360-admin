@@ -48,7 +48,9 @@ import {
     BellRing,
     UserPlus,
     Zap,
+    GitBranch,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -93,6 +95,7 @@ const NAV_STRUCTURE: NavGroup[] = [
                 subItems: [
                     { icon: MessageSquare, label: "Inbox", href: "/conversations" },
                     { icon: Users, label: "Contacts", href: "/contacts" },
+                    { icon: GitBranch, label: "Leads Pipeline", href: "/leads" },
                 ],
             },
         ],
