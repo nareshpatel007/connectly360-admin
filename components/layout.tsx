@@ -119,9 +119,9 @@ const NAV_STRUCTURE: NavGroup[] = [
             {
                 icon: Megaphone,
                 label: "Marketing",
-                href: "/campaigns",
+                href: "/marketing/campaigns",
                 subItems: [
-                    { icon: Megaphone, label: "Campaigns", href: "/campaigns" },
+                    { icon: Megaphone, label: "Campaigns", href: "/marketing/campaigns" },
                     { icon: FileText, label: "Templates", href: "/marketing/templates" },
                 ],
             },
