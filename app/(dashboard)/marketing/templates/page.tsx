@@ -19,6 +19,20 @@ import {
     Clock,
     PauseCircle,
     HelpCircle,
+    Megaphone,
+    Bell,
+    Key,
+    MessageSquare,
+    Phone,
+    Link2,
+    Copy,
+    Play,
+    Image as ImageIcon,
+    FileCode,
+    ChevronRight,
+    ChevronLeft,
+    Sparkles,
+    Info,
 } from "lucide-react";
 import {
     useListTemplates,
@@ -234,6 +248,22 @@ function validateTemplatePayload(
     }
 }
 
+function getReplacedBody(bodyText: string, bodySamples: string[]): string {
+    if (!bodyText) return "";
+    let text = bodyText;
+    const bodyVars = extractVariableIndices(bodyText);
+    bodyVars.forEach((v, index) => {
+        const sample = bodySamples[index]?.trim() || `{{${v}}}`;
+        text = text.replaceAll(`{{${v}}}`, sample);
+    });
+    return text;
+}
+
+function getReplacedHeader(headerContent: string, headerSample: string): string {
+    if (!headerContent) return "";
+    return headerContent.replaceAll("{{1}}", headerSample || "{{1}}");
+}
+
 // -------------------------------------------------------------
 // Configurations
 // -------------------------------------------------------------
@@ -283,6 +313,7 @@ const statusConfig: Record<string, { label: string; icon: any; classes: string }
 interface TemplateFormData {
     name: string;
     category: MessageTemplate["category"];
+    type: string;
     language: string;
     header_format: HeaderFormat;
     header_content: string;
@@ -297,6 +328,7 @@ interface TemplateFormData {
 const emptyForm: TemplateFormData = {
     name: "",
     category: "Marketing",
+    type: "default",
     language: "en_US",
     header_format: "none",
     header_content: "",
@@ -347,6 +379,7 @@ export default function TemplatesPage() {
     // Component States
     const [searchTerm, setSearchTerm] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [step, setStep] = useState(1);
     const [form, setForm] = useState<TemplateFormData>(emptyForm);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [templateToDelete, setTemplateToDelete] = useState<MessageTemplate | null>(null);
@@ -373,6 +406,7 @@ export default function TemplatesPage() {
     function openCreate() {
         setEditingId(null);
         setForm(emptyForm);
+        setStep(1);
         setDialogOpen(true);
     }
 
@@ -381,6 +415,7 @@ export default function TemplatesPage() {
         setForm({
             name: template.name,
             category: template.category,
+            type: template.category === "Authentication" ? "otp" : "default",
             language: template.language || "en_US",
             header_format: (template.header_type ?? "none") as HeaderFormat,
             header_content: template.header_content ?? "",
@@ -391,6 +426,7 @@ export default function TemplatesPage() {
             footer_text: template.footer_text ?? "",
             buttons: template.buttons ?? [],
         });
+        setStep(1);
         setDialogOpen(true);
     }
 
@@ -754,20 +790,42 @@ export default function TemplatesPage() {
                     }
                 }}
             >
-                <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-6">
-                    <DialogHeader>
-                        <DialogTitle className="text-slate-900 font-bold text-lg">
-                            {editingId ? "Edit Message Template" : "Create WhatsApp Template"}
+                <DialogContent className="max-w-6xl max-h-[95vh] h-[850px] overflow-hidden flex flex-col p-0 bg-white">
+                    <DialogHeader className="px-6 pt-5 pb-3 border-b border-slate-100 shrink-0">
+                        <DialogTitle className="text-slate-900 font-bold text-lg flex items-center justify-between">
+                            <span>{editingId ? "Edit Message Template" : "Create WhatsApp Template"}</span>
                         </DialogTitle>
-                        <DialogDescription className="text-slate-500 text-xs mt-1 leading-normal">
-                            {editingId
-                                ? "Update fields and re-submit your template to Meta. It will remain in PENDING status during review."
-                                : "Submit a new message template to Meta for review. Approved templates can be sent to customers in campaigns."}
+                        <DialogDescription className="text-slate-500 text-xs mt-0.5 leading-normal">
+                            Configure category, headers, body, footer and buttons for review by Meta.
                         </DialogDescription>
                     </DialogHeader>
 
-                    {form.category === "Authentication" && (
-                        <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/50 p-3 text-xs text-amber-800">
+                    {/* Step indicators */}
+                    <div className="flex items-center gap-6 px-6 py-3 border-b border-slate-100 bg-slate-50/50 shrink-0 select-none">
+                        <div className="flex items-center gap-2">
+                            <div className={`size-5 rounded-full flex items-center justify-center text-[10px] font-bold ${step >= 1 ? "bg-[#35877D] text-white" : "bg-slate-200 text-slate-500"}`}>
+                                {step > 1 ? "✓" : "1"}
+                            </div>
+                            <span className={`text-xs font-semibold ${step >= 1 ? "text-slate-900" : "text-slate-400"}`}>Set up template</span>
+                        </div>
+                        <div className="h-px bg-slate-200 flex-1" />
+                        <div className="flex items-center gap-2">
+                            <div className={`size-5 rounded-full flex items-center justify-center text-[10px] font-bold ${step >= 2 ? "bg-[#35877D] text-white" : "bg-slate-200 text-slate-500"}`}>
+                                {step > 2 ? "✓" : "2"}
+                            </div>
+                            <span className={`text-xs font-semibold ${step >= 2 ? "text-slate-900" : "text-slate-400"}`}>Edit template</span>
+                        </div>
+                        <div className="h-px bg-slate-200 flex-1" />
+                        <div className="flex items-center gap-2">
+                            <div className={`size-5 rounded-full flex items-center justify-center text-[10px] font-bold ${step === 3 ? "bg-[#35877D] text-white" : "bg-slate-200 text-slate-500"}`}>
+                                3
+                            </div>
+                            <span className={`text-xs font-semibold ${step === 3 ? "text-slate-900" : "text-slate-400"}`}>Submit for review</span>
+                        </div>
+                    </div>
+
+                    {form.category === "Authentication" && step === 1 && (
+                        <div className="mx-6 mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/50 p-2.5 text-xs text-amber-800 shrink-0">
                             <AlertCircle className="size-4 mt-0.5 shrink-0 text-amber-600" />
                             <p className="leading-relaxed">
                                 <strong>Important:</strong> Authentication templates require a precise OTP configuration block.
@@ -777,271 +835,226 @@ export default function TemplatesPage() {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-                        <div className="space-y-1.5">
-                            <Label className="text-slate-700 font-semibold text-xs">Template Name</Label>
-                            <Input
-                                placeholder="e.g. order_completed_notification"
-                                value={form.name}
-                                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                disabled={editingId !== null}
-                                className="text-slate-800 text-sm disabled:bg-slate-50"
-                                required
-                            />
-                            <p className="text-xs text-slate-500">
-                                {editingId
-                                    ? "Name cannot be edited after creation on Meta."
-                                    : "Lowercase letters, digits, and underscores only. Spaces are not allowed."}
-                            </p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-1.5">
-                                <Label className="text-slate-700 font-semibold text-xs">Category</Label>
-                                <Select
-                                    value={form.category}
-                                    onValueChange={(val) =>
-                                        setForm({
-                                            ...form,
-                                            category: val as MessageTemplate["category"],
-                                        })
-                                    }
-                                >
-                                    <SelectTrigger className="w-full text-slate-800 text-sm bg-white border border-slate-200">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {CATEGORIES.map((cat) => (
-                                            <SelectItem key={cat} value={cat}>
-                                                {cat}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <Label className="text-slate-700 font-semibold text-xs">Language</Label>
-                                <Input
-                                    list="languages"
-                                    placeholder="en_US"
-                                    value={form.language}
-                                    onChange={(e) => setForm({ ...form, language: e.target.value })}
-                                    disabled={editingId !== null}
-                                    className="text-slate-800 text-sm disabled:bg-slate-50"
-                                    required
-                                />
-                                <datalist id="languages">
-                                    {COMMON_LANGUAGE_CODES.map((code) => (
-                                        <option key={code} value={code} />
-                                    ))}
-                                </datalist>
-                                <p className="text-[10px] text-slate-400">
-                                    {editingId ? "Language cannot be modified." : "Meta code format (e.g. en_US, es_MX)."}
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Header section */}
-                        <div className="space-y-2 border-t border-slate-100 pt-3">
-                            <Label className="text-slate-700 font-semibold text-xs">Header Format (Optional)</Label>
-                            <Select
-                                value={form.header_format}
-                                onValueChange={(val) =>
-                                    setForm({
-                                        ...form,
-                                        header_format: (val || "none") as HeaderFormat,
-                                    })
-                                }
-                            >
-                                <SelectTrigger className="w-full text-slate-800 text-sm bg-white border border-slate-200">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {HEADER_FORMATS.map((type) => (
-                                        <SelectItem key={type} value={type}>
-                                            {type === "none" ? "None" : type.charAt(0).toUpperCase() + type.slice(1)}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-
-                            {form.header_format === "text" && (
-                                <div className="space-y-2 mt-2">
-                                    <Input
-                                        placeholder="Header text content (max 60 characters, optional {{1}})"
-                                        value={form.header_content}
-                                        onChange={(e) => setForm({ ...form, header_content: e.target.value })}
-                                        maxLength={TEMPLATE_LIMITS.headerTextMaxLength}
-                                        className="text-slate-800 text-sm"
-                                    />
-                                    {headerVarCount > 0 && (
-                                        <Input
-                                            placeholder="Sample value for header variable {{1}} (Required)"
-                                            value={form.header_sample}
-                                            onChange={(e) => setForm({ ...form, header_sample: e.target.value })}
-                                            className="text-slate-800 text-sm"
-                                            required
-                                        />
-                                    )}
-                                </div>
-                            )}
-
-                            {form.header_format !== "none" && form.header_format !== "text" && (
-                                <div className="space-y-1.5 mt-2">
-                                    <Input
-                                        placeholder="https://example.com/file.jpg (Public HTTPS URL containing sample media file)"
-                                        value={form.header_media_url}
-                                        onChange={(e) => setForm({ ...form, header_media_url: e.target.value })}
-                                        className="text-slate-800 text-sm"
-                                        required
-                                    />
-                                    <p className="text-[10px] text-slate-400 leading-normal">
-                                        {form.header_format === "image" && "Image format requirements: JPEG or PNG, under 5 MB size."}
-                                        {form.header_format === "video" && "Video format requirements: MP4 or 3GP, under 16 MB, under 60 seconds."}
-                                        {form.header_format === "document" && "Document format requirements: PDF, under 100 MB."}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Body text section */}
-                        <div className="space-y-2 border-t border-slate-100 pt-3">
-                            <Label className="text-slate-700 font-semibold text-xs">Body Text</Label>
-                            <Textarea
-                                placeholder="Hello {{1}}, your order ID {{2}} has been shipped!"
-                                value={form.body_text}
-                                onChange={(e) => setForm({ ...form, body_text: e.target.value })}
-                                rows={4}
-                                maxLength={TEMPLATE_LIMITS.bodyMaxLength}
-                                className="text-slate-800 text-sm resize-none font-normal"
-                                required
-                            />
-                            <p className="text-xs text-slate-500 leading-normal">
-                                To specify dynamic parameters, use contiguous variables starting at <code>{"{{1}}"}</code> (e.g. <code>{"{{1}}"}</code>, <code>{"{{2}}"}</code>).
-                            </p>
-
-                            {bodyVarCount > 0 && (
-                                <div className="space-y-2 pt-2 bg-slate-50 border border-slate-100 rounded-xl p-3">
-                                    <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
-                                        Variable Sample Values (Required by Meta review)
-                                    </Label>
-                                    {form.body_samples.map((val, i) => (
-                                        <div key={i} className="flex items-center gap-2">
-                                            <span className="text-[11px] font-bold text-slate-400 w-10 shrink-0">
-                                                {"{{"}
-                                                {i + 1}
-                                                {"}}"}
-                                            </span>
-                                            <Input
-                                                placeholder={`Sample value for {{${i + 1}}} (e.g. John Doe)`}
-                                                value={val}
-                                                onChange={(e) => {
-                                                    const next = [...form.body_samples];
-                                                    next[i] = e.target.value;
-                                                    setForm({ ...form, body_samples: next });
-                                                }}
-                                                className="text-slate-800 text-xs bg-white h-8"
-                                                required
-                                            />
+                    <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 flex-1 overflow-hidden">
+                            {/* LEFT COLUMN: Wizard Step Form */}
+                            <div className="lg:col-span-7 p-6 overflow-y-auto border-r border-slate-100 flex flex-col gap-5 bg-white">
+                                {step === 1 && (
+                                    <div className="space-y-5">
+                                        {/* Category tab cards layout matching the reference image */}
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-800 font-semibold text-xs">Category</Label>
+                                            <div className="grid grid-cols-3 gap-3">
+                                                {[
+                                                    { id: "Marketing", label: "Marketing", icon: Megaphone },
+                                                    { id: "Utility", label: "Utility", icon: Bell },
+                                                    { id: "Authentication", label: "Authentication", icon: Key },
+                                                ].map((cat) => {
+                                                    const Icon = cat.icon;
+                                                    const selected = form.category === cat.id;
+                                                    return (
+                                                        <button
+                                                            key={cat.id}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                const defaultType = cat.id === "Authentication" ? "otp" : "default";
+                                                                setForm({ ...form, category: cat.id as any, type: defaultType });
+                                                            }}
+                                                            className={`flex items-center justify-center gap-2 p-3.5 rounded-xl border text-center transition-all ${selected
+                                                                    ? "border-[#35877D] bg-[#35877D]/5 text-[#35877D] shadow-sm font-bold"
+                                                                    : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 font-medium"
+                                                                }`}
+                                                        >
+                                                            <Icon className="size-4" />
+                                                            <span className="text-xs">{cat.label}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
 
-                        {/* Footer Text section */}
-                        <div className="space-y-1.5 border-t border-slate-100 pt-3">
-                            <Label className="text-slate-700 font-semibold text-xs">Footer Text (Optional)</Label>
-                            <Input
-                                placeholder="Footer subtext (max 60 characters)"
-                                value={form.footer_text}
-                                onChange={(e) => setForm({ ...form, footer_text: e.target.value })}
-                                maxLength={TEMPLATE_LIMITS.footerMaxLength}
-                                className="text-slate-800 text-sm"
-                            />
-                        </div>
+                                        {/* Type selection matching the reference image */}
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-800 font-semibold text-xs">Choose message type</Label>
+                                            <div className="space-y-2.5">
+                                                {form.category === "Marketing" && (
+                                                    <>
+                                                        {[
+                                                            { id: "default", label: "Default", desc: "Send messages with media and customized buttons to engage your customers." },
+                                                            { id: "catalog", label: "Catalog", desc: "Send messages that drive sales by connecting your product catalog." },
+                                                            { id: "calling_permissions", label: "Calling permissions request", desc: "Ask customers if you can call them on WhatsApp." }
+                                                        ].map((t) => (
+                                                            <label
+                                                                key={t.id}
+                                                                className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${form.type === t.id
+                                                                        ? "border-[#35877D] bg-[#35877D]/5"
+                                                                        : "border-slate-200 hover:bg-slate-50 bg-white"
+                                                                    }`}
+                                                            >
+                                                                <input
+                                                                    type="radio"
+                                                                    name="template_type"
+                                                                    checked={form.type === t.id}
+                                                                    onChange={() => setForm({ ...form, type: t.id })}
+                                                                    className="mt-1 accent-[#35877D]"
+                                                                />
+                                                                <div>
+                                                                    <p className="text-xs font-bold text-slate-800">{t.label}</p>
+                                                                    <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed font-normal">{t.desc}</p>
+                                                                </div>
+                                                            </label>
+                                                        ))}
+                                                    </>
+                                                )}
 
-                        {/* Buttons list section */}
-                        <div className="space-y-2.5 border-t border-slate-100 pt-3">
-                            <div className="flex items-center justify-between">
-                                <Label className="text-slate-700 font-semibold text-xs">Interactive Buttons (Optional)</Label>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={addButton}
-                                    disabled={form.buttons.length >= TEMPLATE_LIMITS.maxButtonsTotal}
-                                    className="h-7 text-xs border-slate-200 text-[#35877D] hover:bg-[#35877D]/5 hover:text-[#2c7169]"
-                                >
-                                    <Plus size={12} className="mr-1" /> Add Button
-                                </Button>
-                            </div>
+                                                {form.category === "Utility" && (
+                                                    <>
+                                                        {[
+                                                            { id: "default", label: "Default", desc: "Send messages about an existing order or account." },
+                                                            { id: "calling_permissions", label: "Calling permissions request", desc: "Ask customers if you can call them on WhatsApp." }
+                                                        ].map((t) => (
+                                                            <label
+                                                                key={t.id}
+                                                                className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${form.type === t.id
+                                                                        ? "border-[#35877D] bg-[#35877D]/5"
+                                                                        : "border-slate-200 hover:bg-slate-50 bg-white"
+                                                                    }`}
+                                                            >
+                                                                <input
+                                                                    type="radio"
+                                                                    name="template_type"
+                                                                    checked={form.type === t.id}
+                                                                    onChange={() => setForm({ ...form, type: t.id })}
+                                                                    className="mt-1 accent-[#35877D]"
+                                                                />
+                                                                <div>
+                                                                    <p className="text-xs font-bold text-slate-800">{t.label}</p>
+                                                                    <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed font-normal">{t.desc}</p>
+                                                                </div>
+                                                            </label>
+                                                        ))}
+                                                    </>
+                                                )}
 
-                            {form.buttons.length === 0 ? (
-                                <p className="text-xs text-slate-500 leading-normal">
-                                    Add up to {TEMPLATE_LIMITS.maxButtonsTotal} quick reply buttons, copy code offers, links, or phone CTAs.
-                                </p>
-                            ) : (
-                                <div className="space-y-2">
-                                    {form.buttons.map((btn, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="border border-slate-200/80 bg-slate-50/50 rounded-xl p-3 space-y-2 relative"
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <Select
-                                                    value={btn.type}
-                                                    onValueChange={(val) => {
-                                                        if (!val) return;
-                                                        changeButtonType(idx, val as TemplateButton["type"]);
-                                                    }}
-                                                >
-                                                    <SelectTrigger className="w-36 text-slate-800 text-xs bg-white h-8 border-slate-200">
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="QUICK_REPLY">Quick Reply</SelectItem>
-                                                        <SelectItem value="URL">URL Link</SelectItem>
-                                                        <SelectItem value="PHONE_NUMBER">Phone Call</SelectItem>
-                                                        <SelectItem value="COPY_CODE">Copy Code</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
+                                                {form.category === "Authentication" && (
+                                                    <label className="flex items-start gap-3 p-3 rounded-xl border border-[#35877D] bg-[#35877D]/5 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="template_type"
+                                                            checked
+                                                            readOnly
+                                                            className="mt-1 accent-[#35877D]"
+                                                        />
+                                                        <div>
+                                                            <p className="text-xs font-bold text-slate-800">One-time Passcode</p>
+                                                            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed font-normal">Send codes to verify a transaction or login.</p>
+                                                        </div>
+                                                    </label>
+                                                )}
+                                            </div>
+                                        </div>
 
+                                        {/* Name and Language config */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-100 pt-4">
+                                            <div className="space-y-1.5">
+                                                <Label className="text-slate-800 font-semibold text-xs">Template Name</Label>
                                                 <Input
-                                                    placeholder="Button Label Text (e.g. Call Us)"
-                                                    value={btn.text}
-                                                    maxLength={TEMPLATE_LIMITS.buttonTextMaxLength}
-                                                    onChange={(e) => updateButton(idx, { text: e.target.value })}
-                                                    className="flex-1 text-slate-800 text-xs bg-white h-8"
+                                                    placeholder="e.g. order_completed_notification"
+                                                    value={form.name}
+                                                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                                    disabled={editingId !== null}
+                                                    className="text-slate-800 text-sm disabled:bg-slate-50 h-9"
                                                     required
                                                 />
-
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => removeButton(idx)}
-                                                    className="h-8 w-8 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
-                                                >
-                                                    <X size={14} />
-                                                </Button>
+                                                <p className="text-[10px] text-slate-500">
+                                                    Lowercase letters, digits, and underscores only.
+                                                </p>
                                             </div>
 
-                                            {btn.type === "URL" && (
-                                                <div className="space-y-2 pl-2 border-l-2 border-slate-200">
+                                            <div className="space-y-1.5">
+                                                <Label className="text-slate-800 font-semibold text-xs">Language</Label>
+                                                <Input
+                                                    list="languages"
+                                                    placeholder="en_US"
+                                                    value={form.language}
+                                                    onChange={(e) => setForm({ ...form, language: e.target.value })}
+                                                    disabled={editingId !== null}
+                                                    className="text-slate-800 text-sm disabled:bg-slate-50 h-9"
+                                                    required
+                                                />
+                                                <datalist id="languages">
+                                                    {COMMON_LANGUAGE_CODES.map((code) => (
+                                                        <option key={code} value={code} />
+                                                    ))}
+                                                </datalist>
+                                            </div>
+                                        </div>
+
+                                        {/* Pre-approved templates banner matching image 2 & 3 layout */}
+                                        {form.category !== "Authentication" && (
+                                            <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 flex items-center justify-between gap-4 mt-2 select-none">
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+                                                        <Sparkles className="size-3.5 text-emerald-600 animate-pulse" />
+                                                        Start with pre-approved templates
+                                                    </div>
+                                                    <p className="text-[11px] text-emerald-700 leading-normal max-w-md font-normal">
+                                                        Save time and effort by using pre-approved templates from our Template Library. You can quickly build professional-looking templates without starting from scratch.
+                                                    </p>
+                                                </div>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    onClick={() => toast.info("Template Library is coming soon!")}
+                                                    className="text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-800 text-xs shrink-0 h-8 font-semibold"
+                                                >
+                                                    Go to template library
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {step === 2 && (
+                                    <div className="space-y-5">
+                                        {/* Header Select */}
+                                        <div className="space-y-2">
+                                            <Label className="text-slate-800 font-semibold text-xs">Header Format (Optional)</Label>
+                                            <Select
+                                                value={form.header_format}
+                                                onValueChange={(val) =>
+                                                    setForm({
+                                                        ...form,
+                                                        header_format: (val || "none") as HeaderFormat,
+                                                    })
+                                                }
+                                            >
+                                                <SelectTrigger className="w-full text-slate-800 text-sm bg-white border border-slate-200 h-9">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {HEADER_FORMATS.map((type) => (
+                                                        <SelectItem key={type} value={type}>
+                                                            {type === "none" ? "None" : type.charAt(0).toUpperCase() + type.slice(1)}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+
+                                            {form.header_format === "text" && (
+                                                <div className="space-y-2 mt-2 bg-slate-50 border border-slate-100 rounded-xl p-3">
                                                     <Input
-                                                        placeholder="https://example.com/track/{{1}}"
-                                                        value={btn.url}
-                                                        onChange={(e) => updateButton(idx, { url: e.target.value })}
+                                                        placeholder="Header text content (max 60 characters, optional {{1}})"
+                                                        value={form.header_content}
+                                                        onChange={(e) => setForm({ ...form, header_content: e.target.value })}
+                                                        maxLength={TEMPLATE_LIMITS.headerTextMaxLength}
                                                         className="text-slate-800 text-xs bg-white h-8"
-                                                        required
                                                     />
-                                                    {extractVariableIndices(btn.url).length > 0 && (
+                                                    {headerVarCount > 0 && (
                                                         <Input
-                                                            placeholder="Example parameter for {{1}} (e.g. tracking-id)"
-                                                            value={btn.example ?? ""}
-                                                            onChange={(e) => updateButton(idx, { example: e.target.value })}
+                                                            placeholder="Sample value for header variable {{1}} (Required)"
+                                                            value={form.header_sample}
+                                                            onChange={(e) => setForm({ ...form, header_sample: e.target.value })}
                                                             className="text-slate-800 text-xs bg-white h-8"
                                                             required
                                                         />
@@ -1049,60 +1062,466 @@ export default function TemplatesPage() {
                                                 </div>
                                             )}
 
-                                            {btn.type === "PHONE_NUMBER" && (
-                                                <Input
-                                                    placeholder="International Format: +15551234567"
-                                                    value={btn.phone_number}
-                                                    onChange={(e) => updateButton(idx, { phone_number: e.target.value })}
-                                                    className="text-slate-800 text-xs bg-white h-8 max-w-sm pl-2 border-l-2 border-slate-200"
-                                                    required
-                                                />
-                                            )}
-
-                                            {btn.type === "COPY_CODE" && (
-                                                <Input
-                                                    placeholder="Promo Sample Code (e.g. SUMMER50)"
-                                                    value={btn.example}
-                                                    onChange={(e) => updateButton(idx, { example: e.target.value })}
-                                                    className="text-slate-800 text-xs bg-white h-8 max-w-sm pl-2 border-l-2 border-slate-200"
-                                                    required
-                                                />
+                                            {form.header_format !== "none" && form.header_format !== "text" && (
+                                                <div className="space-y-2 mt-2 bg-slate-50 border border-slate-100 rounded-xl p-3">
+                                                    <Input
+                                                        placeholder="https://example.com/file.jpg (Public HTTPS URL containing sample media file)"
+                                                        value={form.header_media_url}
+                                                        onChange={(e) => setForm({ ...form, header_media_url: e.target.value })}
+                                                        className="text-slate-800 text-xs bg-white h-8"
+                                                        required
+                                                    />
+                                                    <p className="text-[10px] text-slate-500 leading-normal font-normal">
+                                                        {form.header_format === "image" && "Image format requirements: JPEG or PNG, under 5 MB size."}
+                                                        {form.header_format === "video" && "Video format requirements: MP4 or 3GP, under 16 MB."}
+                                                        {form.header_format === "document" && "Document format requirements: PDF, under 100 MB."}
+                                                    </p>
+                                                </div>
                                             )}
                                         </div>
-                                    ))}
+
+                                        {/* Body text block */}
+                                        <div className="space-y-2 border-t border-slate-100 pt-4">
+                                            <Label className="text-slate-800 font-semibold text-xs">Body Text</Label>
+                                            <Textarea
+                                                placeholder="Hello {{1}}, your order ID {{2}} has been shipped!"
+                                                value={form.body_text}
+                                                onChange={(e) => setForm({ ...form, body_text: e.target.value })}
+                                                rows={4}
+                                                maxLength={TEMPLATE_LIMITS.bodyMaxLength}
+                                                className="text-slate-800 text-xs resize-none font-normal"
+                                                required
+                                            />
+                                            <p className="text-[10px] text-slate-500 font-normal">
+                                                To specify dynamic parameters, use contiguous variables starting at <code>{"{{1}}"}</code> (e.g. <code>{"{{1}}"}</code>, <code>{"{{2}}"}</code>).
+                                            </p>
+
+                                            {bodyVarCount > 0 && (
+                                                <div className="space-y-2 pt-2 bg-slate-50 border border-slate-100 rounded-xl p-3">
+                                                    <Label className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">
+                                                        Variable Sample Values (Required by Meta review)
+                                                    </Label>
+                                                    {form.body_samples.map((val, i) => (
+                                                        <div key={i} className="flex items-center gap-2">
+                                                            <span className="text-[11px] font-bold text-slate-400 w-10 shrink-0">
+                                                                {"{{"}
+                                                                {i + 1}
+                                                                {"}}"}
+                                                            </span>
+                                                            <Input
+                                                                placeholder={`Sample value for {{${i + 1}}} (e.g. John Doe)`}
+                                                                value={val}
+                                                                onChange={(e) => {
+                                                                    const next = [...form.body_samples];
+                                                                    next[i] = e.target.value;
+                                                                    setForm({ ...form, body_samples: next });
+                                                                }}
+                                                                className="text-slate-800 text-xs bg-white h-8"
+                                                                required
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Footer text */}
+                                        <div className="space-y-1.5 border-t border-slate-100 pt-4">
+                                            <Label className="text-slate-800 font-semibold text-xs">Footer Text (Optional)</Label>
+                                            <Input
+                                                placeholder="Footer subtext (max 60 characters)"
+                                                value={form.footer_text}
+                                                onChange={(e) => setForm({ ...form, footer_text: e.target.value })}
+                                                maxLength={TEMPLATE_LIMITS.footerMaxLength}
+                                                className="text-slate-800 text-xs h-9"
+                                            />
+                                        </div>
+
+                                        {/* Buttons */}
+                                        <div className="space-y-2 border-t border-slate-100 pt-4">
+                                            <div className="flex items-center justify-between">
+                                                <Label className="text-slate-800 font-semibold text-xs">Interactive Buttons (Optional)</Label>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={addButton}
+                                                    disabled={form.buttons.length >= TEMPLATE_LIMITS.maxButtonsTotal}
+                                                    className="h-7 text-xs border-slate-200 text-[#35877D] hover:bg-[#35877D]/5 hover:text-[#2c7169]"
+                                                >
+                                                    <Plus size={12} className="mr-1" /> Add Button
+                                                </Button>
+                                            </div>
+
+                                            {form.buttons.length === 0 ? (
+                                                <p className="text-[11px] text-slate-500 font-normal">
+                                                    Add up to {TEMPLATE_LIMITS.maxButtonsTotal} quick reply buttons, copy code offers, links, or phone CTAs.
+                                                </p>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    {form.buttons.map((btn, idx) => (
+                                                        <div
+                                                            key={idx}
+                                                            className="border border-slate-200/80 bg-slate-50/50 rounded-xl p-3 space-y-2 relative animate-in fade-in duration-200"
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <Select
+                                                                    value={btn.type}
+                                                                    onValueChange={(val) => {
+                                                                        if (!val) return;
+                                                                        changeButtonType(idx, val as TemplateButton["type"]);
+                                                                    }}
+                                                                >
+                                                                    <SelectTrigger className="w-36 text-slate-800 text-xs bg-white h-8 border-slate-200">
+                                                                        <SelectValue />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectItem value="QUICK_REPLY">Quick Reply</SelectItem>
+                                                                        <SelectItem value="URL">URL Link</SelectItem>
+                                                                        <SelectItem value="PHONE_NUMBER">Phone Call</SelectItem>
+                                                                        <SelectItem value="COPY_CODE">Copy Code</SelectItem>
+                                                                    </SelectContent>
+                                                                </Select>
+
+                                                                <Input
+                                                                    placeholder="Button Label Text"
+                                                                    value={btn.text}
+                                                                    maxLength={TEMPLATE_LIMITS.buttonTextMaxLength}
+                                                                    onChange={(e) => updateButton(idx, { text: e.target.value })}
+                                                                    className="flex-1 text-slate-800 text-xs bg-white h-8"
+                                                                    required
+                                                                />
+
+                                                                <Button
+                                                                    type="button"
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => removeButton(idx)}
+                                                                    className="h-8 w-8 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
+                                                                >
+                                                                    <X size={14} />
+                                                                </Button>
+                                                            </div>
+
+                                                            {btn.type === "URL" && (
+                                                                <div className="space-y-2 pl-2 border-l-2 border-slate-200">
+                                                                    <Input
+                                                                        placeholder="https://example.com/track/{{1}}"
+                                                                        value={btn.url}
+                                                                        onChange={(e) => updateButton(idx, { url: e.target.value })}
+                                                                        className="text-slate-800 text-xs bg-white h-8"
+                                                                        required
+                                                                    />
+                                                                    {extractVariableIndices(btn.url).length > 0 && (
+                                                                        <Input
+                                                                            placeholder="Example parameter for {{1}} (e.g. tracking-id)"
+                                                                            value={btn.example ?? ""}
+                                                                            onChange={(e) => updateButton(idx, { example: e.target.value })}
+                                                                            className="text-slate-800 text-xs bg-white h-8"
+                                                                            required
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                            )}
+
+                                                            {btn.type === "PHONE_NUMBER" && (
+                                                                <Input
+                                                                    placeholder="International Format: +15551234567"
+                                                                    value={btn.phone_number}
+                                                                    onChange={(e) => updateButton(idx, { phone_number: e.target.value })}
+                                                                    className="text-slate-800 text-xs bg-white h-8 max-w-sm pl-2 border-l-2 border-slate-200"
+                                                                    required
+                                                                />
+                                                            )}
+
+                                                            {btn.type === "COPY_CODE" && (
+                                                                <Input
+                                                                    placeholder="Promo Sample Code (e.g. SUMMER50)"
+                                                                    value={btn.example}
+                                                                    onChange={(e) => updateButton(idx, { example: e.target.value })}
+                                                                    className="text-slate-800 text-xs bg-white h-8 max-w-sm pl-2 border-l-2 border-slate-200"
+                                                                    required
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {step === 3 && (
+                                    <div className="space-y-5 animate-in fade-in duration-200">
+                                        <div className="space-y-1">
+                                            <h4 className="text-slate-800 font-bold text-sm">Review Template Details</h4>
+                                            <p className="text-[11px] text-slate-500 leading-normal font-normal">
+                                                Confirm the details below before submitting this template to Meta for approval.
+                                            </p>
+                                        </div>
+
+                                        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-3.5 select-none">
+                                            <div className="grid grid-cols-2 gap-4 text-xs">
+                                                <div>
+                                                    <span className="text-slate-400 font-medium">Template Name</span>
+                                                    <p className="text-slate-800 font-bold mt-0.5">{form.name}</p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-slate-400 font-medium">Category</span>
+                                                    <p className="text-slate-800 font-bold mt-0.5">{form.category}</p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-slate-400 font-medium">Language</span>
+                                                    <p className="text-slate-800 font-bold mt-0.5">{form.language}</p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-slate-400 font-medium">Type</span>
+                                                    <p className="text-slate-800 font-bold mt-0.5 uppercase">{form.type}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="border-t border-slate-200/60 pt-3 text-xs space-y-2">
+                                                <div>
+                                                    <span className="text-slate-400 font-medium text-[11px]">Header Format</span>
+                                                    <p className="text-slate-700 mt-0.5 font-bold uppercase text-[10px]">{form.header_format}</p>
+                                                </div>
+                                                <div>
+                                                    <span className="text-slate-400 font-medium text-[11px]">Interactive Buttons</span>
+                                                    <p className="text-slate-700 mt-0.5 font-bold text-[10px] uppercase">
+                                                        {form.buttons.length > 0
+                                                            ? `${form.buttons.length} button(s) (${form.buttons.map(b => b.type).join(", ")})`
+                                                            : "None"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-start gap-2.5 rounded-xl border border-blue-200 bg-blue-50/50 p-4 text-xs text-blue-800 select-none">
+                                            <Info className="size-4 mt-0.5 shrink-0 text-blue-600" />
+                                            <div className="space-y-1 leading-relaxed">
+                                                <strong className="font-bold">Ready for Review</strong>
+                                                <p className="text-[11px] text-blue-700 font-normal">
+                                                    Meta's automated and manual review processes verify that templates adhere to WhatsApp Business policies. This check typically takes less than 24 hours.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* RIGHT COLUMN: WhatsApp Live Preview */}
+                            <div className="lg:col-span-5 p-6 bg-slate-50 overflow-y-auto flex flex-col gap-6 select-none border-l border-slate-100 h-full">
+                                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Template Preview</span>
+
+                                {/* WhatsApp Mobile Layout Screen Frame */}
+                                <div className="w-full max-w-[310px] mx-auto rounded-3xl overflow-hidden border border-slate-200 shadow-md bg-[#efeae2] flex flex-col">
+                                    {/* WhatsApp Top Status Bar */}
+                                    <div className="bg-[#128C7E] text-white px-4 py-2.5 flex items-center gap-2">
+                                        <div className="size-6 rounded-full bg-white/20 flex items-center justify-center font-bold text-[10px]">WA</div>
+                                        <div>
+                                            <p className="text-[10px] font-bold leading-none">Connectly360 Client</p>
+                                            <p className="text-[8px] text-white/70 mt-0.5">Online</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Chat background and bubble */}
+                                    <div className="p-3 flex-1 flex flex-col gap-3 min-h-[320px]">
+                                        {/* Message Bubble */}
+                                        <div className="bg-white rounded-2xl rounded-tl-none shadow-sm border border-slate-100 p-3 text-slate-800 w-full text-xs flex flex-col gap-1.5">
+                                            {/* Header Section Preview */}
+                                            {form.header_format !== "none" && (
+                                                <div className="border-b border-slate-100 pb-2 mb-1.5">
+                                                    {form.header_format === "image" && (
+                                                        <div className="w-full aspect-[2/1] rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-100">
+                                                            {form.header_media_url ? (
+                                                                <img
+                                                                    src={form.header_media_url}
+                                                                    alt="Header Preview"
+                                                                    className="w-full h-full object-cover"
+                                                                    onError={(e) => {
+                                                                        (e.target as any).src = "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=600";
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <ImageIcon className="size-6 text-slate-300" />
+                                                            )}
+                                                        </div>
+                                                    )}
+
+                                                    {form.header_format === "video" && (
+                                                        <div className="w-full aspect-[2/1] rounded-lg bg-slate-900 flex items-center justify-center text-white relative">
+                                                            <Play className="size-8 text-white/80" />
+                                                            <span className="absolute bottom-1.5 right-1.5 text-[8px] bg-black/60 px-1 py-0.5 rounded text-white/90">Video</span>
+                                                        </div>
+                                                    )}
+
+                                                    {form.header_format === "document" && (
+                                                        <div className="w-full rounded-lg bg-slate-50 border border-slate-100 p-2 flex items-center gap-2">
+                                                            <FileCode className="size-5 text-[#35877D]" />
+                                                            <div className="overflow-hidden">
+                                                                <p className="text-[10px] font-bold text-slate-700 truncate">Document.pdf</p>
+                                                                <p className="text-[8px] text-slate-400">PDF Document</p>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {form.header_format === "text" && form.header_content && (
+                                                        <p className="font-bold text-slate-800 text-[11px] leading-tight">
+                                                            {getReplacedHeader(form.header_content, form.header_sample)}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Body Text Preview */}
+                                            <p className="whitespace-pre-wrap text-[11px] text-slate-700 leading-relaxed">
+                                                {getReplacedBody(form.body_text, form.body_samples) || "Good news! Your verification code or message layout will display here."}
+                                            </p>
+
+                                            {/* Footer Text Preview */}
+                                            {form.footer_text && (
+                                                <p className="text-[9px] text-slate-400 leading-tight">
+                                                    {form.footer_text}
+                                                </p>
+                                            )}
+
+                                            {/* Small WhatsApp Time Stamp */}
+                                            <span className="text-[8px] text-slate-400 self-end mt-0.5">11:59 AM</span>
+                                        </div>
+
+                                        {/* Action/Interactive Buttons Preview attached directly below */}
+                                        {form.buttons && form.buttons.length > 0 && (
+                                            <div className="flex flex-col gap-1 w-full mt-[-6px]">
+                                                {form.buttons.map((btn, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="w-full bg-white hover:bg-slate-50 py-2 px-3 rounded-lg border border-slate-200 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer text-[#007a5c] font-bold text-[10.5px]"
+                                                    >
+                                                        {btn.type === "URL" && <Link2 className="size-3" />}
+                                                        {btn.type === "PHONE_NUMBER" && <Phone className="size-3" />}
+                                                        {btn.type === "COPY_CODE" && <Copy className="size-3" />}
+                                                        {btn.type === "QUICK_REPLY" && <MessageSquare className="size-3" />}
+                                                        {btn.text || `Button #${idx + 1}`}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            )}
+
+                                {/* Custom helper descriptions dynamically changing */}
+                                <div className="space-y-3.5 mt-auto bg-white/70 border border-slate-200/60 rounded-2xl p-4 text-xs text-slate-600 select-none">
+                                    <div>
+                                        <h5 className="font-bold text-slate-800 text-[10px] uppercase tracking-wide">This template is good for</h5>
+                                        <p className="text-slate-500 mt-1 leading-relaxed text-[11px] font-normal">
+                                            {form.category === "Marketing" && "Welcome messages, promotions, offers, coupons, newsletters, and announcements."}
+                                            {form.category === "Utility" && "Order confirmations, account updates, receipts, appointment reminders, and billing."}
+                                            {form.category === "Authentication" && "One-time passwords, account recovery codes, account verification, and integrity challenges."}
+                                        </p>
+                                    </div>
+                                    <div className="border-t border-slate-100 pt-2.5">
+                                        <h5 className="font-bold text-slate-800 text-[10px] uppercase tracking-wide">Template areas you can customize</h5>
+                                        <p className="text-slate-500 mt-1 leading-relaxed text-[11px] font-normal">
+                                            {form.category === "Authentication" ? "Code delivery method" : "Media, header, body, footer, button"}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <DialogFooter className="border-t border-slate-100 pt-4 flex items-center justify-end gap-2">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setDialogOpen(false)}
-                                className="border-slate-200 text-slate-700 h-9"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                disabled={
-                                    createMutation.isPending ||
-                                    updateMutation.isPending ||
-                                    form.category === "Authentication"
-                                }
-                                className="bg-[#35877D] hover:bg-[#2c7169] text-white font-medium h-9 px-4 rounded-xl border-0"
-                            >
-                                {createMutation.isPending || updateMutation.isPending ? (
-                                    <span className="flex items-center gap-1">
-                                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                        Processing...
-                                    </span>
-                                ) : editingId ? (
-                                    "Save & Resubmit"
-                                ) : (
-                                    "Submit for Approval"
+                        {/* Navigation Footer */}
+                        <DialogFooter className="border-t border-slate-100 px-6 py-4 flex items-center justify-between bg-white shrink-0">
+                            <div>
+                                {step > 1 && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => setStep((s) => s - 1)}
+                                        className="border-slate-200 text-slate-700 h-9 font-semibold flex items-center gap-1"
+                                    >
+                                        <ChevronLeft size={16} /> Back
+                                    </Button>
                                 )}
-                            </Button>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setDialogOpen(false)}
+                                    className="border-slate-200 text-slate-700 h-9 font-semibold"
+                                >
+                                    Cancel
+                                </Button>
+
+                                {step < 3 ? (
+                                    <Button
+                                        type="button"
+                                        onClick={() => {
+                                            if (step === 1) {
+                                                // Validate Step 1
+                                                if (!form.name.trim()) {
+                                                    toast.error("Template name is required.");
+                                                    return;
+                                                }
+                                                if (!TEMPLATE_LIMITS.nameRegex.test(form.name.trim())) {
+                                                    toast.error("Template name must use only lowercase letters, digits, and underscores.");
+                                                    return;
+                                                }
+                                                if (!form.language.trim()) {
+                                                    toast.error("Language code is required.");
+                                                    return;
+                                                }
+                                                setStep(2);
+                                            } else if (step === 2) {
+                                                // Validate Step 2
+                                                try {
+                                                    validateTemplatePayload(
+                                                        form.name,
+                                                        form.category,
+                                                        form.language,
+                                                        form.header_format,
+                                                        form.header_content,
+                                                        form.header_media_url,
+                                                        form.body_text,
+                                                        form.footer_text,
+                                                        form.buttons,
+                                                        form.body_samples,
+                                                        form.header_sample
+                                                    );
+                                                    setStep(3);
+                                                } catch (err: any) {
+                                                    toast.error(err.message || "Please fix validation issues.");
+                                                }
+                                            }
+                                        }}
+                                        className="bg-[#35877D] hover:bg-[#2c7169] text-white font-semibold h-9 px-4 rounded-xl border-0 flex items-center gap-1"
+                                    >
+                                        Next <ChevronRight size={16} />
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        type="submit"
+                                        disabled={
+                                            createMutation.isPending ||
+                                            updateMutation.isPending ||
+                                            form.category === "Authentication"
+                                        }
+                                        className="bg-[#35877D] hover:bg-[#2c7169] text-white font-bold h-9 px-5 rounded-xl border-0"
+                                    >
+                                        {createMutation.isPending || updateMutation.isPending ? (
+                                            <span className="flex items-center gap-1">
+                                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                                Processing...
+                                            </span>
+                                        ) : editingId ? (
+                                            "Save & Resubmit"
+                                        ) : (
+                                            "Submit for Approval"
+                                        )}
+                                    </Button>
+                                )}
+                            </div>
                         </DialogFooter>
                     </form>
                 </DialogContent>
