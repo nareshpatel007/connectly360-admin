@@ -150,7 +150,12 @@ export default function WhatsAppIntegrationPage() {
             (response) => {
                 if (response.authResponse?.code) {
                     exchangeToken.mutate(
-                        { data: { code: response.authResponse.code } },
+                        {
+                            data: {
+                                code: response.authResponse.code,
+                                redirect_uri: "https://connectly360.sandboxtechnology.in/integrations/whatsapp",
+                            },
+                        },
                         {
                             onSuccess: () => {
                                 queryClient.invalidateQueries({ queryKey: getGetWhatsappStatusQueryKey() });
