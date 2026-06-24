@@ -255,7 +255,7 @@ export function useGetWhatsappStatus(options?: any) {
 
 export function useExchangeMetaToken() {
     return useMutation({
-        mutationFn: async ({ data }: { data: { code: string } }) => {
+        mutationFn: async ({ data }: { data: { code: string; redirect_uri?: string } }) => {
             const res = await apiFetch(`${API_BASE}/whatsapp/token`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
