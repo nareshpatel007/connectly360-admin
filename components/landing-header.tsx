@@ -27,63 +27,63 @@ const productItems = [
         title: "WhatsApp QR code",
         desc: "Generate WhatsApp QR codes",
         href: "#",
-        color: "bg-teal-50 text-teal-600 group-hover:bg-teal-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     },
     {
         icon: Link2,
         title: "WhatsApp link generator",
         desc: "Create links to connect with customers",
         href: "#",
-        color: "bg-blue-50 text-blue-600 group-hover:bg-blue-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     },
     {
         icon: MessageSquarePlus,
         title: "WhatsApp chat widget",
         desc: "Add chat button to connect with visitors",
         href: "#",
-        color: "bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     },
     {
         icon: Bot,
         title: "WhatsApp Chatbots",
         desc: "Automate conversations at scale",
         href: "#",
-        color: "bg-purple-50 text-purple-600 group-hover:bg-purple-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     },
     {
         icon: FileText,
         title: "WhatsApp Flows",
         desc: "Collect user info using forms",
         href: "#",
-        color: "bg-pink-50 text-pink-600 group-hover:bg-pink-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     },
     {
         icon: Megaphone,
         title: "WhatsApp Broadcast",
         desc: "Scale one-to-many campaigns",
         href: "#",
-        color: "bg-orange-50 text-orange-600 group-hover:bg-orange-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     },
     {
         icon: GitBranch,
         title: "WhatsApp Drip Marketing",
         desc: "Automate sequence messages",
         href: "#",
-        color: "bg-sky-50 text-sky-600 group-hover:bg-sky-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     },
     {
         icon: Sparkles,
         title: "WhatsApp AI template generator",
         desc: "Create WhatsApp templates with prompts",
         href: "#",
-        color: "bg-amber-50 text-amber-600 group-hover:bg-amber-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     },
     {
         icon: Users,
         title: "WhatsApp Shared Team Inbox",
         desc: "Collaborate seamlessly with team members",
         href: "#",
-        color: "bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100"
+        color: "bg-[#EAF7F2] text-[#00382b] group-hover/item:bg-[#00382b] group-hover/item:text-white"
     }
 ];
 
