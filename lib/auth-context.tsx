@@ -85,6 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             pathname === "/" ||
             pathname === "/pricing" ||
             pathname === "/contact" ||
+            pathname === "/book-demo" ||
             pathname === "/privacy" ||
             pathname === "/terms" ||
             pathname === "/cookie-policy" ||
@@ -141,6 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         pathname === "/" ||
         pathname === "/pricing" ||
         pathname === "/contact" ||
+        pathname === "/book-demo" ||
         pathname === "/privacy" ||
         pathname === "/terms" ||
         pathname === "/cookie-policy" ||
