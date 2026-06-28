@@ -198,65 +198,6 @@ const NAV_STRUCTURE: NavGroup[] = [
     },
 ];
 
-function NavGroupSection({
-    group,
-    pathname,
-    openHref,
-    setOpenHref,
-}: {
-    group: NavGroup;
-    pathname: string;
-    openHref: string | null;
-    setOpenHref: (href: string | null) => void;
-}) {
-    return (
-        <SidebarGroup className="py-0 px-2">
-            <SidebarMenu>
-                {group.items.map((item) => {
-                    const hasSubItems = item.subItems && item.subItems.length > 0;
-
-                    if (!hasSubItems) {
-                        const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
-                        return (
-                            <SidebarMenuItem key={item.href}>
-                                <SidebarMenuButton
-                                    asChild
-                                    isActive={isActive}
-                                    tooltip={item.label}
-                                    className={isActive
-                                        ? "!bg-[#378179]/10 !text-[#378179] hover:!bg-[#378179]/15 hover:!text-[#378179] font-semibold rounded-xl transition-all duration-200 group"
-                                        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-medium rounded-xl transition-all duration-200 group"}
-                                >
-                                    <Link href={item.href} className="flex items-center gap-3 w-full">
-                                        <item.icon size={17} className={isActive ? "text-[#378179]" : "text-slate-400 group-hover:text-slate-700 transition-colors"} />
-                                        <span className="text-sm">{item.label}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        );
-                    }
-
-                    // Collapsible parent item
-                    const isParentActive = item.subItems!.some(
-                        sub => pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href))
-                    );
-
-                    return (
-                        <CollapsibleNavItem
-                            key={item.href}
-                            item={item}
-                            isParentActive={isParentActive}
-                            pathname={pathname}
-                            openHref={openHref}
-                            setOpenHref={setOpenHref}
-                        />
-                    );
-                })}
-            </SidebarMenu>
-        </SidebarGroup>
-    );
-}
-
 function CollapsibleNavItem({
     item,
     isParentActive,
@@ -280,28 +221,29 @@ function CollapsibleNavItem({
                     <SidebarMenuButton
                         isActive={isParentActive}
                         tooltip={item.label}
+                        size="sm"
                         className={
                             isParentActive
-                                ? "!bg-[#378179]/10 !text-[#378179] hover:!bg-[#378179]/15 hover:!text-[#378179] font-semibold rounded-xl transition-all duration-200 group cursor-pointer w-full"
-                                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-medium rounded-xl transition-all duration-200 group cursor-pointer w-full"
+                                ? "!bg-[#378179]/10 !text-[#378179] hover:!bg-[#378179]/15 hover:!text-[#378179] font-semibold rounded-lg transition-all duration-200 group cursor-pointer w-full"
+                                : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-medium rounded-lg transition-all duration-200 group cursor-pointer w-full"
                         }
                     >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="flex items-center gap-2.5 flex-1 min-w-0">
                             <item.icon
-                                size={17}
+                                size={15}
                                 className={isParentActive ? "text-[#378179] shrink-0" : "text-slate-400 group-hover:text-slate-700 transition-colors shrink-0"}
                             />
-                            <span className="text-sm truncate">{item.label}</span>
+                            <span className="text-xs truncate">{item.label}</span>
                         </div>
                         <ChevronDown
-                            size={14}
-                            className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""} ${isParentActive ? "text-[#378179]" : "text-slate-400"}`}
+                            size={12}
+                            className={`shrink-0 transition-transform duration-200 group-data-[state=collapsed]:hidden ${open ? "rotate-180" : ""} ${isParentActive ? "text-[#378179]" : "text-slate-400"}`}
                         />
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
 
                 <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                    <SidebarMenuSub className="border-l border-slate-200 ml-4 pl-3 mt-1 gap-0.5">
+                    <SidebarMenuSub className="border-l border-slate-200 ml-4 pl-3 mt-0.5 gap-0.5">
                         {item.subItems!.map((sub) => {
                             const isSubActive = pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href));
                             return (
@@ -309,6 +251,7 @@ function CollapsibleNavItem({
                                     <SidebarMenuSubButton
                                         asChild
                                         isActive={isSubActive}
+                                        size="sm"
                                         className={
                                             isSubActive
                                                 ? "!text-[#378179] !bg-[#378179]/8 font-semibold rounded-lg"
@@ -317,10 +260,10 @@ function CollapsibleNavItem({
                                     >
                                         <Link href={sub.href} className="flex items-center gap-2.5">
                                             <sub.icon
-                                                size={14}
+                                                size={13}
                                                 className={isSubActive ? "text-[#378179] shrink-0" : "text-slate-400 shrink-0"}
                                             />
-                                            <span className="text-xs font-medium">{sub.label}</span>
+                                            <span className="text-[11px] font-medium">{sub.label}</span>
                                         </Link>
                                     </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
@@ -381,17 +324,51 @@ function SidebarNav({ pathname }: { pathname: string }) {
     const [openHref, setOpenHref] = useState<string | null>(initialOpen);
 
     return (
-        <>
-            {filteredNav.map((group, i) => (
-                <NavGroupSection
-                    key={i}
-                    group={group}
-                    pathname={pathname}
-                    openHref={openHref}
-                    setOpenHref={setOpenHref}
-                />
-            ))}
-        </>
+        <SidebarGroup className="py-0 px-2">
+            <SidebarMenu className="gap-0.5">
+                {filteredNav.flatMap(g => g.items).map((item) => {
+                    const hasSubItems = item.subItems && item.subItems.length > 0;
+
+                    if (!hasSubItems) {
+                        const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                        return (
+                            <SidebarMenuItem key={item.href}>
+                                <SidebarMenuButton
+                                    asChild
+                                    isActive={isActive}
+                                    tooltip={item.label}
+                                    size="sm"
+                                    className={isActive
+                                        ? "!bg-[#378179]/10 !text-[#378179] hover:!bg-[#378179]/15 hover:!text-[#378179] font-semibold rounded-lg transition-all duration-200 group"
+                                        : "text-slate-700 hover:bg-slate-100 hover:text-slate-900 font-medium rounded-lg transition-all duration-200 group"}
+                                >
+                                    <Link href={item.href} className="flex items-center gap-2.5 w-full">
+                                        <item.icon size={15} className={isActive ? "text-[#378179]" : "text-slate-400 group-hover:text-slate-700 transition-colors"} />
+                                        <span className="text-xs">{item.label}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        );
+                    }
+
+                    // Collapsible parent item
+                    const isParentActive = item.subItems!.some(
+                        sub => pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href))
+                    );
+
+                    return (
+                        <CollapsibleNavItem
+                            key={item.href}
+                            item={item}
+                            isParentActive={isParentActive}
+                            pathname={pathname}
+                            openHref={openHref}
+                            setOpenHref={setOpenHref}
+                        />
+                    );
+                })}
+            </SidebarMenu>
+        </SidebarGroup>
     );
 }
 
@@ -535,9 +512,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                 {/* 2. TOP HEADER BAR */}
                 <header className="h-14 border-b border-slate-200 bg-white flex items-center justify-between px-5 shrink-0 z-40 select-none shadow-xs">
-                    {/* Left side: Logo */}
+                    {/* Left side: Logo & Sidebar Toggle */}
                     <div className="flex items-center gap-3">
-                        <SidebarTrigger className="md:hidden mr-1" />
+                        <SidebarTrigger className="text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg cursor-pointer shrink-0" />
                         <Link href="/dashboard" className="flex items-center gap-2">
                             <img src="/images/logo.png" alt="Connectly360 Logo" className="h-9 w-auto object-contain" />
                         </Link>
@@ -694,13 +671,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
                 {/* 3. SIDEBAR AND CONTENT LAYER */}
                 <div className="flex flex-grow w-full overflow-hidden relative">
-                    <Sidebar className="border-r border-slate-200 bg-white shrink-0 h-full z-30">
+                    <Sidebar collapsible="icon" className="border-r border-slate-200 bg-white shrink-0 h-full z-30 transition-all duration-200">
                         {/* Sidebar Navigation */}
-                        <SidebarContent className="py-3 space-y-1 overflow-y-auto">
+                        <SidebarContent className="py-2 space-y-0.5 overflow-y-auto">
                             <SidebarNav pathname={pathname} />
                         </SidebarContent>
 
-                        <SidebarFooter className="p-4 border-t border-slate-100 bg-white shrink-0">
+                        <SidebarFooter className="p-4 border-t border-slate-100 bg-white shrink-0 group-data-[state=collapsed]:hidden">
                             {/* Upgrade to Pro Card */}
                             <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-xl p-3.5 space-y-2 shadow-xs relative overflow-hidden">
                                 <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 uppercase tracking-wider">
@@ -723,11 +700,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     {/* Main Content Area */}
                     <main className="flex-grow flex flex-col min-w-0 overflow-hidden bg-slate-50">
                         {/* We dynamically apply padding so Inbox pages get 100% width/height without any spacing, while other pages have standard padding */}
-                        <div className={`flex-1 w-full h-full overflow-auto ${isInboxPage ? "p-0" : "p-4 sm:p-6 lg:p-8 xl:p-10 text-sm xl:text-base"}`}>
+                        <div className={`flex-1 w-full h-full overflow-auto ${isInboxPage ? "p-0" : "p-3 sm:p-4 md:p-5 text-xs sm:text-sm text-slate-800"}`}>
                             {isInboxPage ? (
                                 children
                             ) : (
-                                <div className="max-w-7xl mx-auto w-full flex flex-col gap-6">
+                                <div className="max-w-7xl mx-auto w-full flex flex-col gap-5">
                                     {children}
                                 </div>
                             )}

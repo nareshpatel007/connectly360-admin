@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 interface User {
     id: number;
     tenant_id: number | null;
+    company_id?: string | null;
     name: string;
     email: string;
     role: string | null;
@@ -46,6 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 setUser({
                     id: fetchedUser.id,
                     tenant_id: fetchedUser.tenant_id,
+                    company_id: fetchedUser.company_id,
                     name: fetchedUser.name || `${fetchedUser.first_name || ""} ${fetchedUser.last_name || ""}`.trim() || "User",
                     email: fetchedUser.email,
                     role: fetchedUser.role,
