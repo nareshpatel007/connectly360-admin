@@ -227,7 +227,9 @@ export default function CampaignDetailPage() {
                             </span>
                         </div>
                         <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                            <span>Template: <strong className="text-foreground">{campaign.template_name}</strong></span>
+                            <span>
+                                Type: <strong className="text-foreground capitalize">{campaign.template_name === 'email' ? 'Email' : campaign.template_name === 'sms' ? 'SMS' : `WhatsApp (${campaign.template_name})`}</strong>
+                            </span>
                             <span>·</span>
                             <span>Created {new Date(campaign.created_at).toLocaleDateString()}</span>
                         </div>
@@ -276,37 +278,53 @@ export default function CampaignDetailPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            <div className={`grid gap-3 ${
+                campaign.template_name === 'email' 
+                    ? 'grid-cols-1 sm:grid-cols-3' 
+                    : campaign.template_name === 'sms' 
+                    ? 'grid-cols-1 sm:grid-cols-2' 
+                    : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6'
+            }`}>
                 <StatCard label="Recipients" value={campaign.total_recipients} total={campaign.total_recipients}
                     icon={<Users className="h-4 w-4" />} color="bg-muted text-muted-foreground" />
                 <StatCard label="Sent" value={campaign.sent_count} total={campaign.total_recipients}
                     icon={<Send className="h-4 w-4" />} color="bg-[#35877D]/10 text-[#35877D]" />
-                <StatCard label="Delivered" value={campaign.delivered_count} total={campaign.total_recipients}
-                    icon={<CheckCheck className="h-4 w-4" />} color="bg-teal-500/10 text-teal-400" />
-                <StatCard label="Read" value={campaign.read_count} total={campaign.total_recipients}
-                    icon={<Eye className="h-4 w-4" />} color="bg-blue-500/10 text-blue-400" />
-                <StatCard label="Replied" value={campaign.replied_count} total={campaign.total_recipients}
-                    icon={<MessageCircle className="h-4 w-4" />} color="bg-indigo-500/10 text-indigo-400" />
-                <StatCard label="Failed" value={campaign.failed_count} total={campaign.total_recipients}
-                    icon={<AlertCircle className="h-4 w-4" />} color="bg-red-500/10 text-red-400" />
+                
+                {campaign.template_name !== 'email' && campaign.template_name !== 'sms' && (
+                    <>
+                        <StatCard label="Delivered" value={campaign.delivered_count} total={campaign.total_recipients}
+                            icon={<CheckCheck className="h-4 w-4" />} color="bg-teal-500/10 text-teal-400" />
+                        <StatCard label="Read" value={campaign.read_count} total={campaign.total_recipients}
+                            icon={<Eye className="h-4 w-4" />} color="bg-blue-500/10 text-blue-400" />
+                        <StatCard label="Replied" value={campaign.replied_count} total={campaign.total_recipients}
+                            icon={<MessageCircle className="h-4 w-4" />} color="bg-indigo-500/10 text-indigo-400" />
+                    </>
+                )}
+
+                {campaign.template_name !== 'sms' && (
+                    <StatCard label="Failed" value={campaign.failed_count} total={campaign.total_recipients}
+                        icon={<AlertCircle className="h-4 w-4" />} color="bg-red-500/10 text-red-400" />
+                )}
             </div>
 
-            {/* Funnel */}
-            <FunnelChart steps={[
-                { label: "Sent",      value: campaign.sent_count,      color: "bg-[#35877D]" },
-                { label: "Delivered", value: campaign.delivered_count, color: "bg-teal-500" },
-                { label: "Read",      value: campaign.read_count,      color: "bg-blue-500" },
-                { label: "Replied",   value: campaign.replied_count,   color: "bg-indigo-500" },
-            ]} />
+            {/* Funnel - Only for WhatsApp */}
+            {campaign.template_name !== 'email' && campaign.template_name !== 'sms' && (
+                <FunnelChart steps={[
+                    { label: "Sent",      value: campaign.sent_count,      color: "bg-[#35877D]" },
+                    { label: "Delivered", value: campaign.delivered_count, color: "bg-teal-500" },
+                    { label: "Read",      value: campaign.read_count,      color: "bg-blue-500" },
+                    { label: "Replied",   value: campaign.replied_count,   color: "bg-indigo-500" },
+                ]} />
+            )}
 
             {/* Recipients Table */}
             <div className="rounded-xl border border-border bg-card">
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
-                    <h2 className="text-sm font-medium text-foreground">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border px-4 py-4">
+                    <h2 className="text-sm font-semibold text-foreground">
                         Recipients ({filteredRecipients.length}
                         {statusFilter !== "all" ? ` of ${recipients.length}` : ""})
                     </h2>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         {/* Status Filter */}
                         <div className="flex gap-1 flex-wrap">
                             {(["all", "sent", "delivered", "read", "replied", "failed", "pending"] as const).map((s) => (

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
     Megaphone, Send, Percent, Plus, Loader2, Radio,
     Calendar, Users, CheckCheck, AlertCircle, Trash2,
+    Mail, MessageSquare, MessageCircle,
 } from "lucide-react";
 import { UpgradeGuard } from "@/components/upgrade-guard";
 import {
@@ -29,11 +30,11 @@ const STATUS_MAP: Record<
     Campaign["status"],
     { label: string; classes: string; pulse?: boolean }
 > = {
-    draft:   { label: "Draft",   classes: "border-zinc-300  bg-zinc-50   text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400" },
+    draft: { label: "Draft", classes: "border-zinc-300  bg-zinc-50   text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400" },
     sending: { label: "Sending", classes: "border-yellow-300 bg-yellow-50 text-yellow-700 dark:border-yellow-600 dark:bg-yellow-950 dark:text-yellow-400", pulse: true },
-    sent:    { label: "Sent",    classes: "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-400" },
-    failed:  { label: "Failed",  classes: "border-red-300  bg-red-50   text-red-700 dark:border-red-700 dark:bg-red-950 dark:text-red-400" },
-    paused:  { label: "Paused",  classes: "border-blue-300  bg-blue-50   text-blue-700 dark:border-blue-700 dark:bg-blue-950 dark:text-blue-400" },
+    sent: { label: "Sent", classes: "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-400" },
+    failed: { label: "Failed", classes: "border-red-300  bg-red-50   text-red-700 dark:border-red-700 dark:bg-red-950 dark:text-red-400" },
+    paused: { label: "Paused", classes: "border-blue-300  bg-blue-50   text-blue-700 dark:border-blue-700 dark:bg-blue-950 dark:text-blue-400" },
 };
 
 function StatusBadge({ status }: { status: Campaign["status"] }) {
@@ -76,8 +77,15 @@ export default function CampaignsPage() {
     const router = useRouter();
     const queryClient = useQueryClient();
 
-    const { data: campaigns = [], isLoading, error } = useListCampaigns();
-    const { data: stats } = useGetCampaignStats();
+    const { data: campaigns = [], isLoading, error } = useListCampaigns({
+        refetchInterval: (query: any) => {
+            const list = query?.state?.data as Campaign[] | undefined;
+            return list?.some((c) => c.status === "sending") ? 3000 : false;
+        }
+    });
+    const { data: stats } = useGetCampaignStats({
+        refetchInterval: campaigns.some((c) => c.status === "sending") ? 3000 : false,
+    });
     const deleteCampaign = useDeleteCampaign();
 
     const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
@@ -211,15 +219,39 @@ export default function CampaignsPage() {
                                                 onClick={() => router.push(`/marketing/campaigns/${c.id}`)}
                                             >
                                                 <TableCell className="font-medium">{c.name}</TableCell>
-                                                <TableCell className="hidden md:table-cell text-muted-foreground">{c.template_name}</TableCell>
+                                                <TableCell className="hidden md:table-cell">
+                                                    {c.template_name === 'email' ? (
+                                                        <span className="inline-flex items-center gap-1 rounded bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-400">
+                                                            <Mail className="h-3 w-3" /> Email
+                                                        </span>
+                                                    ) : c.template_name === 'sms' ? (
+                                                        <span className="inline-flex items-center gap-1 rounded bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
+                                                            <MessageSquare className="h-3 w-3" /> SMS
+                                                        </span>
+                                                    ) : (
+                                                        <span className="inline-flex items-center gap-1 rounded bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                                                            <MessageCircle className="h-3 w-3" /> WhatsApp ({c.template_name})
+                                                        </span>
+                                                    )}
+                                                </TableCell>
                                                 <TableCell className="hidden sm:table-cell text-right text-muted-foreground tabular-nums">
                                                     {c.total_recipients}
                                                 </TableCell>
                                                 <TableCell className="hidden lg:table-cell">
-                                                    <RateBar value={c.delivered_count} total={c.total_recipients} color="bg-[#35877D]" />
+                                                    <div className="flex flex-col gap-0.5">
+                                                        <RateBar value={c.delivered_count} total={c.total_recipients} color="bg-[#35877D]" />
+                                                        <span className="text-[10px] text-muted-foreground ml-11">
+                                                            {c.delivered_count} / {c.total_recipients}
+                                                        </span>
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell className="hidden lg:table-cell">
-                                                    <RateBar value={c.read_count} total={c.total_recipients} color="bg-blue-500" />
+                                                    <div className="flex flex-col gap-0.5">
+                                                        <RateBar value={c.read_count} total={c.total_recipients} color="bg-blue-500" />
+                                                        <span className="text-[10px] text-muted-foreground ml-11">
+                                                            {c.read_count} / {c.total_recipients}
+                                                        </span>
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell>
                                                     <StatusBadge status={c.status} />

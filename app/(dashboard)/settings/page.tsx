@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { Building2, Phone, Truck, Clock, Webhook, Copy, Check } from "lucide-react";
 
 const settingsSchema = z.object({
     companyName: z.string().min(1, "Company name is required"),
@@ -29,6 +30,7 @@ export default function SettingsPage() {
     const { data: settings, isLoading } = useGetSettings();
     const updateSettings = useUpdateSettings();
     const [origin, setOrigin] = useState("");
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -73,37 +75,55 @@ export default function SettingsPage() {
     }
 
     return (
-        <div className="space-y-6 max-w-2xl">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-                <p className="text-muted-foreground">Configure your business profile and auto-reply information.</p>
+        <div className="space-y-8 max-w-3xl">
+            <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                    <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
+                        <Building2 className="w-6 h-6 text-white" />
+                    </div>
+                    <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">Settings</h1>
+                </div>
+                <p className="text-muted-foreground text-lg pl-14">Configure your business profile and auto-reply information.</p>
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Business Profile</CardTitle>
-                    <CardDescription>
+            <Card className="border-2 shadow-xl hover:shadow-2xl transition-all duration-300">
+                <CardHeader className="space-y-1 pb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                            <Building2 className="w-5 h-5 text-white" />
+                        </div>
+                        <CardTitle className="text-2xl">Business Profile</CardTitle>
+                    </div>
+                    <CardDescription className="text-base pl-10">
                         This information is used by the AI assistant when responding to customer queries.
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-0">
                     {isLoading ? (
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             {Array.from({ length: 4 }).map((_, i) => (
-                                <Skeleton key={i} className="h-10 w-full" />
+                                <Skeleton key={i} className="h-14 w-full rounded-xl" />
                             ))}
                         </div>
                     ) : (
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                                 <FormField
                                     control={form.control}
                                     name="companyName"
                                     render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Company Name</FormLabel>
+                                        <FormItem className="space-y-2">
+                                            <FormLabel className="text-base font-semibold flex items-center gap-2">
+                                                <Building2 className="w-4 h-4 text-blue-500" />
+                                                Company Name
+                                            </FormLabel>
                                             <FormControl>
-                                                <Input {...field} data-testid="input-company-name" placeholder="e.g. Connectly360" />
+                                                <Input 
+                                                    {...field} 
+                                                    data-testid="input-company-name" 
+                                                    placeholder="e.g. Connectly360" 
+                                                    className="h-12 text-base border-2 focus-visible:ring-2 focus-visible:ring-blue-500/50"
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -113,10 +133,18 @@ export default function SettingsPage() {
                                     control={form.control}
                                     name="contactNumber"
                                     render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Contact Number</FormLabel>
+                                        <FormItem className="space-y-2">
+                                            <FormLabel className="text-base font-semibold flex items-center gap-2">
+                                                <Phone className="w-4 h-4 text-green-500" />
+                                                Contact Number
+                                            </FormLabel>
                                             <FormControl>
-                                                <Input {...field} data-testid="input-contact-number" placeholder="+91 9586557162" />
+                                                <Input 
+                                                    {...field} 
+                                                    data-testid="input-contact-number" 
+                                                    placeholder="+91 9586557162" 
+                                                    className="h-12 text-base border-2 focus-visible:ring-2 focus-visible:ring-green-500/50"
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -126,14 +154,18 @@ export default function SettingsPage() {
                                     control={form.control}
                                     name="deliveryInformation"
                                     render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Delivery Information</FormLabel>
+                                        <FormItem className="space-y-2">
+                                            <FormLabel className="text-base font-semibold flex items-center gap-2">
+                                                <Truck className="w-4 h-4 text-orange-500" />
+                                                Delivery Information
+                                            </FormLabel>
                                             <FormControl>
                                                 <Textarea
                                                     {...field}
                                                     data-testid="textarea-delivery-info"
                                                     placeholder="We deliver across India..."
-                                                    rows={3}
+                                                    rows={4}
+                                                    className="text-base border-2 focus-visible:ring-2 focus-visible:ring-orange-500/50 resize-none"
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -144,10 +176,18 @@ export default function SettingsPage() {
                                     control={form.control}
                                     name="businessHours"
                                     render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Business Hours</FormLabel>
+                                        <FormItem className="space-y-2">
+                                            <FormLabel className="text-base font-semibold flex items-center gap-2">
+                                                <Clock className="w-4 h-4 text-purple-500" />
+                                                Business Hours
+                                            </FormLabel>
                                             <FormControl>
-                                                <Input {...field} data-testid="input-business-hours" placeholder="Mon-Sat: 9:00 AM - 7:00 PM IST" />
+                                                <Input 
+                                                    {...field} 
+                                                    data-testid="input-business-hours" 
+                                                    placeholder="Mon-Sat: 9:00 AM - 7:00 PM IST" 
+                                                    className="h-12 text-base border-2 focus-visible:ring-2 focus-visible:ring-purple-500/50"
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -155,40 +195,22 @@ export default function SettingsPage() {
                                 />
                                 <Button
                                     type="submit"
-                                    className="w-full"
+                                    className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
                                     disabled={updateSettings.isPending}
                                     data-testid="button-save-settings"
                                 >
-                                    {updateSettings.isPending ? "Saving..." : "Save Settings"}
+                                    {updateSettings.isPending ? (
+                                        <span className="flex items-center gap-2">
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Saving...
+                                        </span>
+                                    ) : (
+                                        "Save Settings"
+                                    )}
                                 </Button>
                             </form>
                         </Form>
                     )}
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>WhatsApp Webhook</CardTitle>
-                    <CardDescription>Configure the webhook URL in your Meta Developer Console.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                    <div>
-                        <p className="text-sm font-medium text-foreground mb-1">Callback URL</p>
-                        <code className="block bg-muted rounded px-3 py-2 text-sm font-mono break-all">
-                            {origin}/api/webhooks/whatsapp
-                        </code>
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-foreground mb-1">Verify Token</p>
-                        <code className="block bg-muted rounded px-3 py-2 text-sm font-mono">
-                            Use the WHATSAPP_VERIFY_TOKEN you set in server environment config
-                        </code>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                        Set these in Meta Developer Console under WhatsApp &rarr; Configuration &rarr; Webhook.
-                        Subscribe to the <strong>messages</strong> field.
-                    </p>
                 </CardContent>
             </Card>
         </div>

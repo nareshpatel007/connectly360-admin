@@ -781,7 +781,7 @@ export interface CampaignStats {
 // Campaign Hooks
 // -------------------------------------------------------------
 
-export function useListCampaigns() {
+export function useListCampaigns(options?: any) {
     return useQuery<Campaign[]>({
         queryKey: ["listCampaigns"],
         queryFn: async () => {
@@ -789,10 +789,11 @@ export function useListCampaigns() {
             if (!res.ok) throw new Error("Failed to fetch campaigns");
             return res.json();
         },
+        ...options,
     });
 }
 
-export function useGetCampaignStats() {
+export function useGetCampaignStats(options?: any) {
     return useQuery<CampaignStats>({
         queryKey: ["campaignStats"],
         queryFn: async () => {
@@ -800,6 +801,7 @@ export function useGetCampaignStats() {
             if (!res.ok) throw new Error("Failed to fetch campaign stats");
             return res.json();
         },
+        ...options,
     });
 }
 
