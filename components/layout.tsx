@@ -49,6 +49,7 @@ import {
     UserPlus,
     Zap,
     GitBranch,
+    Coins,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -64,6 +65,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { CreditBalance } from "@/components/credit-balance";
 
 type SubItem = {
     icon: React.ElementType;
@@ -90,12 +92,12 @@ const NAV_STRUCTURE: NavGroup[] = [
         items: [
             {
                 icon: MessageSquare,
-                label: "Conversations",
+                label: "CRM",
                 href: "/conversations",
                 subItems: [
                     { icon: MessageSquare, label: "Inbox", href: "/conversations" },
                     { icon: Users, label: "Contacts", href: "/contacts" },
-                    { icon: GitBranch, label: "Leads Pipeline", href: "/leads" },
+                    { icon: GitBranch, label: "Leads", href: "/leads" },
                 ],
             },
         ],
@@ -104,7 +106,7 @@ const NAV_STRUCTURE: NavGroup[] = [
         items: [
             {
                 icon: Bot,
-                label: "AI & Automation",
+                label: "AI",
                 href: "/ai-assistant",
                 subItems: [
                     { icon: Bot, label: "AI Assistant", href: "/ai-assistant" },
@@ -150,8 +152,6 @@ const NAV_STRUCTURE: NavGroup[] = [
                 subItems: [
                     { icon: PieChart, label: "Analytics", href: "/analytics" },
                     { icon: BarChart3, label: "Usage Reports", href: "/reports/usage-reports" },
-                    { icon: Receipt, label: "Credit History", href: "/reports/credit-history" },
-                    { icon: Activity, label: "Activity Logs", href: "/reports/activity-logs" },
                 ],
             },
         ],
@@ -159,26 +159,15 @@ const NAV_STRUCTURE: NavGroup[] = [
     {
         items: [
             {
-                icon: CreditCard,
-                label: "Billing",
-                href: "/billing/subscription",
+                icon: Wallet,
+                label: "Billing & Credits",
+                href: "/billing",
                 subItems: [
-                    { icon: CreditCard, label: "Subscription", href: "/billing/subscription" },
-                    { icon: Sparkles, label: "Recharge Credits", href: "/billing/recharge-credits" },
+                    { icon: LayoutDashboard, label: "Overview", href: "/billing" },
+                    { icon: Sparkles, label: "Buy Credits", href: "/billing/buy-credits" },
+                    { icon: Receipt, label: "Credit History", href: "/billing/credit-history" },
+                    { icon: CreditCard, label: "Payments", href: "/billing/payments" },
                     { icon: FileText, label: "Invoices", href: "/billing/invoices" },
-                ],
-            },
-        ],
-    },
-    {
-        items: [
-            {
-                icon: Building2,
-                label: "Workspace",
-                href: "/workspace/team-members",
-                subItems: [
-                    { icon: UserPlus, label: "Team Members", href: "/workspace/team-members" },
-                    { icon: Shield, label: "Roles & Permissions", href: "/workspace/roles-permissions" },
                 ],
             },
         ],
@@ -188,10 +177,12 @@ const NAV_STRUCTURE: NavGroup[] = [
             {
                 icon: Settings,
                 label: "Settings",
-                href: "/settings",
+                href: "/settings/company-profile",
                 subItems: [
+                    { icon: UserPlus, label: "Team Members", href: "/workspace/team-members" },
+                    { icon: Shield, label: "Roles & Permissions", href: "/workspace/roles-permissions" },
                     { icon: Building2, label: "Company Profile", href: "/settings/company-profile" },
-                    { icon: BellRing, label: "Notification Settings", href: "/settings/notification-settings" },
+                    { icon: BellRing, label: "Notifications", href: "/settings/notification-settings" },
                 ],
             },
         ],
@@ -253,7 +244,7 @@ function CollapsibleNavItem({
                                         isActive={isSubActive}
                                         size="sm"
                                         className={
-                                            isSubActive
+                                             isSubActive
                                                 ? "!text-[#378179] !bg-[#378179]/8 font-semibold rounded-lg"
                                                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                                         }
@@ -278,45 +269,26 @@ function CollapsibleNavItem({
 
 function SidebarNav({ pathname }: { pathname: string }) {
     const { user } = useAuth();
-    const plan = (user?.plan || "growth").toLowerCase();
+    const isAdmin = user?.role === "owner" || user?.role === "admin";
 
-    // Dynamically filter NAV_STRUCTURE based on the user's plan
-    const filteredNav = NAV_STRUCTURE.map(group => {
-        const filteredItems = group.items.map(item => {
-            if (item.subItems) {
-                const filteredSubItems = item.subItems.filter(sub => {
-                    if (plan === "starter") {
-                        if (sub.href === "/ai-assistant") return false;
-                        if (sub.href === "/knowledge-base") return false;
-                        if (sub.href === "/integrations/api-keys") return false;
-                        if (sub.href === "/integrations/webhooks") return false;
-                        if (sub.href === "/workspace/roles-permissions") return false;
-                    }
-                    if (plan === "growth") {
-                        if (sub.href === "/integrations/api-keys") return false;
-                    }
-                    return true;
-                });
-
-                if (filteredSubItems.length === 0) return null;
-                return { ...item, subItems: filteredSubItems };
-            }
-
-            return item;
-        }).filter((item): item is NonNullable<typeof item> => item !== null);
-
-        // Hide Marketing and campaigns entirely for starter/growth
-        const hasMarketing = filteredItems.some(item => item.href.startsWith("/campaigns") || (item.subItems && item.subItems.some(s => s.href.startsWith("/campaigns"))));
-        if (hasMarketing && (plan === "starter" || plan === "growth")) {
-            return null;
-        }
-
-        if (filteredItems.length === 0) return null;
-        return { items: filteredItems };
-    }).filter((group): group is NonNullable<typeof group> => group !== null);
+    const navGroups = [...NAV_STRUCTURE];
+    if (isAdmin) {
+        navGroups.push({
+            items: [
+                {
+                    icon: Shield,
+                    label: "Admin Panel",
+                    href: "/admin/credits",
+                    subItems: [
+                        { icon: Coins, label: "Credit Management", href: "/admin/credits" },
+                    ],
+                },
+            ],
+        });
+    }
 
     // Find the initially-active collapsible item so it opens on first render
-    const initialOpen = filteredNav.flatMap(g => g.items)
+    const initialOpen = navGroups.flatMap(g => g.items)
         .find(item => item.subItems?.some(
             sub => pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href))
         ))?.href ?? null;
@@ -326,7 +298,7 @@ function SidebarNav({ pathname }: { pathname: string }) {
     return (
         <SidebarGroup className="py-0 px-2">
             <SidebarMenu className="gap-0.5">
-                {filteredNav.flatMap(g => g.items).map((item) => {
+                {navGroups.flatMap(g => g.items).map((item) => {
                     const hasSubItems = item.subItems && item.subItems.length > 0;
 
                     if (!hasSubItems) {
@@ -427,90 +399,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
     const isInboxPage = pathname === "/conversations" || pathname.startsWith("/customer/inbox");
 
-    const plan = user?.plan?.toLowerCase();
-    const isFree = plan === "free";
-
-    let trialDaysRemaining = 0;
-    let isTrialExpired = false;
-    let hasTrialEnd = false;
-
-    if (isFree && user?.trial_ends_at) {
-        hasTrialEnd = true;
-        const trialEnd = new Date(user.trial_ends_at);
-        const now = new Date();
-        const diffTime = trialEnd.getTime() - now.getTime();
-        trialDaysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (trialDaysRemaining <= 0) {
-            isTrialExpired = true;
-        }
-    }
-
-    if (isTrialExpired) {
-        return (
-            <div className="flex flex-col h-screen w-full overflow-x-hidden bg-slate-50 text-slate-900 font-sans">
-                {/* Header carrying the logo and Logout option */}
-                <header className="h-14 border-b border-slate-200 bg-white flex items-center justify-between px-6 shrink-0 z-40 select-none shadow-sm">
-                    <div className="flex items-center gap-2">
-                        <img src="/images/logo.png" alt="Connectly360 Logo" className="h-9 w-auto object-contain" />
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <span className="text-xs text-red-500 font-bold bg-red-50 border border-red-100 rounded-lg px-2.5 py-1">
-                            Trial Expired
-                        </span>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={logout}
-                            className="rounded-xl px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 hover:text-red-600 cursor-pointer font-semibold transition-colors flex items-center gap-1.5 bg-transparent border-0"
-                        >
-                            <LogOut size={14} />
-                            <span>Sign out</span>
-                        </Button>
-                    </div>
-                </header>
-                {/* Main Content (Subscription Page) */}
-                <main className="flex-grow overflow-y-auto overflow-x-hidden p-6 md:p-12 max-w-7xl mx-auto w-full">
-                    <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8 text-center shadow-xs">
-                        <h2 className="text-sm font-bold text-red-800">Your Free Trial Has Expired</h2>
-                        <p className="text-sm text-red-700 mt-1 leading-relaxed">
-                            To continue using your workspace, templates, custom node auto-replies, and messaging automation features, please choose one of our paid plans below.
-                        </p>
-                    </div>
-                    {children}
-                </main>
-            </div>
-        );
-    }
-
     return (
         <SidebarProvider>
             <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans dashboard-theme">
-                {/* 1. TOP TRIAL WARNING BANNER */}
-                {isFree && (
-                    <div className="bg-[#1E293B] text-white py-2.5 px-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm font-normal select-none shrink-0 z-50 shadow-sm border-b border-slate-800">
-                        <div className="flex-1 text-center sm:text-left leading-normal">
-                            {isTrialExpired ? (
-                                <span>Your free trial has <span className="font-semibold text-red-400">expired</span>. Upgrade your plan to restore full workspace access.</span>
-                            ) : hasTrialEnd ? (
-                                <span>You have <span className="font-medium text-[#378179]">{trialDaysRemaining} {trialDaysRemaining === 1 ? "day" : "days"}</span> to explore this <span className="font-medium">Trial account</span>. Connect your preferred channel to unlock all features.</span>
-                            ) : (
-                                <span>You are on a <span className="font-medium">Trial account</span>. Connect your preferred channel or upgrade to unlock all features.</span>
-                            )}
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                            {!isTrialExpired && (
-                                <Button size="sm" asChild className="bg-[#378179] hover:bg-[#079E61] text-white text-xs font-medium h-7.5 px-3 rounded-lg border-0 shadow-xs cursor-pointer">
-                                    <Link href="/integrations/whatsapp">Connect Channel</Link>
-                                </Button>
-                            )}
-                            <Button size="sm" variant="outline" asChild className="text-white hover:text-white border-white/20 hover:bg-white/10 text-xs font-medium h-7.5 px-3 rounded-lg bg-transparent cursor-pointer">
-                                <Link href="/billing/subscription">Upgrade Plan</Link>
-                            </Button>
-                        </div>
-                    </div>
-                )}
-
-                {/* 2. TOP HEADER BAR */}
+                {/* 1. TOP HEADER BAR */}
                 <header className="h-14 border-b border-slate-200 bg-white flex items-center justify-between px-5 shrink-0 z-40 select-none shadow-xs">
                     {/* Left side: Logo & Sidebar Toggle */}
                     <div className="flex items-center gap-3">
@@ -523,19 +415,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                     {/* Right side: Widgets and Actions */}
                     <div className="flex items-center gap-4">
                         {/* Credits Balance display */}
-                        <Link href="/billing/recharge-credits" className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#378179]/5 border border-[#378179]/10 hover:bg-[#378179]/10 transition-all cursor-pointer text-xs font-bold text-[#378179]">
-                            <Zap size={13} className="fill-[#378179]/20 text-[#378179]" />
-                            <span>{user?.credits !== undefined ? Number(user.credits).toLocaleString() : 0} Credits</span>
-                        </Link>
+                        <CreditBalance variant="header" />
 
-                        {/* Book a demo */}
-                        {(isFree || !plan || plan === "free") && (
-                            <Button variant="outline" asChild className="hidden sm:inline-flex border-[#378179] text-[#378179] hover:bg-[#EAF7F2] text-xs font-medium h-8 px-3.5 rounded-lg bg-transparent cursor-pointer">
-                                <Link href="/book-demo">Book a demo</Link>
-                            </Button>
-                        )}
+                        {/* WhatsApp Connection status indicator if needed */}
+                        <Button variant="outline" asChild className="hidden sm:inline-flex border-[#378179] text-[#378179] hover:bg-[#EAF7F2] text-xs font-medium h-8 px-3.5 rounded-lg bg-transparent cursor-pointer">
+                            <Link href="/billing">Wallet &amp; Credits</Link>
+                        </Button>
 
                         <div className="h-4 w-px bg-slate-200 hidden sm:block" />
+
 
                         {/* Notifications (Bell Icon) */}
                         <DropdownMenu>
@@ -677,24 +565,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                             <SidebarNav pathname={pathname} />
                         </SidebarContent>
 
-                        <SidebarFooter className="p-4 border-t border-slate-100 bg-white shrink-0 group-data-[state=collapsed]:hidden">
-                            {/* Upgrade to Pro Card */}
-                            <div className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-xl p-3.5 space-y-2 shadow-xs relative overflow-hidden">
-                                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                                    <Sparkles size={14} className="text-[#378179] fill-[#378179]/20 animate-pulse" />
-                                    Upgrade to Pro
-                                </div>
-                                <p className="text-xs text-slate-700 leading-normal font-medium">
-                                    Get premium features &amp; priority support.
-                                </p>
-                                <Button size="sm" asChild className="w-full bg-[#378179] hover:bg-[#079E61] text-white font-medium text-xs h-7.5 gap-1 shadow-xs mt-1.5 justify-between border-0 cursor-pointer">
-                                    <Link href="/billing/subscription">
-                                        Upgrade Plan
-                                        <ArrowRight size={10} />
-                                    </Link>
-                                </Button>
-                            </div>
+                        <SidebarFooter className="p-3 border-t border-slate-100 bg-white shrink-0 group-data-[state=collapsed]:hidden">
+                            <CreditBalance variant="widget" />
                         </SidebarFooter>
+
                     </Sidebar>
 
                     {/* Main Content Area */}

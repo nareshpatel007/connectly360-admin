@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useListTemplates, useListCustomers, useCreateCampaign, useSendCampaign, MessageTemplate } from "@/lib/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { UpgradeGuard } from "@/components/upgrade-guard";
+import { CampaignCreditConfirmDialog } from "@/components/campaign-credit-confirm-dialog";
 
 // ─────────────────────────────────────────────────────────
 // Step types
@@ -517,6 +518,9 @@ export default function NewCampaignPage() {
 
     const [step, setStep] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showCreditConfirm, setShowCreditConfirm] = useState(false);
+    const { data: customers = [] } = useListCustomers();
+    const recipientCount = customers.length || 1;
     const [state, setState] = useState<WizardState>({
         type: "whatsapp",
         name: "",
@@ -754,7 +758,7 @@ export default function NewCampaignPage() {
                                     <Button
                                         className="bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl shadow-md font-semibold flex items-center gap-2"
                                         disabled={isProcessing || !canProceed}
-                                        onClick={handleSend}
+                                        onClick={() => setShowCreditConfirm(true)}
                                     >
                                         {isProcessing ? (
                                             <><Loader2 className="h-4 w-4 animate-spin" /> Sending…</>
@@ -778,6 +782,20 @@ export default function NewCampaignPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Campaign Credit Confirmation Dialog */}
+            <CampaignCreditConfirmDialog
+                open={showCreditConfirm}
+                onOpenChange={setShowCreditConfirm}
+                recipientCount={recipientCount}
+                costPerMessage={1}
+                isSending={isProcessing}
+                onConfirm={() => {
+                    setShowCreditConfirm(false);
+                    handleSend();
+                }}
+            />
         </UpgradeGuard>
     );
 }
+

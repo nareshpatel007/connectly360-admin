@@ -835,154 +835,126 @@ export default function LandingPage() {
                 <section id="pricing" className="py-16 md:py-24 bg-white">
                     <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 max-w-7xl mx-auto">
                         {/* Section Header */}
-                        <div className="text-center max-w-2xl mx-auto mb-12">
-                            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mt-4">
-                                Simple, Transparent Pricing
+                        <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#35877D]/10 text-[#00382B] text-xs font-bold border border-[#35877D]/20">
+                                <Coins size={13} className="text-[#35877D]" />
+                                100% Pay-As-You-Go — No Monthly Commitments
+                            </span>
+                            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                                Pay Only For What You Use
                             </h2>
-                            <p className="text-base text-gray-500 font-medium leading-relaxed mt-3">
-                                Choose the plan that fits your growth. Save 20% by paying annually.
+                            <p className="text-sm sm:text-base text-gray-500 font-medium leading-relaxed">
+                                Get <span className="text-[#00382B] font-bold">50 Free Credits</span> on signup. Top up credit packs anytime. Unused credits never expire.
                             </p>
-
-                            {/* Annual / Monthly Toggle */}
-                            <div className="flex items-center justify-center gap-3 mt-6">
-                                <Label htmlFor="home-billing-toggle" className="text-sm font-bold text-gray-600">Monthly</Label>
-                                <Switch
-                                    id="home-billing-toggle"
-                                    checked={isAnnual}
-                                    onCheckedChange={setIsAnnual}
-                                />
-                                <Label htmlFor="home-billing-toggle" className="text-sm font-bold text-gray-600">
-                                    Annual <span className="ml-1.5 text-[10px] font-extrabold text-white bg-[#35877D] px-2 py-0.5 rounded-full">Save 20%</span>
-                                </Label>
-                            </div>
                         </div>
 
                         {/* Cards Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
-                            {/* Starter */}
-                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
-                                <div className="mb-5">
-                                    <span className="text-[10px] font-bold text-[#35877D] bg-[#35877D]/10 px-2 py-0.5 rounded-full uppercase tracking-wider">For Small Businesses</span>
-                                    <h3 className="text-xl font-extrabold text-slate-900 mt-2 mb-1">Starter</h3>
-                                    <p className="text-sm text-gray-500 font-bold">Essential WhatsApp automation</p>
+                            {/* Starter Pack */}
+                            <Card className="p-7 flex flex-col justify-between border border-slate-200 bg-white rounded-3xl shadow-sm relative">
+                                <div className="space-y-4">
+                                    <div>
+                                        <span className="text-[10px] font-bold text-[#35877D] bg-[#35877D]/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Starter</span>
+                                        <h3 className="text-xl font-extrabold text-slate-900 mt-2">500 Credits</h3>
+                                        <p className="text-xs text-gray-500 font-medium mt-1">For testing AI &amp; auto-replies</p>
+                                    </div>
+                                    <div className="flex items-baseline border-y border-slate-100 py-3">
+                                        <span className="text-3xl font-black text-slate-900">₹99</span>
+                                        <span className="text-gray-400 text-xs ml-1 font-semibold">one-time (₹0.20/credit)</span>
+                                    </div>
+                                    <ul className="text-xs text-gray-600 font-medium space-y-2">
+                                        {["500 Automated Actions", "Never Expiring Balance", "AI Chatbot & Knowledge Base", "Shared Team Inbox"].map((f) => (
+                                            <li key={f} className="flex items-center gap-2">
+                                                <CheckCircle2 size={13} className="text-emerald-555 shrink-0" />
+                                                <span>{f}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                                <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-slate-900">₹{isAnnual ? 399 : 499}</span>
-                                    <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
-                                </div>
-                                <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
-                                    {[
-                                        "1,000 Monthly Credits",
-                                        "1 WhatsApp Number",
-                                        "Basic Automation Flows",
-                                        "Shared Team Inbox",
-                                        "Contact & Lead Management",
-                                        "Welcome & Away Messages",
-                                    ].map((f) => (
-                                        <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
-                                            <span>{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Button asChild variant="outline" className="w-full h-12 border-slate-200 rounded-xl text-sm font-bold hover:bg-gray-50">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Get Started</Link>
+                                <Button asChild variant="outline" className="w-full mt-6 h-11 border-slate-200 rounded-xl text-xs font-bold hover:bg-gray-50 cursor-pointer">
+                                    <Link href={isAuthenticated ? "/billing/recharge-credits" : "/register"}>Get Started</Link>
                                 </Button>
                             </Card>
 
-                            {/* Growth */}
-                            <Card className="p-8 flex flex-col border border-[#35877D]/20 bg-[#35877D]/5 rounded-3xl shadow-sm relative transform xl:-translate-y-1">
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#35877D] text-white px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
+                            {/* Growth Pack */}
+                            <Card className="p-7 flex flex-col justify-between border-2 border-[#00382B] bg-white rounded-3xl shadow-xl relative transform xl:-translate-y-2 ring-2 ring-[#00382B]/10">
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#00382B] text-white px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
                                     Most Popular
                                 </div>
-                                <div className="mb-5 mt-2">
-                                    <span className="text-[10px] font-bold text-[#35877D] bg-white px-2 py-0.5 rounded-full uppercase tracking-wider">Most Popular</span>
-                                    <h3 className="text-xl font-extrabold text-slate-900 mt-2 mb-1">Growth</h3>
-                                    <p className="text-sm text-gray-500 font-bold">AI Bot & CRM workflows</p>
+                                <div className="space-y-4 mt-2">
+                                    <div>
+                                        <span className="text-[10px] font-bold text-[#00382B] bg-[#00382B]/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Growth</span>
+                                        <h3 className="text-xl font-extrabold text-slate-900 mt-2">2,000 Credits</h3>
+                                        <p className="text-xs text-gray-500 font-medium mt-1">For growing sales &amp; broadcasts</p>
+                                    </div>
+                                    <div className="flex items-baseline border-y border-slate-100 py-3">
+                                        <span className="text-3xl font-black text-[#00382B]">₹299</span>
+                                        <span className="text-gray-400 text-xs ml-1 font-semibold">one-time (₹0.15/credit)</span>
+                                    </div>
+                                    <ul className="text-xs text-gray-600 font-medium space-y-2">
+                                        {["2,000 Automated Actions", "Never Expiring Balance", "WhatsApp Broadcast Campaigns", "Knowledge Base Document Search", "Priority Support"].map((f) => (
+                                            <li key={f} className="flex items-center gap-2">
+                                                <CheckCircle2 size={13} className="text-emerald-555 shrink-0" />
+                                                <span>{f}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                                <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-[#35877D]">₹{isAnnual ? 799 : 999}</span>
-                                    <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
-                                </div>
-                                <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
-                                    {[
-                                        "3,000 Monthly Credits",
-                                        "1 WhatsApp Number",
-                                        "GPT AI Assistant",
-                                        "Knowledge Base Training",
-                                        "Workflow Automation Builder",
-                                        "Advanced Lead Pipelines",
-                                    ].map((f) => (
-                                        <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
-                                            <span>{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Button asChild className="w-full h-12 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-sm font-bold shadow-md">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Start Free Trial</Link>
+                                <Button asChild className="w-full mt-6 h-11 bg-[#00382B] hover:bg-[#35877D] text-white rounded-xl text-xs font-bold shadow-md cursor-pointer border-0">
+                                    <Link href={isAuthenticated ? "/billing/recharge-credits" : "/register"}>Buy Growth Pack</Link>
                                 </Button>
                             </Card>
 
-                            {/* Business */}
-                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
-                                <div className="mb-5">
-                                    <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-full uppercase tracking-wider">For Teams</span>
-                                    <h3 className="text-xl font-extrabold text-slate-900 mt-2 mb-1">Business</h3>
-                                    <p className="text-sm text-gray-500 font-bold">Campaigns & advanced analytics</p>
+                            {/* Pro Pack */}
+                            <Card className="p-7 flex flex-col justify-between border border-slate-200 bg-white rounded-3xl shadow-sm relative">
+                                <div className="space-y-4">
+                                    <div>
+                                        <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Pro</span>
+                                        <h3 className="text-xl font-extrabold text-slate-900 mt-2">10,000 Credits</h3>
+                                        <p className="text-xs text-gray-500 font-medium mt-1">High volume bulk messaging</p>
+                                    </div>
+                                    <div className="flex items-baseline border-y border-slate-100 py-3">
+                                        <span className="text-3xl font-black text-slate-900">₹999</span>
+                                        <span className="text-gray-400 text-xs ml-1 font-semibold">one-time (₹0.10/credit)</span>
+                                    </div>
+                                    <ul className="text-xs text-gray-600 font-medium space-y-2">
+                                        {["10,000 Automated Actions", "Never Expiring Balance", "All AI Models (GPT & Claude)", "Full Lead & CRM Workflows", "API Access & Webhooks"].map((f) => (
+                                            <li key={f} className="flex items-center gap-2">
+                                                <CheckCircle2 size={13} className="text-emerald-555 shrink-0" />
+                                                <span>{f}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                                <div className="mb-6 flex items-baseline">
-                                    <span className="text-4xl font-extrabold text-slate-900">₹{isAnnual ? 1999 : 2499}</span>
-                                    <span className="text-gray-600 text-sm ml-1 font-semibold">/month</span>
-                                </div>
-                                <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
-                                    {[
-                                        "10,000 Monthly Credits",
-                                        "3 WhatsApp Numbers",
-                                        "WhatsApp Broadcast Campaigns",
-                                        "10 Team Inbox Seats",
-                                        "Analytics & Performance Reports",
-                                        "API Access & Webhooks",
-                                    ].map((f) => (
-                                        <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
-                                            <span>{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Button asChild variant="outline" className="w-full h-12 border-slate-200 rounded-xl text-sm font-bold hover:bg-gray-50">
-                                    <Link href={isAuthenticated ? "/dashboard" : "/register"}>Upgrade Plan</Link>
+                                <Button asChild variant="outline" className="w-full mt-6 h-11 border-slate-200 rounded-xl text-xs font-bold hover:bg-gray-50 cursor-pointer">
+                                    <Link href={isAuthenticated ? "/billing/recharge-credits" : "/register"}>Buy Pro Pack</Link>
                                 </Button>
                             </Card>
 
-                            {/* Enterprise */}
-                            <Card className="p-8 flex flex-col border border-slate-200 bg-white rounded-3xl shadow-sm relative">
-                                <div className="mb-5">
-                                    <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-full uppercase tracking-wider">Enterprise</span>
-                                    <h3 className="text-xl font-extrabold text-slate-900 mt-2 mb-1">Enterprise</h3>
-                                    <p className="text-sm text-gray-500 font-bold">White-label & custom scales</p>
+                            {/* Enterprise Pack */}
+                            <Card className="p-7 flex flex-col justify-between border border-slate-200 bg-white rounded-3xl shadow-sm relative">
+                                <div className="space-y-4">
+                                    <div>
+                                        <span className="text-[10px] font-bold text-slate-900 bg-slate-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Enterprise</span>
+                                        <h3 className="text-xl font-extrabold text-slate-900 mt-2">50,000 Credits</h3>
+                                        <p className="text-xs text-gray-500 font-medium mt-1">Maximum volume discounts</p>
+                                    </div>
+                                    <div className="flex items-baseline border-y border-slate-100 py-3">
+                                        <span className="text-3xl font-black text-slate-900">₹3,999</span>
+                                        <span className="text-gray-400 text-xs ml-1 font-semibold">one-time (₹0.08/credit)</span>
+                                    </div>
+                                    <ul className="text-xs text-gray-600 font-medium space-y-2">
+                                        {["50,000 Automated Actions", "Lowest Cost Per Action", "Never Expiring Balance", "Dedicated Account Manager", "Custom Integration Support"].map((f) => (
+                                            <li key={f} className="flex items-center gap-2">
+                                                <CheckCircle2 size={13} className="text-emerald-555 shrink-0" />
+                                                <span>{f}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                                <div className="mb-6 flex items-baseline">
-                                    <span className="text-3xl font-extrabold text-slate-900">Contact Sales</span>
-                                </div>
-                                <ul className="text-sm text-gray-600 font-semibold space-y-2 mb-8 flex-1">
-                                    {[
-                                        "Unlimited WhatsApp Numbers",
-                                        "White-Label Reseller Solution",
-                                        "Dedicated Server Hosting",
-                                        "Custom Credit Packages",
-                                        "SLA & Dedicated Account Manager",
-                                        "Custom Integrations",
-                                    ].map((f) => (
-                                        <li key={f} className="flex items-start gap-2">
-                                            <CheckCircle2 size={14} className="text-[#35877D] shrink-0 mt-0.5" />
-                                            <span>{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Button asChild variant="outline" className="w-full h-12 border-slate-200 rounded-xl text-sm font-bold hover:bg-gray-50">
-                                    <Link href="/contact?plan=enterprise">Contact Us</Link>
+                                <Button asChild variant="outline" className="w-full mt-6 h-11 border-slate-200 rounded-xl text-xs font-bold hover:bg-gray-50 cursor-pointer">
+                                    <Link href={isAuthenticated ? "/billing/recharge-credits" : "/register"}>Buy Enterprise Pack</Link>
                                 </Button>
                             </Card>
 
@@ -990,12 +962,13 @@ export default function LandingPage() {
 
                         {/* Link to full pricing page */}
                         <div className="text-center mt-10">
-                            <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm font-bold text-[#35877D] hover:underline">
-                                View full feature comparison <ArrowRight size={14} />
+                            <Link href="/pricing" className="inline-flex items-center gap-1.5 text-sm font-bold text-[#00382B] hover:underline">
+                                View full credit consumption rules &amp; rates <ArrowRight size={14} />
                             </Link>
                         </div>
                     </div>
                 </section>
+
 
                 {/* FAQ Section */}
                 <section className="py-16 md:py-24 bg-slate-50 border-t border-slate-200">
