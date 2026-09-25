@@ -3,24 +3,22 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
-interface User {
+export interface AdminUser {
     id: number;
-    tenant_id: number | null;
-    company_id?: string | null;
     name: string;
     email: string;
     role: string | null;
-    plan?: string;
-    trial_ends_at?: string | null;
+    is_admin?: boolean | number;
+    tenant_id?: number | null;
     credits?: number;
 }
 
 interface AuthContextType {
     token: string | null;
-    user: User | null;
+    user: AdminUser | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (token: string) => void;
+    login: (token: string, user?: AdminUser) => void;
     logout: () => void;
 }
 
@@ -28,32 +26,38 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [token, setToken] = useState<string | null>(null);
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<AdminUser | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
     const pathname = usePathname();
 
-    const fetchProfile = async (authToken: string) => {
+    const fetchAdminProfile = async (authToken: string) => {
         try {
             const res = await fetch("/api/auth/profile", {
                 method: "GET",
                 headers: {
-                    "Authorization": `Bearer ${authToken}`
+                    "Authorization": `Bearer ${authToken}`,
+                    "X-Api-Token": authToken
                 }
             });
             const data = await res.json();
-            if (data.status) {
+            if (data.status && data.data) {
                 const fetchedUser = data.data;
+                const isAdmin = (!empty(fetchedUser.is_admin) && fetchedUser.is_admin == 1) ||
+                               (fetchedUser.role && ["super_admin", "owner", "admin"].includes(fetchedUser.role.toLowerCase()));
+
+                if (!isAdmin) {
+                    logout();
+                    return;
+                }
+
                 setUser({
                     id: fetchedUser.id,
-                    tenant_id: fetchedUser.tenant_id,
-                    company_id: fetchedUser.company_id,
-                    name: fetchedUser.name || `${fetchedUser.first_name || ""} ${fetchedUser.last_name || ""}`.trim() || "User",
+                    name: fetchedUser.name || `${fetchedUser.first_name || ""} ${fetchedUser.last_name || ""}`.trim() || "Administrator",
                     email: fetchedUser.email,
                     role: fetchedUser.role,
-                    plan: fetchedUser.plan,
-                    trial_ends_at: fetchedUser.trial_ends_at,
-                    credits: fetchedUser.credits
+                    is_admin: fetchedUser.is_admin,
+                    tenant_id: fetchedUser.tenant_id
                 });
             } else {
                 logout();
@@ -65,85 +69,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    useEffect(() => {
-        // Load auth data from localStorage on mount
-        const storedToken = localStorage.getItem("auth_token");
-        // Ensure legacy auth_user is completely removed
-        localStorage.removeItem("auth_user");
+    function empty(val: any) {
+        return val === undefined || val === null || val === "" || val === 0;
+    }
 
+    useEffect(() => {
+        const storedToken = localStorage.getItem("admin_auth_token");
         if (storedToken) {
             setToken(storedToken);
-            fetchProfile(storedToken);
+            fetchAdminProfile(storedToken);
         } else {
             setIsLoading(false);
         }
     }, []);
 
-    // Route protection logic
+    // Route Protection logic
     useEffect(() => {
         if (isLoading) return;
 
-        const isPublicPage =
-            pathname === "/" ||
-            pathname === "/pricing" ||
-            pathname === "/contact" ||
-            pathname === "/book-demo" ||
-            pathname === "/privacy" ||
-            pathname === "/terms" ||
-            pathname === "/cookie-policy" ||
-            pathname === "/refund-policy" ||
-            pathname === "/faq" ||
-            pathname === "/login" ||
-            pathname === "/register" ||
-            pathname === "/forgot-password" ||
-            pathname.startsWith("/verify");
-
         const isAuthPage =
             pathname === "/login" ||
-            pathname === "/register" ||
-            pathname === "/forgot-password";
+            pathname === "/forgot-password" ||
+            pathname === "/reset-password";
 
-        if (!token && !isPublicPage) {
-            // Redirect to login if not authenticated and not on a public page
+        if (!token && !isAuthPage) {
             router.push("/login");
         } else if (token && isAuthPage) {
-            // Redirect to dashboard home if already logged in and visiting auth pages
             router.push("/dashboard");
         }
-    }, [token, user, pathname, isLoading, router]);
+    }, [token, pathname, isLoading, router]);
 
-    const login = (newToken: string) => {
-        localStorage.setItem("auth_token", newToken);
+    const login = (newToken: string, userObj?: AdminUser) => {
+        localStorage.setItem("admin_auth_token", newToken);
         setToken(newToken);
-        setIsLoading(true);
-        fetchProfile(newToken);
+        if (userObj) {
+            setUser(userObj);
+            setIsLoading(false);
+        } else {
+            setIsLoading(true);
+            fetchAdminProfile(newToken);
+        }
         router.push("/dashboard");
     };
 
     const logout = () => {
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("auth_user");
+        localStorage.removeItem("admin_auth_token");
         setToken(null);
         setUser(null);
+        setIsLoading(false);
         router.push("/login");
     };
 
-    const isPublicPage =
-        pathname === "/" ||
-        pathname === "/pricing" ||
-        pathname === "/contact" ||
-        pathname === "/book-demo" ||
-        pathname === "/privacy" ||
-        pathname === "/terms" ||
-        pathname === "/cookie-policy" ||
-        pathname === "/refund-policy" ||
-        pathname === "/faq" ||
+    const isAuthPage =
         pathname === "/login" ||
-        pathname === "/register" ||
         pathname === "/forgot-password" ||
-        pathname.startsWith("/verify");
+        pathname === "/reset-password";
 
-    const showContent = isPublicPage || (token && !isLoading);
+    const showContent = isAuthPage || (token && !isLoading);
 
     return (
         <AuthContext.Provider
@@ -159,18 +141,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             {showContent ? (
                 children
             ) : (
-                <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-[#f2f8f7] to-[#e6f2f0]">
-                    <div className="flex flex-col items-center gap-4 p-8 rounded-3xl bg-white/40 backdrop-blur-lg border border-white/30 shadow-xl shadow-[#35877D]/5">
+                <div className="flex h-screen w-screen items-center justify-center bg-slate-900 text-white font-sans">
+                    <div className="flex flex-col items-center gap-4 p-8 rounded-3xl bg-slate-800/80 backdrop-blur-lg border border-slate-700 shadow-2xl">
                         <div className="relative flex items-center justify-center">
-                            {/* Glowing effect */}
-                            <div className="absolute inset-0 rounded-full bg-[#35877D]/20 blur-xl animate-pulse" />
-                            {/* Outer ring */}
-                            <div className="h-12 w-12 rounded-full border-4 border-[#35877D]/25 border-t-[#35877D] animate-spin" />
-                            {/* Inner ring spinning in reverse */}
-                            <div className="absolute h-6 w-6 rounded-full border-2 border-transparent border-t-[#35877D] border-b-[#35877D] animate-spin [animation-direction:reverse]" />
+                            <div className="absolute inset-0 rounded-full bg-[#35877D]/30 blur-xl animate-pulse" />
+                            <div className="h-12 w-12 rounded-full border-4 border-[#35877D]/30 border-t-[#35877D] animate-spin" />
                         </div>
-                        <p className="text-sm font-bold text-[#35877D] tracking-wide font-sans animate-pulse">
-                            Initializing your Workspace
+                        <p className="text-sm font-bold text-[#35877D] tracking-wide animate-pulse">
+                            Initializing Connectly360 Admin Portal...
                         </p>
                     </div>
                 </div>

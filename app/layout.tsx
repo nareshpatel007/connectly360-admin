@@ -3,7 +3,7 @@ import { Inter, Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { AuthProvider } from "@/lib/auth-context";
-import { SupportChatWidget } from "@/components/support-chat";
+import { AdminLayout } from "@/components/admin-layout";
 
 const jost = Jost({
     variable: "--font-jost",
@@ -21,29 +21,19 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const viewport = {
-    themeColor: "#0B2E1E",
+    themeColor: "#0f172a",
 };
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://connectly360.com"),
     title: {
-        default: "Connectly360 | Connect. Automate. Grow.",
-        template: "%s | Connectly360",
+        default: "Connectly360 Platform Admin Console",
+        template: "%s | Connectly360 Admin",
     },
-    description: "Connect WhatsApp, automate replies, capture leads, and grow your business with AI-powered customer engagement.",
-    keywords: ["WhatsApp Business", "WhatsApp Automation", "Meta Embedded Signup", "AI Customer Engagement", "Lead Pipeline", "CRM Automation"],
-    openGraph: {
-        title: "Connectly360 - Manage Customer Conversations, Leads, and AI Automation in One Platform",
-        description: "Connect WhatsApp, automate replies, capture leads, and grow your business with AI-powered customer engagement.",
-        url: "https://connectly360.com",
-        siteName: "Connectly360",
-        locale: "en_US",
-        type: "website",
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Connectly360 - Manage Customer Conversations, Leads, and AI Automation in One Platform",
-        description: "Connect WhatsApp, automate replies, capture leads, and grow your business with AI-powered customer engagement.",
+    description: "Platform management, user accounts, workspace monitoring, billing, and credit ledger administration for Connectly360.",
+    robots: {
+        index: false,
+        follow: false,
+        nocache: true,
     },
 };
 
@@ -55,14 +45,15 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${jost.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+            className={`${jost.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
             suppressHydrationWarning
         >
-            <body className="min-h-full bg-background text-foreground flex flex-col font-sans">
+            <body className="min-h-full bg-slate-900 text-slate-100 flex flex-col font-sans">
                 <Providers>
                     <AuthProvider>
-                        {children}
-                        <SupportChatWidget />
+                        <AdminLayout>
+                            {children}
+                        </AdminLayout>
                     </AuthProvider>
                 </Providers>
             </body>

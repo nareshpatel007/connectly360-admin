@@ -1,230 +1,130 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { MessageSquare, Sparkles, ArrowRight, Users, Zap, Bot } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { LandingHeader } from "@/components/landing-header";
-import { LandingFooter } from "@/components/landing-footer";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { ShieldCheck, Lock, Mail, ArrowRight, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 
-export default function LoginPage() {
-    const router = useRouter();
+export default function AdminLoginPage() {
+    const { login } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const { login } = useAuth();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
-        setIsLoading(true);
+        setLoading(true);
+        setError("");
 
         try {
-            const res = await fetch(`/api/auth/login`, {
+            const res = await fetch("/api/admin/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password })
             });
+
             const data = await res.json();
-            if (data.status) {
-                login(data.data.access_token);
+            if (data.status && data.data?.access_token) {
+                toast.success("Welcome back, Administrator!");
+                login(data.data.access_token, {
+                    id: data.data.user_id,
+                    name: data.data.name,
+                    email: data.data.email,
+                    role: data.data.role,
+                    is_admin: 1,
+                    tenant_id: data.data.tenant_id
+                });
             } else {
-                setError(data.message || "Failed to log in.");
+                setError(data.message || "Invalid credentials or unauthorized admin access.");
             }
-        } catch (err) {
-            setError("Unable to connect to authentication server.");
+        } catch (err: any) {
+            setError("Server connection failed. Please check network/API status.");
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col relative overflow-hidden">
-            {/* Background Decorative Glow Elements */}
-            <div className="absolute top-24 right-[-10%] w-[500px] h-[500px] bg-radial-gradient from-[#35877D]/5 via-[#35877D]/1 to-transparent -z-10 rounded-full blur-3xl pointer-events-none"></div>
-            <div className="absolute bottom-24 left-[-10%] w-[400px] h-[400px] bg-radial-gradient from-[#35877D]/4 via-[#35877D]/1 to-transparent -z-10 rounded-full blur-2xl pointer-events-none"></div>
-
-            {/* Header */}
-            <LandingHeader />
-
-            <main className="flex-1 pt-40 pb-14 md:pb-10 flex items-center justify-center z-10">
-                <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto">
-                    <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-
-                        {/* Left Side: Product Highlights (Simple White Premium Background) */}
-                        <div className="hidden lg:flex lg:col-span-7 flex-col justify-between bg-white border border-[#35877D]/10 p-8 md:p-12 lg:p-16 text-slate-800 rounded-3xl min-h-[500px] shadow-sm relative">
-                            {/* Inner Top Content */}
-                            <div>
-                                {/* Core Marketing Copy */}
-                                <div className="space-y-4 max-w-xl">
-                                    <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                                        Turn WhatsApp Chats Into <span className="text-[#35877D]">Qualified CRM Leads Automatically.</span>
-                                    </h1>
-                                    <p className="text-sm text-slate-500 leading-relaxed font-medium">
-                                        Connectly360 natively integrates your entire sales and support pipeline, automating standard inquiries to save your team hours of work.
-                                    </p>
-                                </div>
-
-                                {/* Feature list */}
-                                <div className="grid sm:grid-cols-2 gap-4 mt-8">
-                                    <FeatureRow
-                                        icon={MessageSquare}
-                                        title="WhatsApp Integration"
-                                        description="Official Meta WhatsApp API integrations"
-                                    />
-                                    <FeatureRow
-                                        icon={Bot}
-                                        title="AI Chatbot Agent"
-                                        description="Smart 24/7 support Trained on your data"
-                                    />
-                                    <FeatureRow
-                                        icon={Users}
-                                        title="CRM Pipeline"
-                                        description="Organize leads and track directories"
-                                    />
-                                    <FeatureRow
-                                        icon={Zap}
-                                        title="Workflows Engine"
-                                        description="No-code visual automation builder"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Trust Badge Strip */}
-                            <div className="border-t border-[#35877D]/10 pt-6 mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <div>
-                                    <p className="text-xs font-medium text-[#35877D] uppercase tracking-wider">Trusted Meta Partner</p>
-                                    <p className="text-xs text-slate-500 font-medium mt-0.5">Secure, reliable APIs compliant with WhatsApp policy</p>
-                                </div>
-                                <div className="flex items-center gap-1 bg-white border border-gray-150 px-3.5 py-1.5 rounded-full shadow-xs text-xs font-bold text-slate-900">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <span>Meta Verified Portal</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right Side: Sign In Form */}
-                        <div className="lg:col-span-5 flex flex-col justify-center items-center">
-                            {/* SaaS Sign In Card */}
-                            <Card className="w-full max-w-md bg-white border border-slate-200 shadow-md rounded-3xl overflow-hidden p-6 md:p-8 lg:p-10 space-y-6">
-                                <div className="text-center space-y-2">
-                                    <h2 className="text-2xl font-black tracking-tight text-slate-900">Sign in to Connectly360</h2>
-                                    <p className="text-sm text-slate-500 font-semibold">Welcome back! Please sign in to continue.</p>
-                                </div>
-
-                                {error && (
-                                    <div className="bg-red-50 border border-red-200 text-red-700 rounded-2xl p-3.5 text-xs font-semibold text-center">
-                                        {error}
-                                    </div>
-                                )}
-
-                                {/* Google SSO Button */}
-                                <Button
-                                    variant="outline"
-                                    className="w-full justify-center gap-2 border-gray-250 text-gray-700 font-bold hover:bg-gray-50 h-11.5 rounded-xl transition-all shadow-xs"
-                                    onClick={() => router.push("/dashboard")}
-                                >
-                                    <svg className="h-4 w-4" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-                                        <g transform="matrix(1, 0, 0, 1, 0, 0)">
-                                            <path d="M21.35,11.1H12v2.7h5.38c-0.24,1.28 -0.96,2.37 -2.04,3.1v2.57h3.3c1.93,-1.78 3.04,-4.4 3.04,-7.4C21.68,11.83 21.56,11.43 21.35,11.1z" fill="#4285F4" />
-                                            <path d="M12,21c2.43,0 4.47,-0.8 5.96,-2.18l-3.3,-2.57c-0.9,0.6 -2.07,0.97 -3.3,0.97 -2.34,0 -4.33,-1.58 -5.04,-3.7L2.92,16.3c1.5,2.98 4.6,5 8.2,5z" fill="#34A853" />
-                                            <path d="M6.96,13.57C6.78,13.04 6.68,12.48 6.68,11.9c0,-0.58 0.1,-1.14 0.28,-1.67L3.63,7.57C3.01,8.8 2.68,10.2 2.68,11.9c0,1.7 0.33,3.1 0.95,4.33z" fill="#FBBC05" />
-                                            <path d="M12,5.27c1.3,0 2.48,0.45 3.4,1.33L17.5,4.5C16.03,3.12 14,2.27 12,2.27c-3.6,0 -6.7,2.02 -8.2,5l3.7,2.83c0.7,-2.12 2.7,-3.7 5.04,-3.7z" fill="#EA4335" />
-                                        </g>
-                                    </svg>
-                                    Continue with Google
-                                </Button>
-
-                                {/* Divider */}
-                                <div className="relative flex py-1 items-center">
-                                    <div className="flex-grow border-t border-gray-150"></div>
-                                    <span className="flex-shrink mx-4 text-xs text-gray-400 font-extrabold uppercase tracking-wider">or</span>
-                                    <div className="flex-grow border-t border-gray-150"></div>
-                                </div>
-
-                                {/* Sign In Form */}
-                                <form onSubmit={handleLogin} className="space-y-4">
-                                    <div className="space-y-1.5">
-                                        <label htmlFor="email" className="text-xs font-bold text-slate-900">
-                                            Email Address
-                                        </label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            required
-                                            disabled={isLoading}
-                                            placeholder="name@company.com"
-                                            className="h-11 border-gray-200 focus-visible:ring-[#35877D] focus-visible:border-[#35877D] rounded-md bg-slate-50 font-semibold"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className="space-y-1.5">
-                                        <div className="flex justify-between items-center">
-                                            <label htmlFor="password" className="text-xs font-bold text-slate-900">
-                                                Password
-                                            </label>
-                                            <Link href="/forgot-password" className="text-xs font-bold text-[#35877D] hover:text-[#2c6f66] hover:underline cursor-pointer">
-                                                Forgot password?
-                                            </Link>
-                                        </div>
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            required
-                                            disabled={isLoading}
-                                            placeholder="••••••••"
-                                            className="h-11 border-gray-200 focus-visible:ring-[#35877D] focus-visible:border-[#35877D] rounded-md bg-slate-50 font-semibold"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                        />
-                                    </div>
-
-                                    <Button
-                                        type="submit"
-                                        disabled={isLoading}
-                                        className="w-full bg-[#35877D] hover:bg-[#2c6f66] text-white font-bold h-11.5 rounded-xl gap-1.5 cursor-pointer shadow-md transition-all mt-2"
-                                    >
-                                        {isLoading ? "Signing In..." : "Sign In"}
-                                        {!isLoading && <ArrowRight size={16} />}
-                                    </Button>
-                                </form>
-
-                                {/* Sign Up Link */}
-                                <div className="text-center text-xs text-gray-500 font-medium">
-                                    Don't have an account?{" "}
-                                    <Link href="/register" className="text-[#35877D] font-extrabold hover:underline cursor-pointer">
-                                        Sign up
-                                    </Link>
-                                </div>
-                            </Card>
-                        </div>
-
+        <div className="min-h-screen w-screen flex items-center justify-center bg-slate-950 p-4 font-sans selection:bg-[#35877D] selection:text-white">
+            <div className="w-full max-w-md space-y-6">
+                {/* Brand Header */}
+                <div className="text-center space-y-2">
+                    <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-[#35877D]/10 border border-[#35877D]/30 text-[#35877D] shadow-lg mb-2">
+                        <ShieldCheck size={32} />
                     </div>
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Connectly360 Admin</h1>
+                    <p className="text-xs text-slate-400 font-medium">Platform Management & System Operations Console</p>
                 </div>
-            </main>
 
-            {/* Footer */}
-            <LandingFooter />
-        </div>
-    );
-}
+                <Card className="p-6 sm:p-8 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl space-y-6">
+                    {error && (
+                        <div className="p-3.5 rounded-xl bg-rose-950/60 border border-rose-800/60 text-rose-300 text-xs font-semibold flex items-start gap-2.5">
+                            <AlertCircle size={16} className="shrink-0 mt-0.5" />
+                            <span>{error}</span>
+                        </div>
+                    )}
 
-function FeatureRow({ icon: Icon, title, description }: { icon: any; title: string; description: string }) {
-    return (
-        <div className="flex gap-3.5 p-3.5 rounded-2xl hover:bg-white/60 transition-all duration-300 border border-transparent hover:border-gray-100 hover:shadow-xs group">
-            <div className="flex-shrink-0 flex h-9.5 w-9.5 items-center justify-center rounded-xl bg-[#35877D]/10 text-[#35877D] border border-[#35877D]/15 transition-transform group-hover:scale-105">
-                <Icon size={16} />
-            </div>
-            <div>
-                <h4 className="text-sm font-semibold text-slate-900 tracking-tight">{title}</h4>
-                <p className="text-xs text-slate-600 mt-1 leading-normal font-medium">{description}</p>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="email" className="text-xs font-bold text-slate-300">Admin Email</Label>
+                            <div className="relative">
+                                <Mail size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    required
+                                    placeholder="admin@connectly360.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="pl-10 h-11 bg-slate-950 border-slate-800 text-slate-100 rounded-xl focus:border-[#35877D] text-xs font-semibold"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <Label htmlFor="password" className="text-xs font-bold text-slate-300">Password</Label>
+                            <div className="relative">
+                                <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    required
+                                    placeholder="••••••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="pl-10 h-11 bg-slate-950 border-slate-800 text-slate-100 rounded-xl focus:border-[#35877D] text-xs font-semibold"
+                                />
+                            </div>
+                        </div>
+
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full h-11 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 cursor-pointer border-0 mt-2"
+                        >
+                            {loading ? (
+                                <>
+                                    <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                                    <span>Authenticating Admin...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span>Sign In to Admin Portal</span>
+                                    <ArrowRight size={14} />
+                                </>
+                            )}
+                        </Button>
+                    </form>
+                </Card>
+
+                <p className="text-center text-[11px] text-slate-500 font-medium">
+                    Protected System Area • Unauthorized Access Monitored &amp; Logged
+                </p>
             </div>
         </div>
     );
