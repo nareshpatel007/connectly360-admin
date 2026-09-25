@@ -96,7 +96,7 @@ const ADMIN_NAV_SECTIONS: NavSection[] = [
 export function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const { user, logout } = useAuth();
-    
+
     // Sidebar states: collapsed & mobile drawer
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [mobileOpen, setMobileOpen] = useState<boolean>(false);
@@ -153,29 +153,20 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
             {/* SIDEBAR APPLICATION PANEL */}
             <aside
-                className={`fixed lg:static top-0 left-0 bottom-0 bg-white border-r border-slate-200 flex flex-col z-50 transition-all duration-300 ease-in-out shrink-0 ${
-                    mobileOpen
-                        ? "translate-x-0 w-64"
-                        : "-translate-x-full lg:translate-x-0 " + (collapsed ? "w-[72px]" : "w-64")
-                }`}
+                className={`fixed lg:static top-0 left-0 bottom-0 bg-white border-r border-slate-200 flex flex-col z-50 transition-all duration-300 ease-in-out shrink-0 ${mobileOpen
+                    ? "translate-x-0 w-64"
+                    : "-translate-x-full lg:translate-x-0 " + (collapsed ? "w-[72px]" : "w-64")
+                    }`}
             >
                 {/* Brand Header */}
-                <div className={`h-16 px-4 flex items-center border-b border-slate-200 bg-white shrink-0 ${
-                    collapsed ? "justify-center" : "justify-between"
-                }`}>
+                <div className={`h-16 px-4 flex items-center border-b border-slate-200 bg-white shrink-0 ${collapsed ? "justify-center" : "justify-between"
+                    }`}>
                     <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
                         <img
                             src="/images/logo.png"
                             alt="Connectly360 Admin"
                             className="h-8 w-auto object-contain shrink-0"
                         />
-                        {!collapsed && (
-                            <div className="flex items-center gap-1.5 min-w-0">
-                                <span className="text-[10px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#35877D]/10 text-[#35877D] border border-[#35877D]/20 shrink-0">
-                                    ADMIN
-                                </span>
-                            </div>
-                        )}
                     </Link>
 
                     {!collapsed && (
@@ -223,13 +214,11 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                                             key={item.href}
                                             href={item.href}
                                             onClick={() => setMobileOpen(false)}
-                                            className={`flex items-center ${
-                                                collapsed ? "justify-center px-2" : "justify-between px-3.5"
-                                            } py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
-                                                isActive
+                                            className={`flex items-center ${collapsed ? "justify-center px-2" : "justify-between px-3.5"
+                                                } py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${isActive
                                                     ? "bg-[#35877D] text-white shadow-xs font-bold"
                                                     : "text-slate-600 hover:bg-slate-100/90 hover:text-slate-900"
-                                            }`}
+                                                }`}
                                         >
                                             <div className="flex items-center gap-3">
                                                 <Icon size={18} className={isActive ? "text-white" : "text-slate-500"} />
@@ -264,9 +253,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <button
-                                className={`w-full flex items-center ${
-                                    collapsed ? "justify-center p-2" : "gap-3 p-2.5"
-                                } rounded-xl bg-white border border-slate-200 shadow-2xs hover:bg-slate-50 transition-colors text-left focus:outline-none cursor-pointer`}
+                                className={`w-full flex items-center ${collapsed ? "justify-center p-2" : "gap-3 p-2.5"
+                                    } rounded-xl bg-white border border-slate-200 shadow-2xs hover:bg-slate-50 transition-colors text-left focus:outline-none cursor-pointer`}
                             >
                                 <div className="h-8 w-8 rounded-full bg-[#35877D] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
                                     {user?.name ? user.name.charAt(0).toUpperCase() : "A"}

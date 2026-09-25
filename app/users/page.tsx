@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin-page-header";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface AdminUserRecord {
     id: number;
@@ -97,12 +98,14 @@ export default function AdminUsersPage() {
         fetchUsers();
     };
 
-    const handleToggleStatus = async (userId: number, currentStatus: string) => {
-        const nextStatus = currentStatus === "suspended" ? "active" : "suspended";
-        if (!confirm(`Are you sure you want to change this user's status to ${nextStatus}?`)) return;
+    const [pendingStatusUser, setPendingStatusUser] = useState<{ id: number; status: string; nextStatus: string } | null>(null);
+
+    const confirmToggleStatus = async () => {
+        if (!pendingStatusUser) return;
+        const { id, nextStatus } = pendingStatusUser;
 
         try {
-            const res = await fetch(`/api/admin/users/${userId}/status`, {
+            const res = await fetch(`/api/admin/users/${id}/status`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -113,14 +116,20 @@ export default function AdminUsersPage() {
             });
             const data = await res.json();
             if (data.status) {
-                toast.success(data.message);
+                toast.success(`User status updated to ${nextStatus}`);
                 fetchUsers();
+                setPendingStatusUser(null);
             } else {
-                toast.error(data.message || "Failed to update status.");
+                toast.error(data.message || "Failed to update user status");
             }
-        } catch {
-            toast.error("Status update error.");
+        } catch (err) {
+            toast.error("Network error while updating user status");
         }
+    };
+
+    const handleToggleStatus = (userId: number, currentStatus: string) => {
+        const nextStatus = currentStatus === "suspended" ? "active" : "suspended";
+        setPendingStatusUser({ id: userId, status: currentStatus, nextStatus });
     };
 
     const handleAdjustCredits = async (e: React.FormEvent) => {
@@ -401,6 +410,16 @@ export default function AdminUsersPage() {
                     </Card>
                 </div>
             )}
+
+            <ConfirmDialog
+                open={!!pendingStatusUser}
+                onOpenChange={(open) => !open && setPendingStatusUser(null)}
+                title={`Change User Status to ${pendingStatusUser?.nextStatus}?`}
+                description={`Are you sure you want to change this user's account status from '${pendingStatusUser?.status}' to '${pendingStatusUser?.nextStatus}'?`}
+                confirmText={`Set Status to ${pendingStatusUser?.nextStatus}`}
+                variant={pendingStatusUser?.nextStatus === "suspended" ? "destructive" : "primary"}
+                onConfirm={confirmToggleStatus}
+            />
         </div>
     );
 }

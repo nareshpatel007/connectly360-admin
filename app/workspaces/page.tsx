@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin-page-header";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 interface WorkspaceRecord {
     id: number;
@@ -87,12 +88,14 @@ export default function AdminWorkspacesPage() {
         fetchWorkspaces();
     };
 
-    const handleToggleStatus = async (workspaceId: number, currentStatus: string) => {
-        const nextStatus = currentStatus === "suspended" ? "active" : "suspended";
-        if (!confirm(`Are you sure you want to change workspace status to ${nextStatus}?`)) return;
+    const [pendingStatusWorkspace, setPendingStatusWorkspace] = useState<{ id: number; status: string; nextStatus: string } | null>(null);
+
+    const confirmToggleWorkspaceStatus = async () => {
+        if (!pendingStatusWorkspace) return;
+        const { id, nextStatus } = pendingStatusWorkspace;
 
         try {
-            const res = await fetch(`/api/admin/workspaces/${workspaceId}/status`, {
+            const res = await fetch(`/api/admin/workspaces/${id}/status`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -103,14 +106,20 @@ export default function AdminWorkspacesPage() {
             });
             const data = await res.json();
             if (data.status) {
-                toast.success(data.message);
+                toast.success(data.message || `Workspace status updated to ${nextStatus}`);
                 fetchWorkspaces();
+                setPendingStatusWorkspace(null);
             } else {
                 toast.error(data.message || "Failed to update workspace status.");
             }
         } catch {
             toast.error("Workspace status update error.");
         }
+    };
+
+    const handleToggleStatus = (workspaceId: number, currentStatus: string) => {
+        const nextStatus = currentStatus === "suspended" ? "active" : "suspended";
+        setPendingStatusWorkspace({ id: workspaceId, status: currentStatus, nextStatus });
     };
 
     return (
@@ -285,6 +294,16 @@ export default function AdminWorkspacesPage() {
                     </div>
                 </div>
             </Card>
+
+            <ConfirmDialog
+                open={!!pendingStatusWorkspace}
+                onOpenChange={(open) => !open && setPendingStatusWorkspace(null)}
+                title={`Change Workspace Status to ${pendingStatusWorkspace?.nextStatus}?`}
+                description={`Are you sure you want to change this workspace's status from '${pendingStatusWorkspace?.status}' to '${pendingStatusWorkspace?.nextStatus}'?`}
+                confirmText={`Set Status to ${pendingStatusWorkspace?.nextStatus}`}
+                variant={pendingStatusWorkspace?.nextStatus === "suspended" ? "destructive" : "primary"}
+                onConfirm={confirmToggleWorkspaceStatus}
+            />
         </div>
     );
 }
