@@ -23,7 +23,8 @@ import {
     PanelLeftClose,
     PanelLeftOpen,
     User,
-    ShieldCheck
+    ShieldCheck,
+    UserCheck
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -76,6 +77,13 @@ const ADMIN_NAV_SECTIONS: NavSection[] = [
         items: [
             { label: "WhatsApp WABA", icon: MessageCircle, href: "/whatsapp" },
             { label: "Campaign Monitor", icon: Megaphone, href: "/campaigns" },
+        ]
+    },
+    {
+        section: "ADMINISTRATION",
+        items: [
+            { label: "Administrators", icon: ShieldCheck, href: "/administrators" },
+            { label: "Roles & Permissions", icon: UserCheck, href: "/roles" },
         ]
     },
     {
