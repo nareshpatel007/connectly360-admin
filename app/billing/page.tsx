@@ -64,6 +64,8 @@ export default function AdminBillingPage() {
     const [refundReason, setRefundReason] = useState("");
     const [refunding, setRefunding] = useState(false);
 
+    const [autoStats, setAutoStats] = useState<{ active: number; pending: number; failed: number; paused: number; today_revenue: number } | null>(null);
+
     const fetchTransactions = useCallback(async () => {
         if (!token) return;
         setLoading(true);
@@ -76,7 +78,7 @@ export default function AdminBillingPage() {
 
             const endpoint = activeTab === "transactions" 
                 ? `/api/admin/payment-transactions?${queryParams.toString()}`
-                : `/api/admin/recurring-payments?${queryParams.toString()}`;
+                : `/api/admin/auto-recharges`;
 
             const res = await fetch(endpoint, {
                 headers: {
@@ -94,11 +96,13 @@ export default function AdminBillingPage() {
                         last_page: data.data?.last_page || 1
                     });
                 } else {
-                    setRecurringList(data.data?.data || data.data || []);
+                    const list = data.data?.auto_recharges || data.data?.data || [];
+                    setRecurringList(list);
+                    setAutoStats(data.data?.summary || null);
                     setMeta({
-                        current_page: data.data?.current_page || 1,
-                        total: data.data?.total || 0,
-                        last_page: data.data?.last_page || 1
+                        current_page: 1,
+                        total: list.length,
+                        last_page: 1
                     });
                 }
             }
@@ -144,9 +148,9 @@ export default function AdminBillingPage() {
         }
     };
 
-    const handleRecurringAction = async (id: number, action: "pause" | "resume" | "cancel") => {
+    const handleAutoRechargeAction = async (id: number, action: "pause" | "resume" | "disable" | "retry") => {
         try {
-            const res = await fetch(`/api/admin/recurring-payments/${id}/${action}`, {
+            const res = await fetch(`/api/admin/auto-recharges/${id}/${action}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -154,7 +158,7 @@ export default function AdminBillingPage() {
             });
             const json = await res.json();
             if (json.status) {
-                toast.success(json.message || `Recurring payment ${action}d.`);
+                toast.success(json.message || `Auto recharge ${action} execution completed.`);
                 fetchTransactions();
             } else {
                 toast.error(json.message || "Action failed");
@@ -309,52 +313,102 @@ export default function AdminBillingPage() {
                         </table>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                    <th className="p-4">Workspace &amp; User</th>
-                                    <th className="p-4">Type &amp; Mandate</th>
-                                    <th className="p-4">Auto Recharge Config</th>
-                                    <th className="p-4">Razorpay Subscription ID</th>
-                                    <th className="p-4">Status</th>
-                                    <th className="p-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100 text-xs font-medium">
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan={6} className="p-8 text-center text-slate-500">Loading recurring payment mandates...</td>
+                    <div className="space-y-4 p-4">
+                        {autoStats && (
+                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-2">
+                                <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">Active</p>
+                                    <p className="text-xl font-black text-emerald-600">{autoStats.active}</p>
+                                </div>
+                                <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">Pending Auth</p>
+                                    <p className="text-xl font-black text-amber-600">{autoStats.pending}</p>
+                                </div>
+                                <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">Payment Failed</p>
+                                    <p className="text-xl font-black text-rose-600">{autoStats.failed}</p>
+                                </div>
+                                <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">Paused</p>
+                                    <p className="text-xl font-black text-slate-600">{autoStats.paused}</p>
+                                </div>
+                                <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">Today's Revenue</p>
+                                    <p className="text-xl font-black text-[#35877D]">₹{(autoStats.today_revenue || 0).toLocaleString()}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="overflow-x-auto border border-slate-200 rounded-2xl">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                        <th className="p-4">Workspace</th>
+                                        <th className="p-4">Balance / Threshold</th>
+                                        <th className="p-4">Recharge Amount</th>
+                                        <th className="p-4">Payment Source</th>
+                                        <th className="p-4">Today's Usage</th>
+                                        <th className="p-4">Status</th>
+                                        <th className="p-4 text-right">Actions</th>
                                     </tr>
-                                ) : recurringList.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={6} className="p-8 text-center text-slate-400">No recurring payment mandates active.</td>
-                                    </tr>
-                                ) : (
-                                    recurringList.map((r) => (
-                                        <tr key={r.id} className="hover:bg-slate-50/60">
-                                            <td className="p-4 font-bold text-slate-900">{r.workspace?.company_name || "Workspace #" + r.workspace_id}</td>
-                                            <td className="p-4 font-semibold capitalize">{r.type || "Auto Recharge"}</td>
-                                            <td className="p-4 text-slate-600">
-                                                ₹{r.recharge_amount} when credits ≤ {r.threshold_credits}
-                                            </td>
-                                            <td className="p-4 font-mono text-[11px] text-slate-500">{r.provider_subscription_id || "Mandate Active"}</td>
-                                            <td className="p-4">
-                                                <Badge className="bg-emerald-50 text-emerald-700 uppercase text-[10px] font-bold">{r.status}</Badge>
-                                            </td>
-                                            <td className="p-4 text-right space-x-2">
-                                                {r.status === "active" ? (
-                                                    <Button size="sm" variant="outline" onClick={() => handleRecurringAction(r.id, "pause")} className="h-7 text-amber-600">Pause</Button>
-                                                ) : (
-                                                    <Button size="sm" variant="outline" onClick={() => handleRecurringAction(r.id, "resume")} className="h-7 text-emerald-600">Resume</Button>
-                                                )}
-                                                <Button size="sm" variant="outline" onClick={() => handleRecurringAction(r.id, "cancel")} className="h-7 text-rose-600">Cancel</Button>
-                                            </td>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100 text-xs font-medium">
+                                    {loading ? (
+                                        <tr>
+                                            <td colSpan={7} className="p-8 text-center text-slate-500">Loading auto recharge configurations...</td>
                                         </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                                    ) : recurringList.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={7} className="p-8 text-center text-slate-400">No workspace auto recharge configurations found.</td>
+                                        </tr>
+                                    ) : (
+                                        recurringList.map((r) => (
+                                            <tr key={r.id} className="hover:bg-slate-50/60">
+                                                <td className="p-4">
+                                                    <div className="font-bold text-slate-900">{r.workspace_name || r.workspace?.company_name || "Workspace #" + r.workspace_id}</div>
+                                                    <div className="text-[10px] text-slate-400">ID: #{r.workspace_id}</div>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="font-extrabold text-slate-900">{r.current_balance ?? 0} Credits</div>
+                                                    <div className="text-[10px] text-slate-400">Threshold: {r.threshold_credits}</div>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="font-extrabold text-emerald-600">₹{r.recharge_amount}</div>
+                                                    <div className="text-[10px] text-slate-400">+{r.recharge_credits} credits</div>
+                                                </td>
+                                                <td className="p-4 text-slate-700 font-semibold">
+                                                    {r.payment_source_display || "UPI AutoPay"}
+                                                </td>
+                                                <td className="p-4 text-slate-600">
+                                                    {r.recharges_today ?? 0} / {r.max_recharges_per_day ?? 3}
+                                                </td>
+                                                <td className="p-4">
+                                                    <Badge className={`uppercase text-[10px] font-bold ${
+                                                        r.status === "ACTIVE" || r.status === "AUTHORIZED" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" :
+                                                        r.status === "PAYMENT_FAILED" ? "bg-rose-50 text-rose-700 border border-rose-200" :
+                                                        r.status === "PAUSED" ? "bg-slate-100 text-slate-700 border border-slate-200" :
+                                                        "bg-amber-50 text-amber-700 border border-amber-200"
+                                                    }`}>
+                                                        {r.status}
+                                                    </Badge>
+                                                </td>
+                                                <td className="p-4 text-right space-x-1.5">
+                                                    {r.status === "ACTIVE" || r.status === "AUTHORIZED" ? (
+                                                        <Button size="sm" variant="outline" onClick={() => handleAutoRechargeAction(r.id, "pause")} className="h-7 text-amber-600 text-xs font-bold">Pause</Button>
+                                                    ) : (
+                                                        <Button size="sm" variant="outline" onClick={() => handleAutoRechargeAction(r.id, "resume")} className="h-7 text-emerald-600 text-xs font-bold">Resume</Button>
+                                                    )}
+                                                    {r.status === "PAYMENT_FAILED" && (
+                                                        <Button size="sm" variant="outline" onClick={() => handleAutoRechargeAction(r.id, "retry")} className="h-7 text-indigo-600 text-xs font-bold">Retry</Button>
+                                                    )}
+                                                    <Button size="sm" variant="outline" onClick={() => handleAutoRechargeAction(r.id, "disable")} className="h-7 text-rose-600 text-xs font-bold">Disable</Button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 )}
 

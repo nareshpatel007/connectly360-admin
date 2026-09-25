@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, Globe, Save, Sliders, Bell, Key, CreditCard } from "lucide-react";
+import { Shield, Globe, Save, Sliders, Bell, Key, CreditCard, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin-page-header";
 
@@ -56,6 +56,25 @@ export default function AdminSettingsPage() {
                     className="h-10 px-5 bg-[#35877D] hover:bg-teal-600 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition-all whitespace-nowrap"
                 >
                     <span>Configure Gateway Settings</span>
+                </a>
+            </Card>
+
+            {/* WhatsApp Engine Settings Banner */}
+            <Card className="p-6 bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 border border-emerald-900 text-white rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+                <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                        <MessageSquare size={24} />
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-black uppercase tracking-wider text-white">WhatsApp Cloud API Engine Settings</h3>
+                        <p className="text-xs text-emerald-200/80 font-medium">Manage TEST / LIVE mode, Meta credentials (App ID, Secret, WABA ID, Access Token), and Webhook secrets.</p>
+                    </div>
+                </div>
+                <a
+                    href="/settings/whatsapp"
+                    className="h-10 px-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition-all whitespace-nowrap"
+                >
+                    <span>Configure WhatsApp Engine</span>
                 </a>
             </Card>
 
