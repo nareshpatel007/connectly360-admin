@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
 export interface AdminUser {
@@ -24,6 +24,10 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function isEmpty(val: unknown) {
+    return val === undefined || val === null || val === "" || val === 0;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [token, setToken] = useState<string | null>(null);
     const [user, setUser] = useState<AdminUser | null>(null);
@@ -31,7 +35,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
 
-    const fetchAdminProfile = async (authToken: string) => {
+    const logout = useCallback(() => {
+        localStorage.removeItem("admin_auth_token");
+        setToken(null);
+        setUser(null);
+        setIsLoading(false);
+        router.push("/login");
+    }, [router]);
+
+    const fetchAdminProfile = useCallback(async (authToken: string) => {
         try {
             const res = await fetch("/api/auth/profile", {
                 method: "GET",
@@ -43,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const data = await res.json();
             if (data.status && data.data) {
                 const fetchedUser = data.data;
-                const isAdmin = (!empty(fetchedUser.is_admin) && fetchedUser.is_admin == 1) ||
+                const isAdmin = (!isEmpty(fetchedUser.is_admin) && fetchedUser.is_admin === 1) ||
                                (fetchedUser.role && ["super_admin", "owner", "admin"].includes(fetchedUser.role.toLowerCase()));
 
                 if (!isAdmin) {
@@ -62,16 +74,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             } else {
                 logout();
             }
-        } catch (err) {
+        } catch {
             logout();
         } finally {
             setIsLoading(false);
         }
-    };
-
-    function empty(val: any) {
-        return val === undefined || val === null || val === "" || val === 0;
-    }
+    }, [logout]);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("admin_auth_token");
@@ -81,7 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
             setIsLoading(false);
         }
-    }, []);
+    }, [fetchAdminProfile]);
 
     // Route Protection logic
     useEffect(() => {
@@ -90,7 +98,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const isAuthPage =
             pathname === "/login" ||
             pathname === "/forgot-password" ||
-            pathname === "/reset-password";
+            pathname === "/reset-password" ||
+            pathname === "/register" ||
+            pathname === "/verify";
 
         if (!token && !isAuthPage) {
             router.push("/login");
@@ -112,18 +122,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push("/dashboard");
     };
 
-    const logout = () => {
-        localStorage.removeItem("admin_auth_token");
-        setToken(null);
-        setUser(null);
-        setIsLoading(false);
-        router.push("/login");
-    };
-
     const isAuthPage =
         pathname === "/login" ||
         pathname === "/forgot-password" ||
-        pathname === "/reset-password";
+        pathname === "/reset-password" ||
+        pathname === "/register" ||
+        pathname === "/verify";
 
     const showContent = isAuthPage || (token && !isLoading);
 
@@ -141,13 +145,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             {showContent ? (
                 children
             ) : (
-                <div className="flex h-screen w-screen items-center justify-center bg-slate-900 text-white font-sans">
-                    <div className="flex flex-col items-center gap-4 p-8 rounded-3xl bg-slate-800/80 backdrop-blur-lg border border-slate-700 shadow-2xl">
+                <div className="flex h-screen w-screen items-center justify-center bg-slate-50 text-slate-900 font-sans">
+                    <div className="flex flex-col items-center gap-4 p-8 rounded-3xl bg-white border border-slate-200 shadow-md">
                         <div className="relative flex items-center justify-center">
-                            <div className="absolute inset-0 rounded-full bg-[#35877D]/30 blur-xl animate-pulse" />
-                            <div className="h-12 w-12 rounded-full border-4 border-[#35877D]/30 border-t-[#35877D] animate-spin" />
+                            <div className="absolute inset-0 rounded-full bg-[#35877D]/20 blur-xl animate-pulse" />
+                            <div className="h-12 w-12 rounded-full border-4 border-[#35877D]/20 border-t-[#35877D] animate-spin" />
                         </div>
-                        <p className="text-sm font-bold text-[#35877D] tracking-wide animate-pulse">
+                        <p className="text-xs font-extrabold text-[#35877D] tracking-wide animate-pulse">
                             Initializing Connectly360 Admin Portal...
                         </p>
                     </div>

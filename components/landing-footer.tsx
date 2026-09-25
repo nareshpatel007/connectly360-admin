@@ -23,14 +23,6 @@ export function LandingFooter() {
                                 <Mail size={13} className="text-[#35877D]/60" />
                                 <span>support@connectly360.com</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <Phone size={13} className="text-[#35877D]/60" />
-                                <span>+91 9586557162</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <MapPin size={13} className="text-[#35877D]/60" />
-                                <span>Ahmedabad, Gujarat</span>
-                            </div>
                         </div>
                     </div>
 

@@ -1,42 +1,58 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-    Users,
     Search,
     Filter,
-    Shield,
-    ShieldAlert,
     CheckCircle2,
     XCircle,
     Coins,
     ChevronLeft,
     ChevronRight,
     RefreshCw,
-    MoreHorizontal
+    X
 } from "lucide-react";
 import { toast } from "sonner";
 
+interface AdminUserRecord {
+    id: number;
+    name: string;
+    email: string;
+    company_name?: string;
+    plan?: string;
+    credits?: number;
+    status: string;
+    created_at: string;
+    is_admin?: number;
+    tenant_id?: number;
+}
+
+interface PaginationMeta {
+    current_page: number;
+    total: number;
+    last_page: number;
+}
+
 export default function AdminUsersPage() {
     const { token } = useAuth();
-    const [users, setUsers] = useState<any[]>([]);
-    const [meta, setMeta] = useState<any>({ current_page: 1, total: 0, last_page: 1 });
+    const [users, setUsers] = useState<AdminUserRecord[]>([]);
+    const [meta, setMeta] = useState<PaginationMeta>({ current_page: 1, total: 0, last_page: 1 });
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
     const [page, setPage] = useState(1);
 
     // Selected user for credit adjustment modal
-    const [creditModalUser, setCreditModalUser] = useState<any>(null);
+    const [creditModalUser, setCreditModalUser] = useState<AdminUserRecord | null>(null);
     const [adjustmentAmount, setAdjustmentAmount] = useState<number>(100);
     const [adjustmentReason, setAdjustmentReason] = useState<string>("");
     const [adjusting, setAdjusting] = useState(false);
 
-    const fetchUsers = async () => {
+    const fetchUsers = useCallback(async () => {
         if (!token) return;
         setLoading(true);
         try {
@@ -58,16 +74,16 @@ export default function AdminUsersPage() {
                 setUsers(data.data || []);
                 setMeta(data.meta || { current_page: 1, total: 0, last_page: 1 });
             }
-        } catch (err) {
+        } catch {
             toast.error("Failed to load users list.");
         } finally {
             setLoading(false);
         }
-    };
+    }, [token, page, search, statusFilter]);
 
     useEffect(() => {
         fetchUsers();
-    }, [token, page, statusFilter]);
+    }, [fetchUsers]);
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,7 +112,7 @@ export default function AdminUsersPage() {
             } else {
                 toast.error(data.message || "Failed to update status.");
             }
-        } catch (err) {
+        } catch {
             toast.error("Status update error.");
         }
     };
@@ -133,7 +149,7 @@ export default function AdminUsersPage() {
             } else {
                 toast.error(data.message || "Credit adjustment failed.");
             }
-        } catch (err) {
+        } catch {
             toast.error("Credit adjustment error.");
         } finally {
             setAdjusting(false);
@@ -143,18 +159,18 @@ export default function AdminUsersPage() {
     return (
         <div className="space-y-6 font-sans">
             {/* Header Bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-slate-100 tracking-tight flex items-center gap-2">
+                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
                         User Accounts Management
                     </h1>
-                    <p className="text-xs text-slate-400 font-semibold mt-1">Platform user register, subscription plans, credit balances, and security suspensions.</p>
+                    <p className="text-xs text-slate-500 font-medium mt-1">Platform user register, subscription plans, credit balances, and security suspensions.</p>
                 </div>
                 <Button
                     onClick={fetchUsers}
                     variant="outline"
                     size="sm"
-                    className="h-9 border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer"
+                    className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
                 >
                     <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
                     <span>Reload List</span>
@@ -162,15 +178,15 @@ export default function AdminUsersPage() {
             </div>
 
             {/* Filter Bar */}
-            <Card className="p-4 bg-slate-950 border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Card className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
                 <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 w-full sm:w-80">
                     <div className="relative w-full">
-                        <Search size={14} className="absolute left-3.5 top-3 text-slate-500" />
+                        <Search size={14} className="absolute left-3.5 top-3 text-slate-400" />
                         <Input
                             placeholder="Search by name, email, brand..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-9 h-10 bg-slate-900 border-slate-800 text-slate-200 rounded-xl text-xs"
+                            className="pl-9 h-10 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl text-xs font-medium focus-visible:ring-[#35877D]"
                         />
                     </div>
                     <Button type="submit" size="sm" className="h-10 px-4 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold cursor-pointer border-0">
@@ -179,14 +195,14 @@ export default function AdminUsersPage() {
                 </form>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <Filter size={14} className="text-slate-500 shrink-0" />
+                    <Filter size={14} className="text-slate-400 shrink-0" />
                     <select
                         value={statusFilter}
                         onChange={(e) => {
                             setStatusFilter(e.target.value);
                             setPage(1);
                         }}
-                        className="h-10 px-3 bg-slate-900 border border-slate-800 text-slate-200 rounded-xl text-xs font-semibold focus:outline-none"
+                        className="h-10 px-3 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl text-xs font-semibold focus:outline-none"
                     >
                         <option value="">All Statuses</option>
                         <option value="active">Active Accounts</option>
@@ -196,11 +212,11 @@ export default function AdminUsersPage() {
             </Card>
 
             {/* Users Data Table */}
-            <Card className="bg-slate-950 border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+            <Card className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                                 <th className="p-4">User Details</th>
                                 <th className="p-4">Company / Brand</th>
                                 <th className="p-4">Plan &amp; Credits</th>
@@ -209,7 +225,7 @@ export default function AdminUsersPage() {
                                 <th className="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800/80 text-xs">
+                        <tbody className="divide-y divide-slate-100 text-xs">
                             {loading ? (
                                 <tr>
                                     <td colSpan={6} className="p-8 text-center text-slate-500 font-semibold">
@@ -226,32 +242,32 @@ export default function AdminUsersPage() {
                                 users.map((u) => {
                                     const isSuspended = u.status === "suspended";
                                     return (
-                                        <tr key={u.id} className="hover:bg-slate-900/50 transition-colors">
+                                        <tr key={u.id} className="hover:bg-slate-50/60 transition-colors">
                                             <td className="p-4">
-                                                <div className="font-bold text-slate-100 flex items-center gap-2">
+                                                <div className="font-bold text-slate-900 flex items-center gap-2">
                                                     <span>{u.name}</span>
-                                                    {u.is_admin == 1 && (
-                                                        <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-[#35877D]/20 text-[#35877D]">ADMIN</span>
+                                                    {u.is_admin === 1 && (
+                                                        <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-[#35877D]/10 text-[#35877D] border border-[#35877D]/20">ADMIN</span>
                                                     )}
                                                 </div>
                                                 <div className="text-[11px] text-slate-500">{u.email}</div>
                                             </td>
-                                            <td className="p-4 font-medium text-slate-300">
+                                            <td className="p-4 font-medium text-slate-700">
                                                 {u.company_name || "—"}
                                             </td>
                                             <td className="p-4">
-                                                <div className="font-bold text-emerald-400 uppercase text-[11px]">{u.plan || "Growth"}</div>
-                                                <div className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                                                <div className="font-bold text-[#35877D] uppercase text-[11px]">{u.plan || "Growth"}</div>
+                                                <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 font-medium">
                                                     <Coins size={12} className="text-[#35877D]" />
                                                     <span>{(u.credits ?? 0).toLocaleString()} Credits</span>
                                                 </div>
                                             </td>
-                                            <td className="p-4 text-slate-400 font-medium">
+                                            <td className="p-4 text-slate-500 font-medium">
                                                 {new Date(u.created_at).toLocaleDateString("en-IN")}
                                             </td>
                                             <td className="p-4">
                                                 <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                                                    isSuspended ? "bg-rose-950 text-rose-400 border border-rose-800/40" : "bg-emerald-950 text-emerald-400 border border-emerald-800/40"
+                                                    isSuspended ? "bg-rose-50 text-rose-700 border border-rose-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                                 }`}>
                                                     {isSuspended ? <XCircle size={10} /> : <CheckCircle2 size={10} />}
                                                     {isSuspended ? "Suspended" : "Active"}
@@ -262,7 +278,7 @@ export default function AdminUsersPage() {
                                                     onClick={() => setCreditModalUser(u)}
                                                     size="sm"
                                                     variant="outline"
-                                                    className="h-8 border-slate-800 bg-slate-900 text-slate-300 hover:bg-slate-800 text-[11px] font-semibold rounded-lg cursor-pointer"
+                                                    className="h-8 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-[11px] font-semibold rounded-lg cursor-pointer"
                                                 >
                                                     <Coins size={12} className="mr-1 text-[#35877D]" /> Adjust Credits
                                                 </Button>
@@ -271,8 +287,10 @@ export default function AdminUsersPage() {
                                                     onClick={() => handleToggleStatus(u.id, u.status)}
                                                     size="sm"
                                                     variant="outline"
-                                                    className={`h-8 border-slate-800 text-[11px] font-semibold rounded-lg cursor-pointer ${
-                                                        isSuspended ? "bg-emerald-950/60 text-emerald-400 hover:bg-emerald-900" : "bg-rose-950/60 text-rose-400 hover:bg-rose-900"
+                                                    className={`h-8 text-[11px] font-semibold rounded-lg cursor-pointer ${
+                                                        isSuspended
+                                                            ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                                            : "border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"
                                                     }`}
                                                 >
                                                     {isSuspended ? "Activate" : "Suspend"}
@@ -287,7 +305,7 @@ export default function AdminUsersPage() {
                 </div>
 
                 {/* Pagination Footer */}
-                <div className="p-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
                     <span>Showing Page {meta.current_page} of {meta.last_page} ({meta.total} Users)</span>
                     <div className="flex items-center gap-2">
                         <Button
@@ -295,7 +313,7 @@ export default function AdminUsersPage() {
                             onClick={() => setPage(p => p - 1)}
                             variant="outline"
                             size="sm"
-                            className="h-8 border-slate-800 bg-slate-900 text-slate-300 rounded-lg text-xs cursor-pointer"
+                            className="h-8 border-slate-200 bg-white text-slate-700 rounded-lg text-xs cursor-pointer"
                         >
                             <ChevronLeft size={14} /> Previous
                         </Button>
@@ -304,7 +322,7 @@ export default function AdminUsersPage() {
                             onClick={() => setPage(p => p + 1)}
                             variant="outline"
                             size="sm"
-                            className="h-8 border-slate-800 bg-slate-900 text-slate-300 rounded-lg text-xs cursor-pointer"
+                            className="h-8 border-slate-200 bg-white text-slate-700 rounded-lg text-xs cursor-pointer"
                         >
                             Next <ChevronRight size={14} />
                         </Button>
@@ -314,51 +332,51 @@ export default function AdminUsersPage() {
 
             {/* MANUAL CREDIT ADJUSTMENT MODAL */}
             {creditModalUser && (
-                <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <Card className="w-full max-w-md p-6 bg-slate-900 border-slate-800 rounded-3xl space-y-5 shadow-2xl">
-                        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                            <h3 className="text-base font-extrabold text-slate-100 flex items-center gap-2">
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+                    <Card className="w-full max-w-md p-6 bg-white border border-slate-200 rounded-3xl space-y-5 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                            <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
                                 <Coins size={18} className="text-[#35877D]" />
                                 Adjust Credit Ledger
                             </h3>
-                            <button onClick={() => setCreditModalUser(null)} className="text-slate-500 hover:text-white">
-                                ✕
+                            <button onClick={() => setCreditModalUser(null)} className="text-slate-400 hover:text-slate-700">
+                                <X size={18} />
                             </button>
                         </div>
 
-                        <div className="text-xs text-slate-300 space-y-1">
-                            <p><span className="text-slate-500 font-semibold">User:</span> <strong className="text-white">{creditModalUser.name}</strong> ({creditModalUser.email})</p>
-                            <p><span className="text-slate-500 font-semibold">Current Balance:</span> <strong className="text-emerald-400">{(creditModalUser.credits ?? 0).toLocaleString()} Credits</strong></p>
+                        <div className="text-xs text-slate-600 space-y-1 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <p><span className="text-slate-400 font-medium">User:</span> <strong className="text-slate-900">{creditModalUser.name}</strong> ({creditModalUser.email})</p>
+                            <p><span className="text-slate-400 font-medium">Current Balance:</span> <strong className="text-[#35877D]">{(creditModalUser.credits ?? 0).toLocaleString()} Credits</strong></p>
                         </div>
 
                         <form onSubmit={handleAdjustCredits} className="space-y-4">
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-slate-300">Adjustment Amount (+ to add, - to deduct)</label>
+                                <label className="text-xs font-bold text-slate-900">Adjustment Amount (+ to add, - to deduct)</label>
                                 <Input
                                     type="number"
                                     required
                                     value={adjustmentAmount}
                                     onChange={(e) => setAdjustmentAmount(parseInt(e.target.value) || 0)}
-                                    className="h-10 bg-slate-950 border-slate-800 text-slate-100 text-xs font-bold rounded-xl"
+                                    className="h-10 bg-slate-50 border-slate-200 text-slate-900 text-xs font-bold rounded-xl focus-visible:ring-[#35877D]"
                                 />
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-slate-300">Mandatory Reason (Audit Logged)</label>
+                                <label className="text-xs font-bold text-slate-900">Mandatory Reason (Audit Logged)</label>
                                 <Input
                                     required
-                                    placeholder="e.g. Promotional goodwill credit / Manual bank transfer top-up"
+                                    placeholder="e.g. Goodwill credit / Manual bank top-up"
                                     value={adjustmentReason}
                                     onChange={(e) => setAdjustmentReason(e.target.value)}
-                                    className="h-10 bg-slate-950 border-slate-800 text-slate-100 text-xs rounded-xl"
+                                    className="h-10 bg-slate-50 border-slate-200 text-slate-900 text-xs rounded-xl focus-visible:ring-[#35877D]"
                                 />
                             </div>
 
                             <div className="flex items-center justify-end gap-3 pt-2">
-                                <Button type="button" onClick={() => setCreditModalUser(null)} variant="ghost" className="h-10 text-xs text-slate-400 hover:bg-slate-800 rounded-xl cursor-pointer">
+                                <Button type="button" onClick={() => setCreditModalUser(null)} variant="ghost" className="h-10 text-xs text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer font-bold">
                                     Cancel
                                 </Button>
-                                <Button type="submit" disabled={adjusting} className="h-10 bg-[#35877D] hover:bg-[#2c6f66] text-white text-xs font-bold rounded-xl cursor-pointer border-0">
+                                <Button type="submit" disabled={adjusting} className="h-10 bg-[#35877D] hover:bg-[#2c6f66] text-white text-xs font-bold rounded-xl cursor-pointer border-0 shadow-sm">
                                     {adjusting ? "Logging Adjustment..." : "Commit Adjustment"}
                                 </Button>
                             </div>

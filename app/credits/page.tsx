@@ -1,16 +1,27 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Coins, RefreshCw, PlusCircle, ShieldCheck } from "lucide-react";
+import { RefreshCw, PlusCircle } from "lucide-react";
 import { toast } from "sonner";
+
+interface CreditAdjustment {
+    id: number;
+    admin_name?: string;
+    company_name?: string;
+    previous_balance?: number;
+    adjustment: number;
+    new_balance?: number;
+    reason: string;
+    created_at: string;
+}
 
 export default function AdminCreditsPage() {
     const { token } = useAuth();
-    const [adjustments, setAdjustments] = useState<any[]>([]);
+    const [adjustments, setAdjustments] = useState<CreditAdjustment[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [tenantId, setTenantId] = useState("");
@@ -18,7 +29,7 @@ export default function AdminCreditsPage() {
     const [reason, setReason] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
-    const fetchAdjustments = async () => {
+    const fetchAdjustments = useCallback(async () => {
         if (!token) return;
         setLoading(true);
         try {
@@ -32,16 +43,16 @@ export default function AdminCreditsPage() {
             if (data.status) {
                 setAdjustments(data.data?.data || data.data || []);
             }
-        } catch (err) {
+        } catch {
             toast.error("Failed to fetch credit adjustments.");
         } finally {
             setLoading(false);
         }
-    };
+    }, [token]);
 
     useEffect(() => {
         fetchAdjustments();
-    }, [token]);
+    }, [fetchAdjustments]);
 
     const handleManualAdjustment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -69,7 +80,7 @@ export default function AdminCreditsPage() {
             } else {
                 toast.error(data.message || "Adjustment failed.");
             }
-        } catch (err) {
+        } catch {
             toast.error("Adjustment request error.");
         } finally {
             setSubmitting(false);
@@ -79,18 +90,18 @@ export default function AdminCreditsPage() {
     return (
         <div className="space-y-6 font-sans">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-slate-100 tracking-tight flex items-center gap-2">
+                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
                         Credit Ledger &amp; Adjustments
                     </h1>
-                    <p className="text-xs text-slate-400 font-semibold mt-1">Platform messaging credit balance controls, manual allocations, and immutable ledger logs.</p>
+                    <p className="text-xs text-slate-500 font-medium mt-1">Platform messaging credit balance controls, manual allocations, and immutable ledger logs.</p>
                 </div>
                 <Button
                     onClick={fetchAdjustments}
                     variant="outline"
                     size="sm"
-                    className="h-9 border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer"
+                    className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
                 >
                     <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
                     <span>Reload Ledger</span>
@@ -101,55 +112,55 @@ export default function AdminCreditsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Manual Adjustment Form Card */}
                 <div className="lg:col-span-4">
-                    <Card className="p-6 bg-slate-950 border-slate-800 rounded-3xl space-y-4">
+                    <Card className="p-6 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-sm">
                         <div className="space-y-1">
-                            <h3 className="text-sm font-extrabold text-slate-100 flex items-center gap-2">
+                            <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
                                 <PlusCircle size={16} className="text-[#35877D]" />
                                 Manual Credit Adjustment
                             </h3>
-                            <p className="text-[11px] text-slate-400 font-medium">Add or deduct credits from a tenant workspace with required audit trail reason.</p>
+                            <p className="text-[11px] text-slate-500 font-medium">Add or deduct credits from a tenant workspace with required audit trail reason.</p>
                         </div>
 
-                        <form onSubmit={handleManualAdjustment} className="space-y-3 pt-2">
+                        <form onSubmit={handleManualAdjustment} className="space-y-3.5 pt-2">
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-300">Tenant Workspace ID</label>
+                                <label className="text-xs font-bold text-slate-900">Tenant Workspace ID</label>
                                 <Input
                                     type="number"
                                     required
                                     placeholder="e.g. 1"
                                     value={tenantId}
                                     onChange={(e) => setTenantId(e.target.value)}
-                                    className="h-10 bg-slate-900 border-slate-800 text-slate-100 text-xs rounded-xl"
+                                    className="h-10 bg-slate-50 border-slate-200 text-slate-900 text-xs font-medium rounded-xl focus-visible:ring-[#35877D]"
                                 />
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-300">Adjustment (+/- Credits)</label>
+                                <label className="text-xs font-bold text-slate-900">Adjustment (+/- Credits)</label>
                                 <Input
                                     type="number"
                                     required
                                     placeholder="e.g. 500 or -200"
                                     value={amount}
                                     onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
-                                    className="h-10 bg-slate-900 border-slate-800 text-slate-100 text-xs font-bold rounded-xl"
+                                    className="h-10 bg-slate-50 border-slate-200 text-slate-900 text-xs font-bold rounded-xl focus-visible:ring-[#35877D]"
                                 />
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-300">Reason / Reference (Audit Logged)</label>
+                                <label className="text-xs font-bold text-slate-900">Reason / Reference (Audit Logged)</label>
                                 <Input
                                     required
-                                    placeholder="e.g. Offline bank transfer / System compensation"
+                                    placeholder="e.g. Offline bank transfer / Goodwill"
                                     value={reason}
                                     onChange={(e) => setReason(e.target.value)}
-                                    className="h-10 bg-slate-900 border-slate-800 text-slate-100 text-xs rounded-xl"
+                                    className="h-10 bg-slate-50 border-slate-200 text-slate-900 text-xs font-medium rounded-xl focus-visible:ring-[#35877D]"
                                 />
                             </div>
 
                             <Button
                                 type="submit"
                                 disabled={submitting}
-                                className="w-full h-10 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold shadow-md cursor-pointer border-0 mt-2"
+                                className="w-full h-10 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold shadow-sm cursor-pointer border-0 mt-2 transition-all"
                             >
                                 {submitting ? "Processing..." : "Execute Credit Adjustment"}
                             </Button>
@@ -159,14 +170,14 @@ export default function AdminCreditsPage() {
 
                 {/* Audit History Log Table */}
                 <div className="lg:col-span-8">
-                    <Card className="bg-slate-950 border-slate-800 rounded-3xl overflow-hidden shadow-xl">
-                        <div className="p-4 border-b border-slate-800">
-                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Adjustment Audit History</h3>
+                    <Card className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+                        <div className="p-4 border-b border-slate-200 bg-slate-50/50">
+                            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Adjustment Audit History</h3>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                    <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                                         <th className="p-3.5">Admin Operator</th>
                                         <th className="p-3.5">Workspace</th>
                                         <th className="p-3.5">Previous</th>
@@ -176,7 +187,7 @@ export default function AdminCreditsPage() {
                                         <th className="p-3.5">Timestamp</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-800/80 text-xs">
+                                <tbody className="divide-y divide-slate-100 text-xs">
                                     {loading ? (
                                         <tr>
                                             <td colSpan={7} className="p-8 text-center text-slate-500 font-semibold">
@@ -191,26 +202,26 @@ export default function AdminCreditsPage() {
                                         </tr>
                                     ) : (
                                         adjustments.map((a) => (
-                                            <tr key={a.id} className="hover:bg-slate-900/50 transition-colors">
-                                                <td className="p-3.5 font-bold text-slate-200">
+                                            <tr key={a.id} className="hover:bg-slate-50/60 transition-colors">
+                                                <td className="p-3.5 font-bold text-slate-900">
                                                     {a.admin_name || "Admin"}
                                                 </td>
-                                                <td className="p-3.5 font-semibold text-slate-300">
+                                                <td className="p-3.5 font-medium text-slate-700">
                                                     {a.company_name}
                                                 </td>
-                                                <td className="p-3.5 text-slate-400 font-mono">
+                                                <td className="p-3.5 text-slate-500 font-mono">
                                                     {(a.previous_balance ?? 0).toLocaleString()}
                                                 </td>
-                                                <td className={`p-3.5 font-extrabold font-mono ${a.adjustment >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                                                <td className={`p-3.5 font-extrabold font-mono ${a.adjustment >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
                                                     {a.adjustment >= 0 ? `+${a.adjustment}` : a.adjustment}
                                                 </td>
-                                                <td className="p-3.5 text-slate-100 font-bold font-mono">
+                                                <td className="p-3.5 text-slate-900 font-bold font-mono">
                                                     {(a.new_balance ?? 0).toLocaleString()}
                                                 </td>
-                                                <td className="p-3.5 text-slate-300">
+                                                <td className="p-3.5 text-slate-600">
                                                     {a.reason}
                                                 </td>
-                                                <td className="p-3.5 text-slate-400 font-medium text-[11px]">
+                                                <td className="p-3.5 text-slate-500 font-medium text-[11px]">
                                                     {new Date(a.created_at).toLocaleDateString("en-IN")}
                                                 </td>
                                             </tr>

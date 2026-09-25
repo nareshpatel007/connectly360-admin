@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,6 @@ import {
     Filter,
     CheckCircle2,
     XCircle,
-    Coins,
     ChevronLeft,
     ChevronRight,
     RefreshCw,
@@ -19,16 +18,34 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+interface WorkspaceRecord {
+    id: number;
+    company_name?: string;
+    company_id?: string;
+    owner_name?: string;
+    owner_email?: string;
+    plan?: string;
+    credits?: number;
+    created_at: string;
+    status: string;
+}
+
+interface PaginationMeta {
+    current_page: number;
+    total: number;
+    last_page: number;
+}
+
 export default function AdminWorkspacesPage() {
     const { token } = useAuth();
-    const [workspaces, setWorkspaces] = useState<any[]>([]);
-    const [meta, setMeta] = useState<any>({ current_page: 1, total: 0, last_page: 1 });
+    const [workspaces, setWorkspaces] = useState<WorkspaceRecord[]>([]);
+    const [meta, setMeta] = useState<PaginationMeta>({ current_page: 1, total: 0, last_page: 1 });
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [planFilter, setPlanFilter] = useState("");
     const [page, setPage] = useState(1);
 
-    const fetchWorkspaces = async () => {
+    const fetchWorkspaces = useCallback(async () => {
         if (!token) return;
         setLoading(true);
         try {
@@ -50,16 +67,16 @@ export default function AdminWorkspacesPage() {
                 setWorkspaces(data.data || []);
                 setMeta(data.meta || { current_page: 1, total: 0, last_page: 1 });
             }
-        } catch (err) {
+        } catch {
             toast.error("Failed to load workspaces list.");
         } finally {
             setLoading(false);
         }
-    };
+    }, [token, page, search, planFilter]);
 
     useEffect(() => {
         fetchWorkspaces();
-    }, [token, page, planFilter]);
+    }, [fetchWorkspaces]);
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -88,7 +105,7 @@ export default function AdminWorkspacesPage() {
             } else {
                 toast.error(data.message || "Failed to update workspace status.");
             }
-        } catch (err) {
+        } catch {
             toast.error("Workspace status update error.");
         }
     };
@@ -96,18 +113,18 @@ export default function AdminWorkspacesPage() {
     return (
         <div className="space-y-6 font-sans">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-slate-100 tracking-tight flex items-center gap-2">
+                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
                         Workspaces &amp; Tenant Accounts
                     </h1>
-                    <p className="text-xs text-slate-400 font-semibold mt-1">Multi-tenant workspace isolation, subscription tiers, credit balances, and operational status.</p>
+                    <p className="text-xs text-slate-500 font-medium mt-1">Multi-tenant workspace isolation, subscription tiers, credit balances, and operational status.</p>
                 </div>
                 <Button
                     onClick={fetchWorkspaces}
                     variant="outline"
                     size="sm"
-                    className="h-9 border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-800 hover:text-white rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer"
+                    className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
                 >
                     <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
                     <span>Reload Workspaces</span>
@@ -115,15 +132,15 @@ export default function AdminWorkspacesPage() {
             </div>
 
             {/* Filter Bar */}
-            <Card className="p-4 bg-slate-950 border-slate-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Card className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
                 <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 w-full sm:w-80">
                     <div className="relative w-full">
-                        <Search size={14} className="absolute left-3.5 top-3 text-slate-500" />
+                        <Search size={14} className="absolute left-3.5 top-3 text-slate-400" />
                         <Input
                             placeholder="Search by brand name or owner..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-9 h-10 bg-slate-900 border-slate-800 text-slate-200 rounded-xl text-xs"
+                            className="pl-9 h-10 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl text-xs font-medium focus-visible:ring-[#35877D]"
                         />
                     </div>
                     <Button type="submit" size="sm" className="h-10 px-4 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold cursor-pointer border-0">
@@ -132,14 +149,14 @@ export default function AdminWorkspacesPage() {
                 </form>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <Filter size={14} className="text-slate-500 shrink-0" />
+                    <Filter size={14} className="text-slate-400 shrink-0" />
                     <select
                         value={planFilter}
                         onChange={(e) => {
                             setPlanFilter(e.target.value);
                             setPage(1);
                         }}
-                        className="h-10 px-3 bg-slate-900 border border-slate-800 text-slate-200 rounded-xl text-xs font-semibold focus:outline-none"
+                        className="h-10 px-3 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl text-xs font-semibold focus:outline-none"
                     >
                         <option value="">All Subscription Tiers</option>
                         <option value="growth">Growth Plan</option>
@@ -150,11 +167,11 @@ export default function AdminWorkspacesPage() {
             </Card>
 
             {/* Workspaces Table */}
-            <Card className="bg-slate-950 border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+            <Card className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                                 <th className="p-4">Workspace Brand</th>
                                 <th className="p-4">Owner Contact</th>
                                 <th className="p-4">Subscription Plan</th>
@@ -164,7 +181,7 @@ export default function AdminWorkspacesPage() {
                                 <th className="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800/80 text-xs">
+                        <tbody className="divide-y divide-slate-100 text-xs">
                             {loading ? (
                                 <tr>
                                     <td colSpan={7} className="p-8 text-center text-slate-500 font-semibold">
@@ -181,35 +198,35 @@ export default function AdminWorkspacesPage() {
                                 workspaces.map((w) => {
                                     const isSuspended = w.status === "suspended";
                                     return (
-                                        <tr key={w.id} className="hover:bg-slate-900/50 transition-colors">
+                                        <tr key={w.id} className="hover:bg-slate-50/60 transition-colors">
                                             <td className="p-4">
-                                                <div className="font-bold text-slate-100 flex items-center gap-2">
+                                                <div className="font-bold text-slate-900 flex items-center gap-2">
                                                     <Building2 size={15} className="text-[#35877D]" />
                                                     <span>{w.company_name || "Unnamed Workspace"}</span>
                                                 </div>
-                                                <div className="text-[10px] text-slate-500 font-mono mt-0.5">ID: {w.company_id || w.id}</div>
+                                                <div className="text-[10px] text-slate-400 font-mono mt-0.5">ID: {w.company_id || w.id}</div>
                                             </td>
                                             <td className="p-4">
-                                                <div className="font-semibold text-slate-200 flex items-center gap-1.5">
-                                                    <UserCheck size={13} className="text-slate-500" />
+                                                <div className="font-semibold text-slate-800 flex items-center gap-1.5">
+                                                    <UserCheck size={13} className="text-slate-400" />
                                                     <span>{w.owner_name || "—"}</span>
                                                 </div>
                                                 <div className="text-[11px] text-slate-500">{w.owner_email || ""}</div>
                                             </td>
                                             <td className="p-4">
-                                                <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-blue-950/80 text-blue-400 border border-blue-800/40">
+                                                <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-blue-50 text-blue-700 border border-blue-200">
                                                     {w.plan || "growth"}
                                                 </span>
                                             </td>
-                                            <td className="p-4 font-bold text-emerald-400">
+                                            <td className="p-4 font-bold text-[#35877D]">
                                                 {(w.credits ?? 0).toLocaleString()} Credits
                                             </td>
-                                            <td className="p-4 text-slate-400 font-medium">
+                                            <td className="p-4 text-slate-500 font-medium">
                                                 {new Date(w.created_at).toLocaleDateString("en-IN")}
                                             </td>
                                             <td className="p-4">
                                                 <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                                                    isSuspended ? "bg-rose-950 text-rose-400 border border-rose-800/40" : "bg-emerald-950 text-emerald-400 border border-emerald-800/40"
+                                                    isSuspended ? "bg-rose-50 text-rose-700 border border-rose-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                                 }`}>
                                                     {isSuspended ? <XCircle size={10} /> : <CheckCircle2 size={10} />}
                                                     {isSuspended ? "Suspended" : "Active"}
@@ -220,8 +237,10 @@ export default function AdminWorkspacesPage() {
                                                     onClick={() => handleToggleStatus(w.id, w.status)}
                                                     size="sm"
                                                     variant="outline"
-                                                    className={`h-8 border-slate-800 text-[11px] font-semibold rounded-lg cursor-pointer ${
-                                                        isSuspended ? "bg-emerald-950/60 text-emerald-400 hover:bg-emerald-900" : "bg-rose-950/60 text-rose-400 hover:bg-rose-900"
+                                                    className={`h-8 text-[11px] font-semibold rounded-lg cursor-pointer ${
+                                                        isSuspended
+                                                            ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                                                            : "border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"
                                                     }`}
                                                 >
                                                     {isSuspended ? "Activate Workspace" : "Suspend Workspace"}
@@ -236,7 +255,7 @@ export default function AdminWorkspacesPage() {
                 </div>
 
                 {/* Pagination */}
-                <div className="p-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
                     <span>Showing Page {meta.current_page} of {meta.last_page} ({meta.total} Workspaces)</span>
                     <div className="flex items-center gap-2">
                         <Button
@@ -244,7 +263,7 @@ export default function AdminWorkspacesPage() {
                             onClick={() => setPage(p => p - 1)}
                             variant="outline"
                             size="sm"
-                            className="h-8 border-slate-800 bg-slate-900 text-slate-300 rounded-lg text-xs cursor-pointer"
+                            className="h-8 border-slate-200 bg-white text-slate-700 rounded-lg text-xs cursor-pointer"
                         >
                             <ChevronLeft size={14} /> Previous
                         </Button>
@@ -253,7 +272,7 @@ export default function AdminWorkspacesPage() {
                             onClick={() => setPage(p => p + 1)}
                             variant="outline"
                             size="sm"
-                            className="h-8 border-slate-800 bg-slate-900 text-slate-300 rounded-lg text-xs cursor-pointer"
+                            className="h-8 border-slate-200 bg-white text-slate-700 rounded-lg text-xs cursor-pointer"
                         >
                             Next <ChevronRight size={14} />
                         </Button>

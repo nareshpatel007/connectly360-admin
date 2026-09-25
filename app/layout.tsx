@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const viewport = {
-    themeColor: "#0f172a",
+    themeColor: "#35877D",
 };
 
 export const metadata: Metadata = {
@@ -50,10 +50,10 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${jost.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
+            className={`${jost.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
             suppressHydrationWarning
         >
-            <body className="min-h-full bg-slate-900 text-slate-100 flex flex-col font-sans">
+            <body className="min-h-full bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-[#35877D] selection:text-white">
                 <Providers>
                     <AuthProvider>
                         <AdminLayout>
