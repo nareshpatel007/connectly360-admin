@@ -30,6 +30,11 @@ export const metadata: Metadata = {
         template: "%s | Connectly360 Admin",
     },
     description: "Platform management, user accounts, workspace monitoring, billing, and credit ledger administration for Connectly360.",
+    icons: {
+        icon: "/images/favicon.png",
+        shortcut: "/favicon.ico",
+        apple: "/images/icon.png",
+    },
     robots: {
         index: false,
         follow: false,
