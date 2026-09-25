@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { useGetAnalyticsSummary, useListConversations, useListLeads } from "@workspace/api-client-react";
 import { Card } from "@/components/ui/card";
