@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
     Search,
     ChevronLeft,
@@ -12,22 +13,31 @@ import {
     RefreshCw,
     CheckCircle2,
     CreditCard,
-    IndianRupee,
-    Building2,
-    Calendar,
-    ArrowUpRight
+    RotateCcw,
+    AlertTriangle,
+    Shield,
+    PauseCircle,
+    PlayCircle,
+    XCircle,
+    Eye
 } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/admin-page-header";
 
 interface BillingTransaction {
     id: number;
+    workspace_id?: number;
+    workspace?: { company_name?: string };
+    user?: { name?: string; email?: string };
     user_name?: string;
     user_email?: string;
     company_name?: string;
     amount?: number;
     credits?: number;
+    mode?: string;
+    transaction_type?: string;
     razorpay_payment_id?: string;
+    razorpay_order_id?: string;
     status?: string;
     created_at: string;
 }
@@ -40,11 +50,19 @@ interface PaginationMeta {
 
 export default function AdminBillingPage() {
     const { token } = useAuth();
+    const [activeTab, setActiveTab] = useState<"transactions" | "recurring">("transactions");
     const [transactions, setTransactions] = useState<BillingTransaction[]>([]);
+    const [recurringList, setRecurringList] = useState<any[]>([]);
     const [meta, setMeta] = useState<PaginationMeta>({ current_page: 1, total: 0, last_page: 1 });
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
+
+    // Refund Modal State
+    const [selectedTx, setSelectedTx] = useState<BillingTransaction | null>(null);
+    const [refundAmount, setRefundAmount] = useState("");
+    const [refundReason, setRefundReason] = useState("");
+    const [refunding, setRefunding] = useState(false);
 
     const fetchTransactions = useCallback(async () => {
         if (!token) return;
@@ -56,7 +74,11 @@ export default function AdminBillingPage() {
                 ...(search && { search }),
             });
 
-            const res = await fetch(`/api/admin/billing/transactions?${queryParams.toString()}`, {
+            const endpoint = activeTab === "transactions" 
+                ? `/api/admin/payment-transactions?${queryParams.toString()}`
+                : `/api/admin/recurring-payments?${queryParams.toString()}`;
+
+            const res = await fetch(endpoint, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "X-Api-Token": token || ""
@@ -64,34 +86,92 @@ export default function AdminBillingPage() {
             });
             const data = await res.json();
             if (data.status) {
-                setTransactions(data.data || []);
-                setMeta(data.meta || { current_page: 1, total: 0, last_page: 1 });
+                if (activeTab === "transactions") {
+                    setTransactions(data.data?.data || data.data || []);
+                    setMeta({
+                        current_page: data.data?.current_page || 1,
+                        total: data.data?.total || 0,
+                        last_page: data.data?.last_page || 1
+                    });
+                } else {
+                    setRecurringList(data.data?.data || data.data || []);
+                    setMeta({
+                        current_page: data.data?.current_page || 1,
+                        total: data.data?.total || 0,
+                        last_page: data.data?.last_page || 1
+                    });
+                }
             }
         } catch {
-            toast.error("Failed to load billing transactions.");
+            toast.error("Failed to load billing records.");
         } finally {
             setLoading(false);
         }
-    }, [token, page, search]);
+    }, [token, page, search, activeTab]);
 
     useEffect(() => {
         fetchTransactions();
     }, [fetchTransactions]);
 
-    const handleSearchSubmit = (e: React.FormEvent) => {
+    const handleRefundSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setPage(1);
-        fetchTransactions();
+        if (!selectedTx) return;
+        setRefunding(true);
+        try {
+            const res = await fetch(`/api/admin/payment-transactions/${selectedTx.id}/refund`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    amount: parseFloat(refundAmount || selectedTx.amount?.toString() || "0"),
+                    reason: refundReason
+                })
+            });
+            const json = await res.json();
+            if (json.status) {
+                toast.success(json.message || "Refund processed successfully.");
+                setSelectedTx(null);
+                fetchTransactions();
+            } else {
+                toast.error(json.message || "Refund failed");
+            }
+        } catch (err: any) {
+            toast.error("Error processing refund: " + err.message);
+        } finally {
+            setRefunding(false);
+        }
+    };
+
+    const handleRecurringAction = async (id: number, action: "pause" | "resume" | "cancel") => {
+        try {
+            const res = await fetch(`/api/admin/recurring-payments/${id}/${action}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            const json = await res.json();
+            if (json.status) {
+                toast.success(json.message || `Recurring payment ${action}d.`);
+                fetchTransactions();
+            } else {
+                toast.error(json.message || "Action failed");
+            }
+        } catch (err: any) {
+            toast.error("Error executing action: " + err.message);
+        }
     };
 
     return (
         <div className="space-y-6 font-sans">
             {/* Header */}
             <AdminPageHeader
-                title="Billing & Sales Log"
-                description="Platform revenue, subscription tier invoices, credit purchase top-ups, and Razorpay payment gateway audit records."
-                breadcrumbs={[{ label: "Billing & Sales" }]}
-                badge={`${meta.total} Invoices`}
+                title="Payment Transactions &amp; Recurring Billing"
+                description="Razorpay transaction history, refund processing, recurring payment mandates, and workspace credit top-ups."
+                breadcrumbs={[{ label: "Billing Management" }]}
+                badge={`${meta.total} Records`}
                 actions={
                     <Button
                         onClick={fetchTransactions}
@@ -100,18 +180,38 @@ export default function AdminBillingPage() {
                         className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
                     >
                         <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                        <span>Reload Transactions</span>
+                        <span>Reload Records</span>
                     </Button>
                 }
             />
 
+            {/* Tabs */}
+            <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+                <button
+                    onClick={() => { setActiveTab("transactions"); setPage(1); }}
+                    className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
+                        activeTab === "transactions" ? "bg-[#35877D] text-white shadow-2xs" : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                >
+                    Payment Transactions ({activeTab === "transactions" ? meta.total : "All"})
+                </button>
+                <button
+                    onClick={() => { setActiveTab("recurring"); setPage(1); }}
+                    className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
+                        activeTab === "recurring" ? "bg-[#35877D] text-white shadow-2xs" : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                >
+                    Recurring Payments / Auto Recharges
+                </button>
+            </div>
+
             {/* Filter Bar */}
             <Card className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-                <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 w-full sm:w-96">
+                <form onSubmit={(e) => { e.preventDefault(); setPage(1); fetchTransactions(); }} className="flex items-center gap-2 w-full sm:w-96">
                     <div className="relative w-full">
                         <Search size={14} className="absolute left-3.5 top-3 text-slate-400" />
                         <Input
-                            placeholder="Search by Razorpay ID, email, customer, or workspace..."
+                            placeholder="Search by Payment ID, Order ID, workspace..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="pl-9 h-10 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl text-xs font-medium focus-visible:ring-[#35877D]"
@@ -123,75 +223,144 @@ export default function AdminBillingPage() {
                 </form>
             </Card>
 
-            {/* Billing Table */}
+            {/* Table */}
             <Card className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                <th className="p-4">Customer Details</th>
-                                <th className="p-4">Tenant Workspace</th>
-                                <th className="p-4">Amount Paid</th>
-                                <th className="p-4">Credits Issued</th>
-                                <th className="p-4">Razorpay Payment ID</th>
-                                <th className="p-4">Gateway Status</th>
-                                <th className="p-4">Date &amp; Time</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 text-xs font-medium">
-                            {loading ? (
-                                <tr>
-                                    <td colSpan={7} className="p-8 text-center text-slate-500 font-semibold">
-                                        <div className="flex items-center justify-center gap-2">
-                                            <RefreshCw size={16} className="animate-spin text-[#35877D]" />
-                                            <span>Loading sales transaction logs...</span>
-                                        </div>
-                                    </td>
+                {activeTab === "transactions" ? (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <th className="p-4">Customer &amp; Workspace</th>
+                                    <th className="p-4">Type &amp; Mode</th>
+                                    <th className="p-4">Amount</th>
+                                    <th className="p-4">Razorpay Order / Payment ID</th>
+                                    <th className="p-4">Status</th>
+                                    <th className="p-4">Date</th>
+                                    <th className="p-4 text-right">Actions</th>
                                 </tr>
-                            ) : transactions.length === 0 ? (
-                                <tr>
-                                    <td colSpan={7} className="p-8 text-center text-slate-400 font-semibold">
-                                        No sales transactions recorded yet.
-                                    </td>
-                                </tr>
-                            ) : (
-                                transactions.map((t) => (
-                                    <tr key={t.id} className="hover:bg-slate-50/60 transition-colors">
-                                        <td className="p-4">
-                                            <div className="font-bold text-slate-900">{t.user_name || "Customer Account"}</div>
-                                            <div className="text-[11px] text-slate-500">{t.user_email || "—"}</div>
-                                        </td>
-                                        <td className="p-4 font-semibold text-slate-700">
-                                            {t.company_name || "—"}
-                                        </td>
-                                        <td className="p-4 font-extrabold text-emerald-600 text-sm">
-                                            ₹{(t.amount ?? 0).toLocaleString("en-IN")}
-                                        </td>
-                                        <td className="p-4 font-bold text-slate-900">
-                                            +{(t.credits ?? 0).toLocaleString()} Credits
-                                        </td>
-                                        <td className="p-4 font-mono text-[11px] text-slate-500">
-                                            {t.razorpay_payment_id || "pay_simulated_test"}
-                                        </td>
-                                        <td className="p-4">
-                                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
-                                                <CheckCircle2 size={10} />
-                                                {t.status || "Paid"}
-                                            </span>
-                                        </td>
-                                        <td className="p-4 text-slate-500">
-                                            {new Date(t.created_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 text-xs font-medium">
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={7} className="p-8 text-center text-slate-500 font-semibold">
+                                            <div className="flex items-center justify-center gap-2">
+                                                <RefreshCw size={16} className="animate-spin text-[#35877D]" />
+                                                <span>Loading payment transactions...</span>
+                                            </div>
                                         </td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                ) : transactions.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="p-8 text-center text-slate-400 font-semibold">
+                                            No payment transactions recorded yet.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    transactions.map((t) => (
+                                        <tr key={t.id} className="hover:bg-slate-50/60 transition-colors">
+                                            <td className="p-4">
+                                                <div className="font-bold text-slate-900">{t.user?.name || t.user_name || "Workspace Account"}</div>
+                                                <div className="text-[11px] text-slate-500">{t.workspace?.company_name || t.company_name || "Workspace #" + t.workspace_id}</div>
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="font-bold text-slate-800 capitalize">{(t.transaction_type || "credit_purchase").replace(/_/g, " ")}</div>
+                                                <span className={`inline-block text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
+                                                    t.mode === "live" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+                                                }`}>
+                                                    {t.mode || "test"} mode
+                                                </span>
+                                            </td>
+                                            <td className="p-4 font-extrabold text-emerald-600 text-sm">
+                                                ₹{(t.amount ?? 0).toLocaleString("en-IN")}
+                                            </td>
+                                            <td className="p-4 font-mono text-[11px] text-slate-500 space-y-0.5">
+                                                {t.razorpay_payment_id && <div>Pmt: {t.razorpay_payment_id}</div>}
+                                                {t.razorpay_order_id && <div className="text-[10px] text-slate-400">Ord: {t.razorpay_order_id}</div>}
+                                            </td>
+                                            <td className="p-4">
+                                                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                                    t.status === "captured" || t.status === "paid" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" :
+                                                    t.status === "refunded" ? "bg-purple-50 text-purple-700 border border-purple-200" :
+                                                    t.status === "failed" ? "bg-rose-50 text-rose-700 border border-rose-200" :
+                                                    "bg-amber-50 text-amber-700 border border-amber-200"
+                                                }`}>
+                                                    {t.status || "created"}
+                                                </span>
+                                            </td>
+                                            <td className="p-4 text-slate-500">
+                                                {new Date(t.created_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
+                                            </td>
+                                            <td className="p-4 text-right">
+                                                {(t.status === "captured" || t.status === "paid") && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => { setSelectedTx(t); setRefundAmount(t.amount?.toString() || ""); }}
+                                                        className="h-8 px-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200 rounded-lg text-xs font-bold cursor-pointer"
+                                                    >
+                                                        <RotateCcw size={12} className="mr-1" /> Refund
+                                                    </Button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <th className="p-4">Workspace &amp; User</th>
+                                    <th className="p-4">Type &amp; Mandate</th>
+                                    <th className="p-4">Auto Recharge Config</th>
+                                    <th className="p-4">Razorpay Subscription ID</th>
+                                    <th className="p-4">Status</th>
+                                    <th className="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 text-xs font-medium">
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={6} className="p-8 text-center text-slate-500">Loading recurring payment mandates...</td>
+                                    </tr>
+                                ) : recurringList.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} className="p-8 text-center text-slate-400">No recurring payment mandates active.</td>
+                                    </tr>
+                                ) : (
+                                    recurringList.map((r) => (
+                                        <tr key={r.id} className="hover:bg-slate-50/60">
+                                            <td className="p-4 font-bold text-slate-900">{r.workspace?.company_name || "Workspace #" + r.workspace_id}</td>
+                                            <td className="p-4 font-semibold capitalize">{r.type || "Auto Recharge"}</td>
+                                            <td className="p-4 text-slate-600">
+                                                ₹{r.recharge_amount} when credits ≤ {r.threshold_credits}
+                                            </td>
+                                            <td className="p-4 font-mono text-[11px] text-slate-500">{r.provider_subscription_id || "Mandate Active"}</td>
+                                            <td className="p-4">
+                                                <Badge className="bg-emerald-50 text-emerald-700 uppercase text-[10px] font-bold">{r.status}</Badge>
+                                            </td>
+                                            <td className="p-4 text-right space-x-2">
+                                                {r.status === "active" ? (
+                                                    <Button size="sm" variant="outline" onClick={() => handleRecurringAction(r.id, "pause")} className="h-7 text-amber-600">Pause</Button>
+                                                ) : (
+                                                    <Button size="sm" variant="outline" onClick={() => handleRecurringAction(r.id, "resume")} className="h-7 text-emerald-600">Resume</Button>
+                                                )}
+                                                <Button size="sm" variant="outline" onClick={() => handleRecurringAction(r.id, "cancel")} className="h-7 text-rose-600">Cancel</Button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
 
                 {/* Pagination */}
                 <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 font-medium bg-slate-50/50">
-                    <span>Showing Page {meta.current_page} of {meta.last_page} ({meta.total} Transactions)</span>
+                    <span>Page {meta.current_page} of {meta.last_page} ({meta.total} Total)</span>
                     <div className="flex items-center gap-2">
                         <Button
                             disabled={page <= 1}
@@ -214,6 +383,55 @@ export default function AdminBillingPage() {
                     </div>
                 </div>
             </Card>
+
+            {/* Refund Dialog */}
+            {selectedTx && (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                    <form onSubmit={handleRefundSubmit} className="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl border border-slate-200">
+                        <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center">
+                            <RotateCcw size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-base font-black text-slate-900">Process Razorpay Refund</h3>
+                            <p className="text-xs text-slate-600 mt-0.5">
+                                Transaction ID: #{selectedTx.id} | Amount: ₹{selectedTx.amount}
+                            </p>
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-slate-900">Refund Amount (INR)</label>
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    value={refundAmount}
+                                    onChange={(e) => setRefundAmount(e.target.value)}
+                                    className="h-10 bg-slate-50 border-slate-200 text-xs font-bold"
+                                />
+                            </div>
+
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-slate-900">Reason for Refund</label>
+                                <Input
+                                    placeholder="Customer requested cancellation / refund"
+                                    value={refundReason}
+                                    onChange={(e) => setRefundReason(e.target.value)}
+                                    className="h-10 bg-slate-50 border-slate-200 text-xs"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+                            <Button type="button" variant="outline" onClick={() => setSelectedTx(null)} className="h-10 px-4 rounded-xl text-xs font-bold">
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={refunding} className="h-10 px-5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold cursor-pointer">
+                                {refunding ? "Processing Refund..." : "Execute Razorpay Refund"}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            )}
         </div>
     );
 }
