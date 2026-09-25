@@ -78,8 +78,18 @@ export default function AdminUsersPage() {
             });
             const data = await res.json();
             if (data.status) {
-                setUsers(data.data || []);
-                setMeta(data.meta || { current_page: 1, total: 0, last_page: 1 });
+                const userList = Array.isArray(data.data)
+                    ? data.data
+                    : (Array.isArray(data.data?.data) ? data.data.data : []);
+
+                const metaInfo = {
+                    current_page: data.data?.current_page || data.meta?.current_page || 1,
+                    total: data.data?.total ?? data.meta?.total ?? userList.length,
+                    last_page: data.data?.last_page || data.meta?.last_page || 1,
+                };
+
+                setUsers(userList);
+                setMeta(metaInfo);
             }
         } catch {
             toast.error("Failed to load users list.");
@@ -250,7 +260,7 @@ export default function AdminUsersPage() {
                                         </div>
                                     </td>
                                 </tr>
-                            ) : users.length === 0 ? (
+                            ) : (!Array.isArray(users) || users.length === 0) ? (
                                 <tr>
                                     <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
                                         No matching users found for current filter criteria.

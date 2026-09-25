@@ -68,8 +68,18 @@ export default function AdminWorkspacesPage() {
             });
             const data = await res.json();
             if (data.status) {
-                setWorkspaces(data.data || []);
-                setMeta(data.meta || { current_page: 1, total: 0, last_page: 1 });
+                const workspaceList = Array.isArray(data.data)
+                    ? data.data
+                    : (Array.isArray(data.data?.data) ? data.data.data : []);
+
+                const metaInfo = {
+                    current_page: data.data?.current_page || data.meta?.current_page || 1,
+                    total: data.data?.total ?? data.meta?.total ?? workspaceList.length,
+                    last_page: data.data?.last_page || data.meta?.last_page || 1,
+                };
+
+                setWorkspaces(workspaceList);
+                setMeta(metaInfo);
             }
         } catch {
             toast.error("Failed to load workspaces list.");

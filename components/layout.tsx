@@ -236,7 +236,11 @@ function CollapsibleNavItem({
                 <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                     <SidebarMenuSub className="border-l border-slate-200 ml-4 pl-3 mt-0.5 gap-0.5">
                         {item.subItems!.map((sub) => {
-                            const isSubActive = pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href));
+                            const isSubActive = sub.href === "/billing"
+                                ? pathname === "/billing"
+                                : (pathname === sub.href ||
+                                   (sub.href === "/billing/buy-credits" && pathname === "/billing/recharge-credits") ||
+                                   (sub.href !== "/dashboard" && sub.href !== "/billing" && pathname.startsWith(sub.href + "/")));
                             return (
                                 <SidebarMenuSubItem key={sub.href}>
                                     <SidebarMenuSubButton
@@ -287,13 +291,27 @@ function SidebarNav({ pathname }: { pathname: string }) {
         });
     }
 
+    const checkActiveSub = (sub: SubItem) => {
+        return sub.href === "/billing"
+            ? pathname === "/billing"
+            : (pathname === sub.href || 
+               (sub.href === "/billing/buy-credits" && pathname === "/billing/recharge-credits") ||
+               (sub.href !== "/dashboard" && sub.href !== "/billing" && pathname.startsWith(sub.href + "/")));
+    };
+
     // Find the initially-active collapsible item so it opens on first render
     const initialOpen = navGroups.flatMap(g => g.items)
-        .find(item => item.subItems?.some(
-            sub => pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href))
-        ))?.href ?? null;
+        .find(item => item.subItems?.some(checkActiveSub))?.href ?? null;
 
     const [openHref, setOpenHref] = useState<string | null>(initialOpen);
+
+    useEffect(() => {
+        const activeParent = navGroups.flatMap(g => g.items)
+            .find(item => item.subItems?.some(checkActiveSub))?.href ?? null;
+        if (activeParent) {
+            setOpenHref(activeParent);
+        }
+    }, [pathname]);
 
     return (
         <SidebarGroup className="py-0 px-2">
@@ -324,9 +342,7 @@ function SidebarNav({ pathname }: { pathname: string }) {
                     }
 
                     // Collapsible parent item
-                    const isParentActive = item.subItems!.some(
-                        sub => pathname === sub.href || (sub.href !== "/dashboard" && pathname.startsWith(sub.href))
-                    );
+                    const isParentActive = item.subItems!.some(checkActiveSub);
 
                     return (
                         <CollapsibleNavItem
