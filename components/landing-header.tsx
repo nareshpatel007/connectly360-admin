@@ -217,11 +217,11 @@ export function LandingHeader() {
                         </>
                     ) : (
                         <>
-                            <Button asChild variant="outline" size="sm" className="rounded-full px-4 py-2 h-9 border-[#35877D] text-[#35877D] hover:bg-[#EAF7F2] hover:text-[#2c6f66] bg-transparent transition-all font-extrabold text-xs">
+                            {/* <Button asChild variant="outline" size="sm" className="rounded-full px-4 py-2 h-9 border-[#35877D] text-[#35877D] hover:bg-[#EAF7F2] hover:text-[#2c6f66] bg-transparent transition-all font-extrabold text-xs">
                                 <Link href="/book-demo">
                                     Book a Demo
                                 </Link>
-                            </Button>
+                            </Button> */}
                             <Button asChild size="sm" className="rounded-full px-4 py-2 h-9 bg-[#35877D] hover:bg-[#2c6f66] text-white transition-all shadow-sm font-extrabold text-xs flex items-center gap-1">
                                 <Link href="/register">
                                     Start Free Trial <ArrowRight size={12} />

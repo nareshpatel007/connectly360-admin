@@ -48,9 +48,6 @@ export default function AdminForgotPasswordPage() {
                         alt="Connectly360 Logo"
                         className="h-9 w-auto object-contain"
                     />
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-[#35877D]/10 text-[#35877D] border border-[#35877D]/20">
-                        Admin Console
-                    </span>
                 </div>
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
@@ -133,10 +130,6 @@ export default function AdminForgotPasswordPage() {
                     </div>
                 )}
             </Card>
-
-            <p className="text-center text-[11px] text-slate-400 font-medium">
-                Authorized Connectly360 administrators only.
-            </p>
         </div>
     );
 }

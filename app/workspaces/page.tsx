@@ -14,9 +14,12 @@ import {
     ChevronLeft,
     ChevronRight,
     RefreshCw,
-    UserCheck
+    UserCheck,
+    Coins,
+    Layers
 } from "lucide-react";
 import { toast } from "sonner";
+import { AdminPageHeader } from "@/components/admin-page-header";
 
 interface WorkspaceRecord {
     id: number;
@@ -113,37 +116,37 @@ export default function AdminWorkspacesPage() {
     return (
         <div className="space-y-6 font-sans">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
-                <div>
-                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        Workspaces &amp; Tenant Accounts
-                    </h1>
-                    <p className="text-xs text-slate-500 font-medium mt-1">Multi-tenant workspace isolation, subscription tiers, credit balances, and operational status.</p>
-                </div>
-                <Button
-                    onClick={fetchWorkspaces}
-                    variant="outline"
-                    size="sm"
-                    className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
-                >
-                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                    <span>Reload Workspaces</span>
-                </Button>
-            </div>
+            <AdminPageHeader
+                title="Workspaces & Tenants"
+                description="Multi-tenant workspace isolation, company accounts, subscription tier management, credit allocations, and workspace status."
+                breadcrumbs={[{ label: "Workspaces" }]}
+                badge={`${meta.total} Workspaces`}
+                actions={
+                    <Button
+                        onClick={fetchWorkspaces}
+                        variant="outline"
+                        size="sm"
+                        className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
+                    >
+                        <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                        <span>Reload Workspaces</span>
+                    </Button>
+                }
+            />
 
             {/* Filter Bar */}
             <Card className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-                <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 w-full sm:w-80">
+                <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 w-full sm:w-96">
                     <div className="relative w-full">
                         <Search size={14} className="absolute left-3.5 top-3 text-slate-400" />
                         <Input
-                            placeholder="Search by brand name or owner..."
+                            placeholder="Search by workspace brand name or owner..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="pl-9 h-10 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl text-xs font-medium focus-visible:ring-[#35877D]"
                         />
                     </div>
-                    <Button type="submit" size="sm" className="h-10 px-4 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold cursor-pointer border-0">
+                    <Button type="submit" size="sm" className="h-10 px-4 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold cursor-pointer border-0 shadow-2xs">
                         Search
                     </Button>
                 </form>
@@ -156,7 +159,7 @@ export default function AdminWorkspacesPage() {
                             setPlanFilter(e.target.value);
                             setPage(1);
                         }}
-                        className="h-10 px-3 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl text-xs font-semibold focus:outline-none"
+                        className="h-10 px-3 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl text-xs font-semibold focus:outline-none cursor-pointer"
                     >
                         <option value="">All Subscription Tiers</option>
                         <option value="growth">Growth Plan</option>
@@ -175,23 +178,26 @@ export default function AdminWorkspacesPage() {
                                 <th className="p-4">Workspace Brand</th>
                                 <th className="p-4">Owner Contact</th>
                                 <th className="p-4">Subscription Plan</th>
-                                <th className="p-4">Credits</th>
+                                <th className="p-4">Credit Balance</th>
                                 <th className="p-4">Created Date</th>
                                 <th className="p-4">Status</th>
                                 <th className="p-4 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 text-xs">
+                        <tbody className="divide-y divide-slate-100 text-xs font-medium">
                             {loading ? (
                                 <tr>
                                     <td colSpan={7} className="p-8 text-center text-slate-500 font-semibold">
-                                        Loading workspaces...
+                                        <div className="flex items-center justify-center gap-2">
+                                            <RefreshCw size={16} className="animate-spin text-[#35877D]" />
+                                            <span>Loading workspace directory...</span>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : workspaces.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="p-8 text-center text-slate-500 font-semibold">
-                                        No workspaces found.
+                                    <td colSpan={7} className="p-8 text-center text-slate-400 font-semibold">
+                                        No workspaces recorded.
                                     </td>
                                 </tr>
                             ) : (
@@ -221,8 +227,8 @@ export default function AdminWorkspacesPage() {
                                             <td className="p-4 font-bold text-[#35877D]">
                                                 {(w.credits ?? 0).toLocaleString()} Credits
                                             </td>
-                                            <td className="p-4 text-slate-500 font-medium">
-                                                {new Date(w.created_at).toLocaleDateString("en-IN")}
+                                            <td className="p-4 text-slate-500">
+                                                {new Date(w.created_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}
                                             </td>
                                             <td className="p-4">
                                                 <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
@@ -255,7 +261,7 @@ export default function AdminWorkspacesPage() {
                 </div>
 
                 {/* Pagination */}
-                <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+                <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500 font-medium bg-slate-50/50">
                     <span>Showing Page {meta.current_page} of {meta.last_page} ({meta.total} Workspaces)</span>
                     <div className="flex items-center gap-2">
                         <Button

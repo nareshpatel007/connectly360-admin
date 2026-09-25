@@ -5,8 +5,9 @@ import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RefreshCw, PlusCircle } from "lucide-react";
+import { RefreshCw, PlusCircle, Coins, ShieldCheck, ArrowRightLeft } from "lucide-react";
 import { toast } from "sonner";
+import { AdminPageHeader } from "@/components/admin-page-header";
 
 interface CreditAdjustment {
     id: number;
@@ -90,38 +91,40 @@ export default function AdminCreditsPage() {
     return (
         <div className="space-y-6 font-sans">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
-                <div>
-                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        Credit Ledger &amp; Adjustments
-                    </h1>
-                    <p className="text-xs text-slate-500 font-medium mt-1">Platform messaging credit balance controls, manual allocations, and immutable ledger logs.</p>
-                </div>
-                <Button
-                    onClick={fetchAdjustments}
-                    variant="outline"
-                    size="sm"
-                    className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
-                >
-                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                    <span>Reload Ledger</span>
-                </Button>
-            </div>
+            <AdminPageHeader
+                title="Credits Ledger & Adjustments"
+                description="Platform messaging credit balance controls, manual operator adjustments, and immutable ledger audit trail."
+                breadcrumbs={[{ label: "Credits Ledger" }]}
+                badge="Ledger Logs"
+                actions={
+                    <Button
+                        onClick={fetchAdjustments}
+                        variant="outline"
+                        size="sm"
+                        className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
+                    >
+                        <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                        <span>Reload Ledger</span>
+                    </Button>
+                }
+            />
 
             {/* Quick Adjustment Card & Audit Table */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Manual Adjustment Form Card */}
                 <div className="lg:col-span-4">
                     <Card className="p-6 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-sm">
-                        <div className="space-y-1">
+                        <div className="space-y-1 border-b border-slate-100 pb-3">
                             <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
                                 <PlusCircle size={16} className="text-[#35877D]" />
                                 Manual Credit Adjustment
                             </h3>
-                            <p className="text-[11px] text-slate-500 font-medium">Add or deduct credits from a tenant workspace with required audit trail reason.</p>
+                            <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                                Grant or deduct messaging credits from a tenant workspace with mandatory audit reason.
+                            </p>
                         </div>
 
-                        <form onSubmit={handleManualAdjustment} className="space-y-3.5 pt-2">
+                        <form onSubmit={handleManualAdjustment} className="space-y-3.5 pt-1">
                             <div className="space-y-1">
                                 <label className="text-xs font-bold text-slate-900">Tenant Workspace ID</label>
                                 <Input
@@ -147,10 +150,10 @@ export default function AdminCreditsPage() {
                             </div>
 
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-900">Reason / Reference (Audit Logged)</label>
+                                <label className="text-xs font-bold text-slate-900">Mandatory Audit Reason</label>
                                 <Input
                                     required
-                                    placeholder="e.g. Offline bank transfer / Goodwill"
+                                    placeholder="e.g. Offline bank transfer / Goodwill credit"
                                     value={reason}
                                     onChange={(e) => setReason(e.target.value)}
                                     className="h-10 bg-slate-50 border-slate-200 text-slate-900 text-xs font-medium rounded-xl focus-visible:ring-[#35877D]"
@@ -160,7 +163,7 @@ export default function AdminCreditsPage() {
                             <Button
                                 type="submit"
                                 disabled={submitting}
-                                className="w-full h-10 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold shadow-sm cursor-pointer border-0 mt-2 transition-all"
+                                className="w-full h-10 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold shadow-2xs cursor-pointer border-0 mt-2 transition-all"
                             >
                                 {submitting ? "Processing..." : "Execute Credit Adjustment"}
                             </Button>
@@ -172,7 +175,10 @@ export default function AdminCreditsPage() {
                 <div className="lg:col-span-8">
                     <Card className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                         <div className="p-4 border-b border-slate-200 bg-slate-50/50">
-                            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Adjustment Audit History</h3>
+                            <h3 className="text-xs font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                                <ShieldCheck size={14} className="text-[#35877D]" />
+                                Immutable Adjustment Audit History
+                            </h3>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
@@ -187,16 +193,19 @@ export default function AdminCreditsPage() {
                                         <th className="p-3.5">Timestamp</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-100 text-xs">
+                                <tbody className="divide-y divide-slate-100 text-xs font-medium">
                                     {loading ? (
                                         <tr>
                                             <td colSpan={7} className="p-8 text-center text-slate-500 font-semibold">
-                                                Loading adjustment log...
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <RefreshCw size={16} className="animate-spin text-[#35877D]" />
+                                                    <span>Loading credit ledger logs...</span>
+                                                </div>
                                             </td>
                                         </tr>
                                     ) : adjustments.length === 0 ? (
                                         <tr>
-                                            <td colSpan={7} className="p-8 text-center text-slate-500 font-semibold">
+                                            <td colSpan={7} className="p-8 text-center text-slate-400 font-semibold">
                                                 No manual credit adjustments logged yet.
                                             </td>
                                         </tr>
@@ -204,10 +213,10 @@ export default function AdminCreditsPage() {
                                         adjustments.map((a) => (
                                             <tr key={a.id} className="hover:bg-slate-50/60 transition-colors">
                                                 <td className="p-3.5 font-bold text-slate-900">
-                                                    {a.admin_name || "Admin"}
+                                                    {a.admin_name || "Super Admin"}
                                                 </td>
-                                                <td className="p-3.5 font-medium text-slate-700">
-                                                    {a.company_name}
+                                                <td className="p-3.5 font-semibold text-slate-700">
+                                                    {a.company_name || `Tenant #${a.id}`}
                                                 </td>
                                                 <td className="p-3.5 text-slate-500 font-mono">
                                                     {(a.previous_balance ?? 0).toLocaleString()}
@@ -221,8 +230,8 @@ export default function AdminCreditsPage() {
                                                 <td className="p-3.5 text-slate-600">
                                                     {a.reason}
                                                 </td>
-                                                <td className="p-3.5 text-slate-500 font-medium text-[11px]">
-                                                    {new Date(a.created_at).toLocaleDateString("en-IN")}
+                                                <td className="p-3.5 text-slate-500 text-[11px]">
+                                                    {new Date(a.created_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}
                                                 </td>
                                             </tr>
                                         ))

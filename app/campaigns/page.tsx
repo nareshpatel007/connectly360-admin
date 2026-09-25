@@ -4,8 +4,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Megaphone, Send, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { AdminPageHeader } from "@/components/admin-page-header";
 
 interface CampaignRecord {
     id: number;
@@ -49,23 +50,24 @@ export default function AdminCampaignsPage() {
 
     return (
         <div className="space-y-6 font-sans">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
-                <div>
-                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        Campaign Monitoring Console
-                    </h1>
-                    <p className="text-xs text-slate-500 font-medium mt-1">Platform-wide bulk campaign dispatch status, audience sizes, and delivery metrics.</p>
-                </div>
-                <Button
-                    onClick={fetchCampaigns}
-                    variant="outline"
-                    size="sm"
-                    className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
-                >
-                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                    <span>Reload Campaigns</span>
-                </Button>
-            </div>
+            {/* Page Header */}
+            <AdminPageHeader
+                title="Campaign Monitor"
+                description="Platform-wide bulk outbound messaging dispatch, target audience sizes, and delivery status logs."
+                breadcrumbs={[{ label: "Campaign Monitor" }]}
+                badge={`${campaigns.length} Campaigns`}
+                actions={
+                    <Button
+                        onClick={fetchCampaigns}
+                        variant="outline"
+                        size="sm"
+                        className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
+                    >
+                        <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                        <span>Reload Campaigns</span>
+                    </Button>
+                }
+            />
 
             <Card className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
@@ -73,34 +75,38 @@ export default function AdminCampaignsPage() {
                         <thead>
                             <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                                 <th className="p-4">Campaign Name</th>
-                                <th className="p-4">Workspace</th>
+                                <th className="p-4">Workspace Brand</th>
                                 <th className="p-4">Recipients</th>
                                 <th className="p-4">Delivered</th>
-                                <th className="p-4">Status</th>
-                                <th className="p-4">Scheduled / Sent</th>
+                                <th className="p-4">Dispatch Status</th>
+                                <th className="p-4">Created Date</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 text-xs">
+                        <tbody className="divide-y divide-slate-100 text-xs font-medium">
                             {loading ? (
                                 <tr>
                                     <td colSpan={6} className="p-8 text-center text-slate-500 font-semibold">
-                                        Loading platform campaigns...
+                                        <div className="flex items-center justify-center gap-2">
+                                            <RefreshCw size={16} className="animate-spin text-[#35877D]" />
+                                            <span>Loading platform campaign statistics...</span>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : campaigns.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="p-8 text-center text-slate-500 font-semibold">
-                                        No campaigns created across platform yet.
+                                    <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                                        No campaigns created across tenant workspaces yet.
                                     </td>
                                 </tr>
                             ) : (
                                 campaigns.map((c) => (
                                     <tr key={c.id} className="hover:bg-slate-50/60 transition-colors">
-                                        <td className="p-4 font-bold text-slate-900">
-                                            {c.name}
+                                        <td className="p-4 font-bold text-slate-900 flex items-center gap-2">
+                                            <Megaphone size={14} className="text-[#35877D]" />
+                                            <span>{c.name}</span>
                                         </td>
-                                        <td className="p-4 font-medium text-slate-700">
-                                            {c.company_name}
+                                        <td className="p-4 font-semibold text-slate-700">
+                                            {c.company_name || "Workspace"}
                                         </td>
                                         <td className="p-4 font-mono font-bold text-slate-800">
                                             {(c.total_recipients ?? 0).toLocaleString()}
@@ -113,8 +119,8 @@ export default function AdminCampaignsPage() {
                                                 {c.status || "Completed"}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-slate-500 font-medium">
-                                            {new Date(c.created_at).toLocaleDateString("en-IN")}
+                                        <td className="p-4 text-slate-500">
+                                            {new Date(c.created_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}
                                         </td>
                                     </tr>
                                 ))
