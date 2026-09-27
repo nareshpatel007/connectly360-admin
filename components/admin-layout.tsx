@@ -79,31 +79,29 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <div className="flex h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans selection:bg-[#35877D] selection:text-white">
+        <div className="flex h-screen w-screen overflow-hidden bg-slate-50/70 text-slate-900 font-sans selection:bg-[#35877D] selection:text-white">
             {/* Command Palette Component */}
             <AdminCommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
 
             {/* Mobile Backdrop */}
             {mobileOpen && (
                 <div
-                    className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+                    className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 lg:hidden transition-opacity"
                     onClick={() => setMobileOpen(false)}
                 />
             )}
 
             {/* SIDEBAR APPLICATION PANEL */}
             <aside
-                className={`fixed lg:static top-0 left-0 bottom-0 bg-white border-r border-slate-200 flex flex-col z-50 transition-all duration-300 ease-in-out shrink-0 ${
-                    mobileOpen
+                className={`fixed lg:static top-0 left-0 bottom-0 bg-white border-r border-slate-200/80 flex flex-col z-50 transition-all duration-300 ease-in-out shrink-0 shadow-sm ${mobileOpen
                         ? "translate-x-0 w-64"
-                        : "-translate-x-full lg:translate-x-0 " + (collapsed ? "w-[72px]" : "w-64")
-                }`}
+                        : "-translate-x-full lg:translate-x-0 " + (collapsed ? "w-[76px]" : "w-64")
+                    }`}
             >
                 {/* Brand Header */}
                 <div
-                    className={`h-16 px-4 flex items-center border-b border-slate-200 bg-white shrink-0 ${
-                        collapsed ? "justify-center" : "justify-between"
-                    }`}
+                    className={`h-16 px-4 flex items-center border-b border-slate-200/80 bg-white shrink-0 ${collapsed ? "justify-center" : "justify-between"
+                        }`}
                 >
                     <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
                         <img
@@ -131,16 +129,6 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                     </button>
                 </div>
 
-                {/* Platform Badge */}
-                {!collapsed && (
-                    <div className="px-4 py-2 bg-slate-900 text-white flex items-center justify-between text-[10px] font-extrabold tracking-wider uppercase">
-                        <span className="flex items-center gap-1.5 text-teal-400">
-                            <ShieldCheck size={14} /> Operations Console
-                        </span>
-                        <span className="px-1.5 py-0.5 bg-teal-500/20 text-teal-300 rounded font-mono">ADMIN</span>
-                    </div>
-                )}
-
                 {/* Navigation Menu */}
                 <nav className="flex-1 overflow-y-auto p-3 space-y-4 font-sans scrollbar-thin">
                     {ADMIN_NAV_SECTIONS.map((section, sIdx) => {
@@ -150,7 +138,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                         return (
                             <div key={sIdx} className="space-y-1">
                                 {!collapsed ? (
-                                    <div className="px-3 py-1 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest truncate">
+                                    <div className="px-3 py-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest truncate">
                                         {section.section}
                                     </div>
                                 ) : (
@@ -168,16 +156,14 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                                             key={item.href}
                                             href={item.href}
                                             onClick={() => setMobileOpen(false)}
-                                            className={`flex items-center ${
-                                                collapsed ? "justify-center px-2" : "justify-between px-3.5"
-                                            } py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
-                                                isActive
-                                                    ? "bg-[#35877D] text-white shadow-xs font-bold"
-                                                    : "text-slate-600 hover:bg-slate-100/90 hover:text-slate-900"
-                                            }`}
+                                            className={`flex items-center ${collapsed ? "justify-center px-2" : "justify-between px-3.5"
+                                                } py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${isActive
+                                                    ? "bg-[#35877D] text-white shadow-md shadow-[#35877D]/20 font-bold"
+                                                    : "text-slate-600 hover:bg-teal-50/60 hover:text-[#35877D]"
+                                                }`}
                                         >
                                             <div className="flex items-center gap-3 min-w-0">
-                                                <Icon size={18} className={isActive ? "text-white" : "text-slate-500"} />
+                                                <Icon size={18} className={isActive ? "text-white" : "text-slate-500 group-hover:text-[#35877D]"} />
                                                 {!collapsed && <span className="truncate">{item.label}</span>}
                                             </div>
                                             {!collapsed && isActive && (
@@ -208,15 +194,14 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                 </nav>
 
                 {/* Sidebar Footer Admin User Info */}
-                <div className="p-3 border-t border-slate-200 bg-slate-50/70">
+                <div className="p-3 border-t border-slate-200/80 bg-slate-50/60">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <button
-                                className={`w-full flex items-center ${
-                                    collapsed ? "justify-center p-2" : "gap-3 p-2.5"
-                                } rounded-xl bg-white border border-slate-200 shadow-2xs hover:bg-slate-50 transition-colors text-left focus:outline-none cursor-pointer`}
+                                className={`w-full flex items-center ${collapsed ? "justify-center p-2" : "gap-3 p-2.5"
+                                    } rounded-xl bg-white border border-slate-200 shadow-2xs hover:border-[#35877D]/40 hover:bg-slate-50 transition-all text-left focus:outline-none cursor-pointer`}
                             >
-                                <div className="h-8 w-8 rounded-full bg-slate-900 text-teal-400 font-extrabold text-xs flex items-center justify-center shrink-0 border border-slate-700">
+                                <div className="h-8 w-8 rounded-full bg-slate-900 text-teal-400 font-black text-xs flex items-center justify-center shrink-0 border border-slate-700 shadow-xs">
                                     {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
                                 </div>
                                 {!collapsed && (
@@ -224,14 +209,14 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                                         <p className="text-xs font-bold text-slate-900 truncate">
                                             {user?.name || "System Administrator"}
                                         </p>
-                                        <p className="text-[10px] text-teal-700 font-bold uppercase tracking-wider">
-                                            Internal Admin
+                                        <p className="text-[10px] text-teal-700 font-black uppercase tracking-wider">
+                                            Platform Super Admin
                                         </p>
                                     </div>
                                 )}
                             </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent side="top" align="start" className="w-56 p-1.5 font-sans">
+                        <DropdownMenuContent side="top" align="start" className="w-56 p-1.5 font-sans shadow-xl rounded-xl">
                             <DropdownMenuLabel className="text-xs font-bold text-slate-900">Admin Session</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
@@ -259,7 +244,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             {/* MAIN CONTENT AREA */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 {/* Global Header Bar */}
-                <header className="h-16 border-b border-slate-200 bg-white px-4 lg:px-6 flex items-center justify-between gap-4 shrink-0 z-30">
+                <header className="h-16 border-b border-slate-200/80 bg-white px-4 lg:px-6 flex items-center justify-between gap-4 shrink-0 z-30 shadow-2xs">
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setMobileOpen(true)}
@@ -280,24 +265,29 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
                         <button
                             onClick={() => setCommandOpen(true)}
-                            className="hidden sm:flex items-center gap-2.5 px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 rounded-xl text-xs font-semibold text-slate-500 transition-all cursor-pointer w-64 md:w-80 justify-between"
+                            className="hidden sm:flex items-center gap-2.5 px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-500 transition-all cursor-pointer w-64 md:w-80 justify-between group focus:ring-2 focus:ring-[#35877D]/20"
                         >
                             <div className="flex items-center gap-2">
-                                <Search size={15} className="text-[#35877D]" />
+                                <Search size={15} className="text-[#35877D] group-hover:scale-110 transition-transform" />
                                 <span>Search platform tenants, logs, settings...</span>
                             </div>
-                            <kbd className="px-1.5 py-0.5 text-[10px] font-bold text-slate-400 bg-white border border-slate-200 rounded-md shadow-2xs">
+                            <kbd className="px-1.5 py-0.5 text-[10px] font-black text-slate-400 bg-white border border-slate-200 rounded-md shadow-2xs">
                                 Ctrl+K
                             </kbd>
                         </button>
                     </div>
 
                     <div className="flex items-center gap-3">
+                        <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-[11px] font-bold">
+                            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span>All Infrastructure Operational</span>
+                        </div>
+
                         <AdminNotifications />
                     </div>
                 </header>
 
-                <main className="flex-1 overflow-y-auto bg-slate-50">{children}</main>
+                <main className="flex-1 overflow-y-auto bg-slate-50/70 p-4 sm:p-6 md:p-8">{children}</main>
             </div>
         </div>
     );

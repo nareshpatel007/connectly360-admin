@@ -203,7 +203,7 @@ export default function AdminUsersPage() {
             />
 
             {/* Filter Bar */}
-            <Card className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+            <Card className="p-4 bg-white border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
                 <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 w-full sm:w-96">
                     <div className="relative w-full">
                         <Search size={14} className="absolute left-3.5 top-3 text-slate-400" />
@@ -211,7 +211,7 @@ export default function AdminUsersPage() {
                             placeholder="Search by name, email, company brand..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-9 h-10 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl text-xs font-medium focus-visible:ring-[#35877D]"
+                            className="pl-9 h-10 bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl text-xs font-medium focus-visible:ring-[#35877D]"
                         />
                     </div>
                     <Button type="submit" size="sm" className="h-10 px-4 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold cursor-pointer border-0 shadow-2xs">
@@ -227,7 +227,7 @@ export default function AdminUsersPage() {
                             setStatusFilter(e.target.value);
                             setPage(1);
                         }}
-                        className="h-10 px-3 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl text-xs font-semibold focus:outline-none cursor-pointer"
+                        className="h-10 px-3 bg-slate-50/80 border border-slate-200 text-slate-800 rounded-xl text-xs font-semibold focus:outline-none cursor-pointer"
                     >
                         <option value="">All Account Statuses</option>
                         <option value="active">Active Accounts</option>
@@ -237,7 +237,7 @@ export default function AdminUsersPage() {
             </Card>
 
             {/* Users Data Table */}
-            <Card className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+            <Card className="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
