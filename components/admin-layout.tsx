@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     ChevronRight,
     ChevronDown,
@@ -17,7 +17,9 @@ import {
     UserCheck,
     Building2,
     Users,
-    ShieldAlert
+    ShieldAlert,
+    Plus,
+    Package
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -36,6 +38,7 @@ import { ADMIN_NAV_SECTIONS, AdminNavItem } from "@/lib/admin-navigation-config"
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const router = useRouter();
     const { user, logout } = useAuth();
 
     // Sidebar states: collapsed & mobile drawer
@@ -278,6 +281,34 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                     </div>
 
                     <div className="flex items-center gap-3">
+                        {/* Quick Create Dropdown */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="flex items-center gap-1.5 px-3.5 py-2 bg-[#35877D] hover:bg-[#2b6e66] text-white font-bold text-xs rounded-xl shadow-md shadow-[#35877D]/20 transition-all cursor-pointer border-0">
+                                    <Plus size={16} />
+                                    <span className="hidden sm:inline">Quick Create</span>
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-52 p-1.5 font-sans shadow-xl rounded-xl">
+                                <DropdownMenuLabel className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
+                                    New Platform Item
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => router.push("/users?action=new")} className="text-xs font-semibold cursor-pointer">
+                                    <Users size={14} className="text-[#35877D] mr-2" /> New Customer
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => router.push("/workspaces?action=new")} className="text-xs font-semibold cursor-pointer">
+                                    <Building2 size={14} className="text-[#35877D] mr-2" /> New Workspace
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => router.push("/administrators?action=new")} className="text-xs font-semibold cursor-pointer">
+                                    <ShieldCheck size={14} className="text-[#35877D] mr-2" /> New Administrator
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => router.push("/credits/packages?action=new")} className="text-xs font-semibold cursor-pointer">
+                                    <Package size={14} className="text-[#35877D] mr-2" /> New Credit Package
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
                         <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-[11px] font-bold">
                             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                             <span>All Infrastructure Operational</span>

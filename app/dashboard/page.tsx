@@ -117,42 +117,42 @@ export default function AdminDashboardPage() {
     return (
         <div className="space-y-6 font-sans">
             {/* HERO MASTER CONTROL BANNER */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-[#0f2d29] p-6 sm:p-8 text-white shadow-xl border border-slate-800">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-50/90 via-emerald-50/50 to-white p-6 sm:p-8 text-slate-900 shadow-sm border border-[#35877D]/20 font-sans">
                 {/* Subtle Background Glows */}
-                <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[#35877D]/20 blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+                <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[#35877D]/10 blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-blue-400/10 blur-3xl pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div className="space-y-2 max-w-2xl">
                         <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[10px] font-black uppercase tracking-wider">
-                                <Activity size={12} className="animate-pulse text-teal-400" /> Platform Operations &amp; Master Control
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#35877D]/10 text-[#35877D] border border-[#35877D]/25 text-[10px] font-black uppercase tracking-wider">
+                                <Activity size={12} className="animate-pulse text-[#35877D]" /> Platform Operations &amp; Master Control
                             </span>
                         </div>
-                        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
                             Platform Overview &amp; Health Hub
                         </h1>
-                        <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                        <p className="text-xs text-slate-600 leading-relaxed font-medium">
                             Real-time command center monitoring total users, multi-tenant workspace isolation, WhatsApp WABA infrastructure, billing revenue, and server health.
                         </p>
                     </div>
 
                     <div className="flex items-center gap-3 shrink-0 self-stretch sm:self-auto justify-end">
-                        <div className="hidden sm:flex flex-col items-end px-4 py-2 bg-slate-800/80 backdrop-blur-md rounded-2xl border border-slate-700/60">
+                        <div className="hidden sm:flex flex-col items-end px-4 py-2 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 shadow-2xs">
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Time Window</span>
-                            <div className="flex items-center gap-1.5 text-xs font-extrabold text-white mt-0.5">
+                            <div className="flex items-center gap-1.5 text-xs font-extrabold text-slate-900 mt-0.5">
                                 <Calendar size={13} className="text-[#35877D]" />
                                 <select
                                     value={dateRange}
                                     onChange={(e) => setDateRange(e.target.value)}
-                                    className="bg-transparent text-white font-extrabold focus:outline-none cursor-pointer"
+                                    className="bg-transparent text-slate-900 font-extrabold focus:outline-none cursor-pointer"
                                 >
-                                    <option value="today" className="bg-slate-900 text-white">Today</option>
-                                    <option value="7_days" className="bg-slate-900 text-white">Last 7 Days</option>
-                                    <option value="30_days" className="bg-slate-900 text-white">Last 30 Days</option>
-                                    <option value="this_month" className="bg-slate-900 text-white">This Month</option>
-                                    <option value="last_month" className="bg-slate-900 text-white">Last Month</option>
-                                    <option value="this_year" className="bg-slate-900 text-white">This Year</option>
+                                    <option value="today" className="bg-white text-slate-900">Today</option>
+                                    <option value="7_days" className="bg-white text-slate-900">Last 7 Days</option>
+                                    <option value="30_days" className="bg-white text-slate-900">Last 30 Days</option>
+                                    <option value="this_month" className="bg-white text-slate-900">This Month</option>
+                                    <option value="last_month" className="bg-white text-slate-900">Last Month</option>
+                                    <option value="this_year" className="bg-white text-slate-900">This Year</option>
                                 </select>
                             </div>
                         </div>
@@ -160,7 +160,7 @@ export default function AdminDashboardPage() {
                         <Button
                             onClick={fetchMetrics}
                             size="sm"
-                            className="h-10 px-4 bg-[#35877D] hover:bg-[#2b6e66] text-white rounded-2xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-lg shadow-[#35877D]/25 transition-all"
+                            className="h-10 px-4 bg-[#35877D] hover:bg-[#2b6e66] text-white rounded-2xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md shadow-[#35877D]/20 transition-all border-0"
                         >
                             <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
                             <span>Refresh Data</span>
