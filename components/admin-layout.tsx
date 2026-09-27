@@ -97,8 +97,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             {/* SIDEBAR APPLICATION PANEL */}
             <aside
                 className={`fixed lg:static top-0 left-0 bottom-0 bg-white border-r border-slate-200/80 flex flex-col z-50 transition-all duration-300 ease-in-out shrink-0 shadow-sm ${mobileOpen
-                        ? "translate-x-0 w-64"
-                        : "-translate-x-full lg:translate-x-0 " + (collapsed ? "w-[76px]" : "w-64")
+                    ? "translate-x-0 w-64"
+                    : "-translate-x-full lg:translate-x-0 " + (collapsed ? "w-[76px]" : "w-64")
                     }`}
             >
                 {/* Brand Header */}
@@ -272,7 +272,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                         >
                             <div className="flex items-center gap-2">
                                 <Search size={15} className="text-[#35877D] group-hover:scale-110 transition-transform" />
-                                <span>Search platform tenants, logs, settings...</span>
+                                <span>Search tenants, logs, settings...</span>
                             </div>
                             <kbd className="px-1.5 py-0.5 text-[10px] font-black text-slate-400 bg-white border border-slate-200 rounded-md shadow-2xs">
                                 Ctrl+K
