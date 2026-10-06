@@ -22,11 +22,8 @@ export async function handleApiProxy(
         const referer = req.headers.get("referer");
 
         const allowedOrigins = [
-            SITE_URL,
-            "http://localhost:3002",
-            "http://127.0.0.1:3002",
-            "https://connectly360.sandboxtechnology.in"
-        ];
+            process.env.NEXT_PUBLIC_APP_URL
+        ].filter((url): url is string => Boolean(url));
 
         const isValidOrigin = process.env.NODE_ENV === "development" ||
             allowedOrigins.some(allowed => origin === allowed || (referer && referer.startsWith(allowed)));
