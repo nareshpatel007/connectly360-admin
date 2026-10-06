@@ -19,7 +19,8 @@ import {
     Webhook,
     Terminal,
     Settings,
-    ToggleRight
+    ToggleRight,
+    CheckSquare
 } from "lucide-react";
 import type { LeafNavigationItem } from "./navigation-matcher";
 
@@ -69,6 +70,13 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
                 icon: CreditCard,
                 href: "/subscriptions",
                 patterns: ["/subscriptions/**"]
+            },
+            {
+                id: "admin-tasks",
+                label: "Tasks & Follow-ups",
+                icon: CheckSquare,
+                href: "/tasks",
+                patterns: ["/tasks/**"]
             }
         ]
     },
