@@ -127,7 +127,7 @@ export default function AdminWhatsappSettingsPage() {
     };
 
     return (
-        <div className="space-y-6 font-sans max-w-5xl">
+        <div className="space-y-6">
             <AdminPageHeader
                 title="WhatsApp Cloud API Engine Settings"
                 description="Manage global Meta Cloud API credentials, TEST vs LIVE simulation mode toggle, webhook signature secrets, and graph API versioning."

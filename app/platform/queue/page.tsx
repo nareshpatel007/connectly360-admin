@@ -18,7 +18,7 @@ const QUEUES = [
 
 export default function AdminQueueMonitorPage() {
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+        <div className="space-y-6">
             <AdminPageHeader
                 icon={Server}
                 title="Background Job Queue Monitor"

@@ -55,7 +55,7 @@ export default function AdminSubscriptionsPage() {
     });
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+        <div className="space-y-6">
             <AdminPageHeader
                 icon={CreditCard}
                 title="Tenant Subscriptions Console"
@@ -121,9 +121,8 @@ export default function AdminSubscriptionsPage() {
                                 <button
                                     key={st}
                                     onClick={() => setStatusFilter(st)}
-                                    className={`px-2.5 py-1 rounded-lg capitalize transition-colors ${
-                                        statusFilter === st ? "bg-white text-slate-900 font-bold shadow-2xs" : "hover:text-slate-900"
-                                    }`}
+                                    className={`px-2.5 py-1 rounded-lg capitalize transition-colors ${statusFilter === st ? "bg-white text-slate-900 font-bold shadow-2xs" : "hover:text-slate-900"
+                                        }`}
                                 >
                                     {st.replace("_", " ")}
                                 </button>
@@ -162,13 +161,12 @@ export default function AdminSubscriptionsPage() {
                                         <TableCell className="font-bold text-slate-900">{sub.amount}</TableCell>
                                         <TableCell>
                                             <span
-                                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
-                                                    sub.status === "active"
+                                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${sub.status === "active"
                                                         ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                                         : sub.status === "trialing"
-                                                        ? "bg-teal-50 text-teal-700 border border-teal-200"
-                                                        : "bg-rose-50 text-rose-700 border border-rose-200"
-                                                }`}
+                                                            ? "bg-teal-50 text-teal-700 border border-teal-200"
+                                                            : "bg-rose-50 text-rose-700 border border-rose-200"
+                                                    }`}
                                             >
                                                 {sub.status.replace("_", " ")}
                                             </span>

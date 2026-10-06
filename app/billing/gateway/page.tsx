@@ -45,7 +45,7 @@ export default function AdminPaymentGatewayPage() {
     };
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+        <div className="space-y-6">
             <AdminPageHeader
                 icon={ShieldCheck}
                 title="Razorpay Payment Gateway Operations"

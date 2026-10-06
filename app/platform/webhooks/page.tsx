@@ -26,7 +26,7 @@ export default function AdminPlatformWebhooksPage() {
     );
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+        <div className="space-y-6">
             <AdminPageHeader
                 icon={Webhook}
                 title="Platform Webhook Logs & Delivery Retry"

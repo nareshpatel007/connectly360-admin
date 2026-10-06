@@ -78,7 +78,7 @@ export default function AdminSettingsPage() {
                 </a>
             </Card>
 
-            <form onSubmit={handleSave} className="space-y-6 max-w-5xl">
+            <form onSubmit={handleSave} className="space-y-6 w-full">
                 {/* General Settings */}
                 <Card className="p-6 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-sm">
                     <div className="border-b border-slate-100 pb-3 flex items-center gap-2">

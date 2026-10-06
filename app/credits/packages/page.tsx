@@ -92,7 +92,7 @@ export default function AdminCreditPackagesPage() {
     };
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+        <div className="space-y-6">
             <AdminPageHeader
                 icon={Package}
                 title="Credit Packages Management"
@@ -117,9 +117,8 @@ export default function AdminCreditPackagesPage() {
                 {packages.map((pkg) => (
                     <Card
                         key={pkg.id}
-                        className={`bg-white rounded-2xl p-6 shadow-xs space-y-4 relative flex flex-col justify-between ${
-                            pkg.is_featured ? "border-2 border-[#35877D] ring-2 ring-[#35877D]/10" : "border border-slate-200/80"
-                        }`}
+                        className={`bg-white rounded-2xl p-6 shadow-xs space-y-4 relative flex flex-col justify-between ${pkg.is_featured ? "border-2 border-[#35877D] ring-2 ring-[#35877D]/10" : "border border-slate-200/80"
+                            }`}
                     >
                         {pkg.is_featured && (
                             <span className="absolute -top-3 right-4 px-3 py-0.5 bg-[#35877D] text-white text-[10px] font-extrabold uppercase rounded-full shadow-xs flex items-center gap-1">
@@ -131,11 +130,10 @@ export default function AdminCreditPackagesPage() {
                             <div className="flex items-center justify-between">
                                 <h3 className="text-base font-black text-slate-900">{pkg.name}</h3>
                                 <span
-                                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
-                                        pkg.is_active
+                                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${pkg.is_active
                                             ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                             : "bg-slate-100 text-slate-500"
-                                    }`}
+                                        }`}
                                 >
                                     {pkg.is_active ? "Active" : "Inactive"}
                                 </span>

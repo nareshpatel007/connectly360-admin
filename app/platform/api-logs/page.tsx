@@ -26,7 +26,7 @@ export default function AdminPlatformApiLogsPage() {
     );
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+        <div className="space-y-6">
             <AdminPageHeader
                 icon={Terminal}
                 title="Platform API Telemetry & Traffic Logs"
