@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     ShieldCheck,
     Key,
@@ -13,6 +13,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
+import { AdminPageHeader } from "@/components/admin-page-header";
+import { StatCard } from "@/components/ui/stat-card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function AdminPaymentGatewayPage() {
     const { token } = useAuth();
@@ -40,112 +46,116 @@ export default function AdminPaymentGatewayPage() {
 
     return (
         <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
-            {/* Header */}
-            <div className="border-b border-slate-200 pb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-                        <ShieldCheck className="h-6 w-6 text-[#35877D]" />
-                        Razorpay Payment Gateway Operations
-                    </h1>
-                    <p className="text-sm text-slate-500 mt-1">
-                        Encrypted gateway credentials, environment mode, Razorpay webhook status, and payment logs.
-                    </p>
-                </div>
-                <button
-                    onClick={handleTestConnection}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-[#35877D] hover:bg-[#2c6e66] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer self-start sm:self-auto"
-                >
-                    <RefreshCw size={14} className={isTesting ? "animate-spin" : ""} />
-                    Test Razorpay Connection
-                </button>
-            </div>
+            <AdminPageHeader
+                icon={ShieldCheck}
+                title="Razorpay Payment Gateway Operations"
+                description="Encrypted gateway credentials, environment mode, Razorpay webhook status, and payment logs."
+                breadcrumbs={[
+                    { label: "Billing & Sales", href: "/billing" },
+                    { label: "Payment Gateway" }
+                ]}
+                actions={
+                    <Button
+                        onClick={handleTestConnection}
+                        disabled={isTesting}
+                        className="bg-[#35877D] hover:bg-[#2c6e66] text-white font-bold text-xs h-9 px-4 rounded-xl shadow-xs transition-colors cursor-pointer gap-2"
+                    >
+                        <RefreshCw size={14} className={isTesting ? "animate-spin" : ""} />
+                        Test Gateway Connection
+                    </Button>
+                }
+            />
 
             {/* Gateway Status Summary */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-2">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-bold text-slate-500 uppercase">Gateway Mode</span>
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-extrabold uppercase rounded-md border border-emerald-200">
-                            LIVE MODE
-                        </span>
-                    </div>
-                    <p className="text-lg font-black text-slate-900">Razorpay Production API</p>
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-2">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-bold text-slate-500 uppercase">Webhook Health</span>
-                        <span className="px-2 py-0.5 bg-teal-50 text-teal-700 text-[10px] font-extrabold uppercase rounded-md border border-teal-200">
-                            VERIFIED
-                        </span>
-                    </div>
-                    <p className="text-lg font-black text-slate-900">{webhookStatus}</p>
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-2">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-bold text-slate-500 uppercase">Security Compliance</span>
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 text-[10px] font-extrabold uppercase rounded-md">
-                            PCI-DSS Level 1
-                        </span>
-                    </div>
-                    <p className="text-lg font-black text-slate-900">No Raw Card Data Stored</p>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <StatCard
+                    title="Gateway Mode"
+                    value={mode === "live" ? "Live Production" : "Sandbox Test"}
+                    icon={ShieldCheck}
+                    change={mode === "live" ? "PRODUCTION" : "SANDBOX"}
+                    changeType={mode === "live" ? "positive" : "neutral"}
+                    subtitle="Razorpay Orders API v1"
+                />
+                <StatCard
+                    title="Webhook Health"
+                    value={webhookStatus}
+                    icon={Activity}
+                    change="VERIFIED"
+                    changeType="positive"
+                    subtitle="Payment signature callbacks"
+                />
+                <StatCard
+                    title="Security Compliance"
+                    value="PCI-DSS Level 1"
+                    icon={Lock}
+                    change="SECURE"
+                    changeType="positive"
+                    subtitle="Zero raw card data stored"
+                />
             </div>
 
             {/* Config Form */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-2xs space-y-6">
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
-                    <Lock size={18} className="text-[#35877D]" />
-                    Razorpay Credentials & Environment Settings
-                </h3>
+            <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+                <CardHeader className="border-b border-slate-100 pb-4">
+                    <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <Lock size={18} className="text-[#35877D]" />
+                        Razorpay Credentials & Environment Settings
+                    </CardTitle>
+                    <CardDescription className="text-xs text-slate-500">
+                        Configure production secrets for auto-recharge and credit package payments.
+                    </CardDescription>
+                </CardHeader>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-xs font-bold text-slate-700 mb-1">Razorpay Key ID</label>
-                        <input
-                            type="text"
-                            value={keyId}
-                            onChange={(e) => setKeyId(e.target.value)}
-                            className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#35877D]"
-                        />
+                <CardContent className="p-6 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="space-y-1.5">
+                            <Label className="text-xs font-bold text-slate-700">Razorpay Key ID</Label>
+                            <Input
+                                type="text"
+                                value={keyId}
+                                onChange={(e) => setKeyId(e.target.value)}
+                                className="h-10 rounded-xl border-slate-200 text-xs font-semibold"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label className="text-xs font-bold text-slate-700">Webhook Secret Key</Label>
+                            <Input
+                                type="password"
+                                value={webhookSecret}
+                                onChange={(e) => setWebhookSecret(e.target.value)}
+                                className="h-10 rounded-xl border-slate-200 text-xs font-semibold"
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <label className="block text-xs font-bold text-slate-700 mb-1">Webhook Secret Key</label>
-                        <input
-                            type="password"
-                            value={webhookSecret}
-                            onChange={(e) => setWebhookSecret(e.target.value)}
-                            className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#35877D]"
-                        />
-                    </div>
-                </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
-                    <div className="space-y-0.5">
-                        <p className="text-xs font-bold text-slate-900">Environment Selector</p>
-                        <p className="text-[11px] text-slate-500">Switch between Razorpay Sandbox Test Mode and Live Production.</p>
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between">
+                        <div className="space-y-0.5">
+                            <p className="text-xs font-bold text-slate-900">Environment Selector</p>
+                            <p className="text-[11px] text-slate-500">Switch between Razorpay Sandbox Test Mode and Live Production.</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                type="button"
+                                variant={mode === "test" ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setMode("test")}
+                                className={mode === "test" ? "bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl h-8" : "border-slate-200 rounded-xl h-8"}
+                            >
+                                Test Mode
+                            </Button>
+                            <Button
+                                type="button"
+                                variant={mode === "live" ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setMode("live")}
+                                className={mode === "live" ? "bg-[#35877D] hover:bg-[#2c6e66] text-white font-bold rounded-xl h-8" : "border-slate-200 rounded-xl h-8"}
+                            >
+                                Live Mode
+                            </Button>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => setMode("test")}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                                mode === "test" ? "bg-amber-500 text-white shadow-xs" : "bg-white text-slate-600 border border-slate-200"
-                            }`}
-                        >
-                            Test Mode
-                        </button>
-                        <button
-                            onClick={() => setMode("live")}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                                mode === "live" ? "bg-[#35877D] text-white shadow-xs" : "bg-white text-slate-600 border border-slate-200"
-                            }`}
-                        >
-                            Live Mode
-                        </button>
-                    </div>
-                </div>
-            </div>
+                </CardContent>
+            </Card>
         </div>
     );
 }

@@ -14,6 +14,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
+import { AdminPageHeader } from "@/components/admin-page-header";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface CreditPackage {
     id: number | string;
@@ -87,33 +93,32 @@ export default function AdminCreditPackagesPage() {
 
     return (
         <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
-            {/* Header */}
-            <div className="border-b border-slate-200 pb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-                        <Package className="h-6 w-6 text-[#35877D]" />
-                        Credit Packages Management
-                    </h1>
-                    <p className="text-sm text-slate-500 mt-1">
-                        Configure wallet top-up packages, pricing, credit ratios, and featured badges.
-                    </p>
-                </div>
-                <button
-                    onClick={() => setIsCreateOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-[#35877D] hover:bg-[#2c6e66] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer self-start sm:self-auto"
-                >
-                    <Plus size={16} />
-                    New Package
-                </button>
-            </div>
+            <AdminPageHeader
+                icon={Package}
+                title="Credit Packages Management"
+                description="Configure wallet top-up packages, pricing, credit ratios, and featured badges."
+                breadcrumbs={[
+                    { label: "Credits Ledger", href: "/credits" },
+                    { label: "Credit Packages" }
+                ]}
+                actions={
+                    <Button
+                        onClick={() => setIsCreateOpen(true)}
+                        className="bg-[#35877D] hover:bg-[#2c6e66] text-white font-bold text-xs h-9 px-4 rounded-xl shadow-xs transition-colors cursor-pointer gap-2"
+                    >
+                        <Plus size={16} />
+                        New Package
+                    </Button>
+                }
+            />
 
             {/* Packages Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {packages.map((pkg) => (
-                    <div
+                    <Card
                         key={pkg.id}
-                        className={`bg-white border rounded-2xl p-6 shadow-2xs space-y-4 relative flex flex-col justify-between ${
-                            pkg.is_featured ? "border-[#35877D] ring-2 ring-[#35877D]/10" : "border-slate-200"
+                        className={`bg-white rounded-2xl p-6 shadow-xs space-y-4 relative flex flex-col justify-between ${
+                            pkg.is_featured ? "border-2 border-[#35877D] ring-2 ring-[#35877D]/10" : "border border-slate-200/80"
                         }`}
                     >
                         {pkg.is_featured && (
@@ -126,7 +131,7 @@ export default function AdminCreditPackagesPage() {
                             <div className="flex items-center justify-between">
                                 <h3 className="text-base font-black text-slate-900">{pkg.name}</h3>
                                 <span
-                                    className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase ${
+                                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
                                         pkg.is_active
                                             ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                             : "bg-slate-100 text-slate-500"
@@ -137,7 +142,7 @@ export default function AdminCreditPackagesPage() {
                             </div>
 
                             <div className="space-y-1">
-                                <div className="text-2xl font-black text-[#35877D] flex items-center gap-1.5">
+                                <div className="text-2xl font-black text-[#35877D] flex items-center gap-2">
                                     <Coins size={22} />
                                     {pkg.credits.toLocaleString()} <span className="text-xs text-slate-500 font-semibold">Credits</span>
                                 </div>
@@ -149,76 +154,76 @@ export default function AdminCreditPackagesPage() {
                             <span>Display Order: #{pkg.display_order}</span>
                             <span className="text-emerald-600 font-bold">₹{(pkg.price / pkg.credits).toFixed(2)} / credit</span>
                         </div>
-                    </div>
+                    </Card>
                 ))}
             </div>
 
-            {/* Modal */}
-            {isCreateOpen && (
-                <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md p-6 space-y-4 font-sans">
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                                <Package size={18} className="text-[#35877D]" />
-                                Create Credit Package
-                            </h3>
-                            <button onClick={() => setIsCreateOpen(false)} className="text-slate-400 hover:text-slate-600 text-xs font-bold">
-                                ✕
-                            </button>
+            {/* Create Package Dialog */}
+            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                <DialogContent className="sm:max-w-md rounded-2xl p-6 bg-white border border-slate-200">
+                    <DialogHeader className="border-b border-slate-100 pb-3">
+                        <DialogTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
+                            <Package size={18} className="text-[#35877D]" />
+                            Create Credit Package
+                        </DialogTitle>
+                        <DialogDescription className="text-xs text-slate-500">
+                            Create a pre-configured credit package available in workspace top-up modals.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <form onSubmit={handleCreatePack} className="space-y-4 pt-2">
+                        <div className="space-y-1.5">
+                            <Label className="text-xs font-bold text-slate-700">Package Name</Label>
+                            <Input
+                                required
+                                placeholder="e.g. Mega Volume Pack"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="h-10 rounded-xl border-slate-200 text-xs font-semibold"
+                            />
                         </div>
-                        <form onSubmit={handleCreatePack} className="space-y-4">
-                            <div>
-                                <label className="block text-xs font-bold text-slate-700 mb-1">Package Name</label>
-                                <input
-                                    type="text"
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1.5">
+                                <Label className="text-xs font-bold text-slate-700">Total Credits</Label>
+                                <Input
+                                    type="number"
                                     required
-                                    placeholder="e.g. Mega Volume Pack"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#35877D]"
+                                    value={credits}
+                                    onChange={(e) => setCredits(Number(e.target.value))}
+                                    className="h-10 rounded-xl border-slate-200 text-xs font-semibold"
                                 />
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-700 mb-1">Total Credits</label>
-                                    <input
-                                        type="number"
-                                        required
-                                        value={credits}
-                                        onChange={(e) => setCredits(Number(e.target.value))}
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#35877D]"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-700 mb-1">Price (INR)</label>
-                                    <input
-                                        type="number"
-                                        required
-                                        value={price}
-                                        onChange={(e) => setPrice(Number(e.target.value))}
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#35877D]"
-                                    />
-                                </div>
+                            <div className="space-y-1.5">
+                                <Label className="text-xs font-bold text-slate-700">Price (INR)</Label>
+                                <Input
+                                    type="number"
+                                    required
+                                    value={price}
+                                    onChange={(e) => setPrice(Number(e.target.value))}
+                                    className="h-10 rounded-xl border-slate-200 text-xs font-semibold"
+                                />
                             </div>
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsCreateOpen(false)}
-                                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-[#35877D] hover:bg-[#2c6e66] text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
-                                >
-                                    Save Package
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                        </div>
+
+                        <DialogFooter className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setIsCreateOpen(false)}
+                                className="rounded-xl border-slate-200 text-slate-700 font-bold text-xs h-9"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="bg-[#35877D] hover:bg-[#2c6e66] text-white font-bold text-xs rounded-xl h-9 px-4 shadow-xs"
+                            >
+                                Save Package
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

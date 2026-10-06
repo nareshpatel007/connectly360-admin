@@ -15,6 +15,12 @@ import {
     RefreshCw
 } from "lucide-react";
 import { toast } from "sonner";
+import { AdminPageHeader } from "@/components/admin-page-header";
+import { StatCard } from "@/components/ui/stat-card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface Subscription {
     id: string;
@@ -24,7 +30,7 @@ interface Subscription {
     amount: string;
     status: "active" | "canceled" | "past_due" | "trialing";
     renewalDate: string;
-    customerType: "Customer Account"; // Excludes internal admin accounts
+    customerType: "Customer Account";
 }
 
 const SAMPLE_SUBSCRIPTIONS: Subscription[] = [
@@ -50,116 +56,131 @@ export default function AdminSubscriptionsPage() {
 
     return (
         <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
-            {/* Header */}
-            <div className="border-b border-slate-200 pb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-                        <CreditCard className="h-6 w-6 text-[#35877D]" />
-                        Tenant Subscriptions Console
-                    </h1>
-                    <p className="text-sm text-slate-500 mt-1">
-                        Monitor active SaaS subscriptions, plan distribution, renewals, and customer MRR.
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-xl border border-emerald-200 flex items-center gap-1.5">
-                        <ShieldCheck size={14} /> Customer Accounts Only (Admins Excluded)
-                    </span>
-                </div>
+            <AdminPageHeader
+                icon={CreditCard}
+                title="Tenant Subscriptions Console"
+                description="Manage customer workspace subscription plans, billing renewals, active tiers, and MRR metrics."
+                breadcrumbs={[
+                    { label: "Customers", href: "/workspaces" },
+                    { label: "Subscriptions" }
+                ]}
+            />
+
+            {/* Stat Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
+                <StatCard
+                    title="Monthly Recurring Revenue"
+                    value="₹188,400"
+                    icon={TrendingUp}
+                    change="+12.5%"
+                    changeType="positive"
+                    subtitle="Platform active MRR"
+                />
+                <StatCard
+                    title="Active Subscriptions"
+                    value="42"
+                    icon={CheckCircle2}
+                    change="91.3%"
+                    changeType="positive"
+                    subtitle="Paying workspaces"
+                />
+                <StatCard
+                    title="Trial Workspaces"
+                    value="18"
+                    icon={Clock}
+                    change="Active"
+                    changeType="neutral"
+                    subtitle="14-day free trial"
+                />
+                <StatCard
+                    title="Past Due Invoices"
+                    value="1"
+                    icon={XCircle}
+                    change="Requires Attention"
+                    changeType="negative"
+                    subtitle="Razorpay retry pending"
+                />
             </div>
 
-            {/* Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
-                    <p className="text-[11px] font-bold text-slate-500 uppercase">Monthly Recurring Revenue</p>
-                    <p className="text-xl font-black text-slate-900">₹148,500</p>
-                    <p className="text-[10px] text-emerald-600 font-bold">+14.2% from last month</p>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
-                    <p className="text-[11px] font-bold text-slate-500 uppercase">Active Subscriptions</p>
-                    <p className="text-xl font-black text-slate-900">42 Tenants</p>
-                    <p className="text-[10px] text-slate-500">Excludes internal admin users</p>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
-                    <p className="text-[11px] font-bold text-slate-500 uppercase">Trial Conversions</p>
-                    <p className="text-xl font-black text-slate-900">68% Rate</p>
-                    <p className="text-[10px] text-teal-600 font-bold">18 active trials</p>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1">
-                    <p className="text-[11px] font-bold text-slate-500 uppercase">Past Due</p>
-                    <p className="text-xl font-black text-rose-600">3 Accounts</p>
-                    <p className="text-[10px] text-slate-400">Payment retries scheduled</p>
-                </div>
-            </div>
-
-            {/* Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="relative w-full sm:w-80">
-                    <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input
-                        type="text"
-                        placeholder="Search by workspace, email or plan..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#35877D]"
-                    />
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-[#35877D]"
-                    >
-                        <option value="all">All Statuses</option>
-                        <option value="active">Active</option>
-                        <option value="trialing">Trialing</option>
-                        <option value="past_due">Past Due</option>
-                        <option value="canceled">Canceled</option>
-                    </select>
-                </div>
-            </div>
-
-            {/* Table */}
-            <div className="bg-white border border-slate-200 rounded-2xl shadow-2xs overflow-hidden">
-                <table className="w-full text-left text-xs font-sans">
-                    <thead className="bg-slate-50 border-b border-slate-200 text-[10px] font-extrabold uppercase text-slate-400">
-                        <tr>
-                            <th className="px-4 py-3">Workspace</th>
-                            <th className="px-4 py-3">Plan</th>
-                            <th className="px-4 py-3">Amount</th>
-                            <th className="px-4 py-3">Status</th>
-                            <th className="px-4 py-3">Next Renewal</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
-                        {filtered.map((s) => (
-                            <tr key={s.id} className="hover:bg-slate-50/70 transition-colors">
-                                <td className="px-4 py-3">
-                                    <div className="font-bold text-slate-900">{s.workspaceName}</div>
-                                    <div className="text-[11px] text-slate-400">{s.ownerEmail}</div>
-                                </td>
-                                <td className="px-4 py-3 font-bold text-slate-900">{s.plan}</td>
-                                <td className="px-4 py-3 font-bold text-[#35877D]">{s.amount}</td>
-                                <td className="px-4 py-3">
-                                    <span
-                                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
-                                            s.status === "active"
-                                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                                : s.status === "trialing"
-                                                ? "bg-teal-50 text-teal-700 border border-teal-200"
-                                                : "bg-rose-50 text-rose-700 border border-rose-200"
-                                        }`}
-                                    >
-                                        {s.status}
-                                    </span>
-                                </td>
-                                <td className="px-4 py-3 text-slate-500">{s.renewalDate}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            {/* Filter Bar & Table Card */}
+            <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
+                <CardHeader className="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <CardTitle className="text-base font-bold text-slate-900">Tenant Subscription Accounts</CardTitle>
+                        <CardDescription className="text-xs text-slate-500">Live directory of paying customer workspaces</CardDescription>
+                    </div>
+                    <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+                        <Input
+                            placeholder="Search workspace or email..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="h-9 w-64 text-xs rounded-xl border-slate-200"
+                        />
+                        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold text-slate-600">
+                            {["all", "active", "trialing", "past_due"].map((st) => (
+                                <button
+                                    key={st}
+                                    onClick={() => setStatusFilter(st)}
+                                    className={`px-2.5 py-1 rounded-lg capitalize transition-colors ${
+                                        statusFilter === st ? "bg-white text-slate-900 font-bold shadow-2xs" : "hover:text-slate-900"
+                                    }`}
+                                >
+                                    {st.replace("_", " ")}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="bg-slate-50/70 border-b border-slate-200/80">
+                                <TableHead className="font-bold text-slate-700 text-xs py-3.5">Workspace</TableHead>
+                                <TableHead className="font-bold text-slate-700 text-xs py-3.5">Plan Tier</TableHead>
+                                <TableHead className="font-bold text-slate-700 text-xs py-3.5">Amount</TableHead>
+                                <TableHead className="font-bold text-slate-700 text-xs py-3.5">Status</TableHead>
+                                <TableHead className="font-bold text-slate-700 text-xs py-3.5 text-right">Renewal Date</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody className="divide-y divide-slate-100 text-xs font-medium">
+                            {filtered.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="py-12 text-center text-slate-400">
+                                        No subscription accounts found matching your query.
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                filtered.map((sub) => (
+                                    <TableRow key={sub.id} className="hover:bg-slate-50/60 transition-colors">
+                                        <TableCell className="py-3.5">
+                                            <div className="font-bold text-slate-900">{sub.workspaceName}</div>
+                                            <div className="text-[11px] text-slate-500 font-normal">{sub.ownerEmail}</div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="font-bold text-slate-800">{sub.plan}</span>
+                                        </TableCell>
+                                        <TableCell className="font-bold text-slate-900">{sub.amount}</TableCell>
+                                        <TableCell>
+                                            <span
+                                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
+                                                    sub.status === "active"
+                                                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                                        : sub.status === "trialing"
+                                                        ? "bg-teal-50 text-teal-700 border border-teal-200"
+                                                        : "bg-rose-50 text-rose-700 border border-rose-200"
+                                                }`}
+                                            >
+                                                {sub.status.replace("_", " ")}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="text-slate-500 text-right">{sub.renewalDate}</TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
         </div>
     );
 }

@@ -35,11 +35,18 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { AdminCommandPalette } from "./admin-command-palette";
 import { AdminNotifications } from "./admin-notifications";
 import { ADMIN_NAV_SECTIONS, AdminNavItem } from "@/lib/admin-navigation-config";
+import { resolveActiveNavigation } from "@/lib/navigation-matcher";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
     const { user, logout } = useAuth();
+
+    // Centralized active navigation resolution (guarantees exactly 1 active leaf item)
+    const activeNav = React.useMemo(
+        () => resolveActiveNavigation(pathname, ADMIN_NAV_SECTIONS),
+        [pathname]
+    );
 
     // Sidebar states: collapsed & mobile drawer
     const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -150,9 +157,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
                                 {filteredItems.map((item) => {
                                     const Icon = item.icon;
-                                    const isActive =
-                                        pathname === item.href ||
-                                        (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                                    const isActive = activeNav.activeLeafId === (item.id || item.href);
 
                                     const navLink = (
                                         <Link
