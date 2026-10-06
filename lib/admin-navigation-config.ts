@@ -159,7 +159,14 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
                 label: "Automation Monitor",
                 icon: Zap,
                 href: "/automations",
-                patterns: ["/automations/**"]
+                exact: true
+            },
+            {
+                id: "admin-auto-replies",
+                label: "Auto-Reply Rules",
+                icon: MessageSquare,
+                href: "/automations/auto-replies",
+                patterns: ["/automations/auto-replies/**"]
             }
         ]
     },
