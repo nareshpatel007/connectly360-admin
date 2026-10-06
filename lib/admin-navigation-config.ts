@@ -20,7 +20,8 @@ import {
     Terminal,
     Settings,
     ToggleRight,
-    CheckSquare
+    CheckSquare,
+    Key
 } from "lucide-react";
 import type { LeafNavigationItem } from "./navigation-matcher";
 
@@ -224,6 +225,12 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
                 label: "API Logs",
                 icon: Terminal,
                 href: "/platform/api-logs"
+            },
+            {
+                id: "admin-api-keys",
+                label: "API Keys",
+                icon: Key,
+                href: "/platform/api-keys"
             }
         ]
     },
