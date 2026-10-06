@@ -23,7 +23,7 @@ export async function handleApiProxy(
 
         const allowedOrigins = [
             SITE_URL,
-            process.env.NEXT_PUBLIC_APP_URL
+            process.env.NEXT_PUBLIC_ADMIN_URL
         ].filter((url): url is string => Boolean(url));
 
         const isValidOrigin =
