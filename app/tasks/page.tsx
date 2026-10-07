@@ -127,7 +127,7 @@ export default function AdminTasksPage() {
             if (data.status && data.data) {
                 setSummary(data.data);
             }
-        } catch {}
+        } catch { }
     }, [token]);
 
     useEffect(() => {
@@ -161,7 +161,7 @@ export default function AdminTasksPage() {
     };
 
     return (
-        <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto">
+        <div className="space-y-6">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-1">
@@ -335,26 +335,24 @@ export default function AdminTasksPage() {
                                         </td>
                                         <td className="py-3 px-4">
                                             <span
-                                                className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                                                    task.priority === "urgent" || task.priority === "high"
-                                                        ? "bg-rose-50 text-rose-700 border border-rose-200"
-                                                        : task.priority === "medium"
+                                                className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${task.priority === "urgent" || task.priority === "high"
+                                                    ? "bg-rose-50 text-rose-700 border border-rose-200"
+                                                    : task.priority === "medium"
                                                         ? "bg-amber-50 text-amber-700 border border-amber-200"
                                                         : "bg-slate-100 text-slate-600"
-                                                }`}
+                                                    }`}
                                             >
                                                 {task.priority}
                                             </span>
                                         </td>
                                         <td className="py-3 px-4">
                                             <span
-                                                className={`px-2 py-0.5 rounded-md text-[10px] font-bold capitalize ${
-                                                    task.status === "completed"
-                                                        ? "bg-emerald-50 text-emerald-700"
-                                                        : task.status === "in_progress"
+                                                className={`px-2 py-0.5 rounded-md text-[10px] font-bold capitalize ${task.status === "completed"
+                                                    ? "bg-emerald-50 text-emerald-700"
+                                                    : task.status === "in_progress"
                                                         ? "bg-amber-50 text-amber-700"
                                                         : "bg-teal-50 text-[#35877D]"
-                                                }`}
+                                                    }`}
                                             >
                                                 {task.status}
                                             </span>
