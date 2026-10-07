@@ -273,13 +273,13 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
                         <button
                             onClick={() => setCommandOpen(true)}
-                            className="hidden sm:flex items-center gap-2.5 px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-500 transition-all cursor-pointer w-64 md:w-80 justify-between group focus:ring-2 focus:ring-[#35877D]/20"
+                            className="hidden sm:flex items-center gap-2.5 px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-500 transition-all cursor-pointer w-64 md:w-80 lg:w-96 justify-between group focus:ring-2 focus:ring-[#35877D]/20"
                         >
-                            <div className="flex items-center gap-2">
-                                <Search size={15} className="text-[#35877D] group-hover:scale-110 transition-transform" />
-                                <span>Search tenants, logs, settings...</span>
+                            <div className="flex items-center gap-2 min-w-0">
+                                <Search size={15} className="text-[#35877D] group-hover:scale-110 transition-transform shrink-0" />
+                                <span className="whitespace-nowrap truncate">Search tenants, logs, settings...</span>
                             </div>
-                            <kbd className="px-1.5 py-0.5 text-[10px] font-black text-slate-400 bg-white border border-slate-200 rounded-md shadow-2xs">
+                            <kbd className="shrink-0 px-1.5 py-0.5 text-[10px] font-black text-slate-400 bg-white border border-slate-200 rounded-md shadow-2xs">
                                 Ctrl+K
                             </kbd>
                         </button>
