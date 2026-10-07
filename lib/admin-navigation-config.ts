@@ -245,6 +245,13 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
                 exact: true
             },
             {
+                id: "admin-inbox-settings",
+                label: "Inbox Settings",
+                icon: MessageSquare,
+                href: "/settings/inbox",
+                patterns: ["/settings/inbox"]
+            },
+            {
                 id: "admin-feature-flags",
                 label: "Feature Flags",
                 icon: ToggleRight,

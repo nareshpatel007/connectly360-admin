@@ -78,6 +78,25 @@ export default function AdminSettingsPage() {
                 </a>
             </Card>
 
+            {/* Inbox & Conversations Settings Banner */}
+            <Card className="p-6 bg-gradient-to-r from-teal-950 via-slate-900 to-teal-950 border border-teal-800 text-white rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+                <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold">
+                        <Sliders size={24} />
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-black uppercase tracking-wider text-white">Inbox &amp; Conversations Configuration</h3>
+                        <p className="text-xs text-teal-200/80 font-medium">Configure conversation status automation rules, auto-reopen behavior, client composer toolbar toggles, AI Copilot features, and global quick replies.</p>
+                    </div>
+                </div>
+                <a
+                    href="/settings/inbox"
+                    className="h-10 px-5 bg-[#35877D] hover:bg-[#2b6e66] text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition-all whitespace-nowrap"
+                >
+                    <span>Configure Inbox Settings</span>
+                </a>
+            </Card>
+
             <form onSubmit={handleSave} className="space-y-6 w-full">
                 {/* General Settings */}
                 <Card className="p-6 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-sm">
