@@ -273,28 +273,28 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
                         <button
                             onClick={() => setCommandOpen(true)}
-                            className="hidden sm:flex items-center gap-2.5 px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-500 transition-all cursor-pointer w-64 md:w-80 lg:w-96 justify-between group focus:ring-2 focus:ring-[#35877D]/20"
+                            className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 bg-[#F7F9FA] hover:bg-slate-100 border border-slate-200/90 rounded-xl text-xs font-medium text-slate-500 transition-all cursor-pointer w-64 md:w-80 lg:w-96 justify-between group focus:ring-2 focus:ring-[#35877D]/20 h-9"
                         >
                             <div className="flex items-center gap-2 min-w-0">
-                                <Search size={15} className="text-[#35877D] group-hover:scale-110 transition-transform shrink-0" />
-                                <span className="whitespace-nowrap truncate">Search tenants, logs, settings...</span>
+                                <Search size={14} className="text-[#35877D] group-hover:scale-110 transition-transform shrink-0" />
+                                <span className="whitespace-nowrap truncate text-slate-400">Search tenants, logs, settings...</span>
                             </div>
-                            <kbd className="shrink-0 px-1.5 py-0.5 text-[10px] font-black text-slate-400 bg-white border border-slate-200 rounded-md shadow-2xs">
+                            <kbd className="shrink-0 px-1.5 py-0.5 text-[10px] font-bold text-slate-400 bg-white border border-slate-200 rounded-md shadow-2xs">
                                 Ctrl+K
                             </kbd>
                         </button>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                         {/* Quick Create Dropdown */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <button className="flex items-center gap-1.5 px-3.5 py-2 bg-[#35877D] hover:bg-[#2b6e66] text-white font-bold text-xs rounded-xl shadow-md shadow-[#35877D]/20 transition-all cursor-pointer border-0">
-                                    <Plus size={16} />
+                                <button className="h-9 flex items-center gap-1.5 px-3 bg-white hover:bg-slate-50 text-slate-800 border border-slate-200/90 font-semibold text-xs rounded-xl shadow-2xs transition-all cursor-pointer">
+                                    <Plus size={15} className="text-[#35877D]" />
                                     <span className="hidden sm:inline">Quick Create</span>
                                 </button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-52 p-1.5 font-sans shadow-xl rounded-xl">
+                            <DropdownMenuContent align="end" className="w-52 p-1.5 font-sans shadow-xl rounded-xl border border-slate-200">
                                 <DropdownMenuLabel className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
                                     New Platform Item
                                 </DropdownMenuLabel>
@@ -314,7 +314,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-[11px] font-bold">
+                        <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 rounded-full text-[11px] font-bold">
                             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                             <span>All Infrastructure Operational</span>
                         </div>
@@ -323,7 +323,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                     </div>
                 </header>
 
-                <main className="flex-1 overflow-y-auto bg-slate-50/70 p-4 sm:p-6 md:p-8">{children}</main>
+                <main className="flex-1 overflow-y-auto bg-[#F7F9FA] p-4 sm:p-6 md:p-8">{children}</main>
             </div>
         </div>
     );
