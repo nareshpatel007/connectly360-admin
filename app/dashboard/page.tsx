@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
     Users,
     Building2,
@@ -12,21 +13,16 @@ import {
     ArrowUpRight,
     TrendingUp,
     RefreshCw,
-    CheckCircle2,
-    AlertTriangle,
+    Activity,
+    CreditCard,
     ShieldAlert,
     UserPlus,
-    PlusCircle,
-    CreditCard,
-    Activity,
-    Clock,
-    Layers,
     Calendar,
-    ArrowUp,
-    ArrowDown
+    AlertCircle,
+    Clock,
+    CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
-import { AdminPageHeader } from "@/components/admin-page-header";
 import {
     ResponsiveContainer,
     AreaChart,
@@ -42,6 +38,7 @@ import {
 
 interface DashboardMetrics {
     users?: { total?: number; active?: number; suspended?: number; verified?: number };
+    administrators?: { total?: number };
     workspaces?: { total?: number; active?: number; suspended?: number };
     revenue?: { total?: number; currency?: string };
     whatsapp?: { connected_accounts?: number; total_accounts?: number; total_messages?: number; total_campaigns?: number };
@@ -56,12 +53,15 @@ export default function AdminDashboardPage() {
     const { token } = useAuth();
     const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [lastRefreshed, setLastRefreshed] = useState<string>("Just now");
     const [dateRange, setDateRange] = useState<string>("30_days");
 
     const fetchMetrics = useCallback(async () => {
         if (!token) return;
         setLoading(true);
+        setError(null);
+
         try {
             const res = await fetch("/api/admin/dashboard", {
                 headers: {
@@ -69,14 +69,17 @@ export default function AdminDashboardPage() {
                     "X-Api-Token": token || ""
                 }
             });
+
             const data = await res.json();
-            if (data.status) {
+            if (data.status && data.data) {
                 setMetrics(data.data);
                 const now = new Date();
                 setLastRefreshed(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+            } else {
+                setError(data.message || "Unable to fetch platform metrics from the server.");
             }
-        } catch (err) {
-            console.error("Failed to load dashboard metrics", err);
+        } catch {
+            setError("Failed to connect to the Admin API. Please check server availability.");
         } finally {
             setLoading(false);
         }
@@ -97,21 +100,21 @@ export default function AdminDashboardPage() {
     ];
 
     const revenueChartData = metrics?.revenue_chart && metrics.revenue_chart.length > 0 ? metrics.revenue_chart : [
-        { month: "Jan 2026", subscriptions: 45000, credits: 15000, total: 60000 },
-        { month: "Feb 2026", subscriptions: 62000, credits: 24000, total: 86000 },
-        { month: "Mar 2026", subscriptions: 88000, credits: 35000, total: 123000 },
-        { month: "Apr 2026", subscriptions: 110000, credits: 48000, total: 158000 },
-        { month: "May 2026", subscriptions: 145000, credits: 62000, total: 207000 },
-        { month: "Jun 2026", subscriptions: (metrics?.revenue?.total ?? 245000) * 0.7, credits: (metrics?.revenue?.total ?? 245000) * 0.3, total: metrics?.revenue?.total ?? 245000 }
+        { month: "Jan", subscriptions: 0, credits: 0, total: 0 },
+        { month: "Feb", subscriptions: 0, credits: 0, total: 0 },
+        { month: "Mar", subscriptions: 0, credits: 0, total: 0 },
+        { month: "Apr", subscriptions: 0, credits: 0, total: 0 },
+        { month: "May", subscriptions: 0, credits: 0, total: 0 },
+        { month: "Jun", subscriptions: 0, credits: 0, total: 0 }
     ];
 
     const growthChartData = metrics?.growth_chart && metrics.growth_chart.length > 0 ? metrics.growth_chart : [
-        { month: "Jan", users: 120, workspaces: 35 },
-        { month: "Feb", users: 210, workspaces: 68 },
-        { month: "Mar", users: 340, workspaces: 110 },
-        { month: "Apr", users: 510, workspaces: 180 },
-        { month: "May", users: 780, workspaces: 260 },
-        { month: "Jun", users: metrics?.users?.total ?? 1284, workspaces: metrics?.workspaces?.total ?? 342 }
+        { month: "Jan", users: 0, workspaces: 0 },
+        { month: "Feb", users: 0, workspaces: 0 },
+        { month: "Mar", users: 0, workspaces: 0 },
+        { month: "Apr", users: 0, workspaces: 0 },
+        { month: "May", users: 0, workspaces: 0 },
+        { month: "Jun", users: 0, workspaces: 0 }
     ];
 
     return (
@@ -159,15 +162,34 @@ export default function AdminDashboardPage() {
 
                         <Button
                             onClick={fetchMetrics}
+                            disabled={loading}
                             size="sm"
                             className="h-10 px-4 bg-[#35877D] hover:bg-[#2b6e66] text-white rounded-2xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md shadow-[#35877D]/20 transition-all border-0"
                         >
                             <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                            <span>Refresh Data</span>
+                            <span>{loading ? "Refreshing..." : "Refresh Data"}</span>
                         </Button>
                     </div>
                 </div>
             </div>
+
+            {/* ERROR BANNER IF FETCH FAILED */}
+            {error && (
+                <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-4 text-rose-800 text-xs font-medium">
+                    <div className="flex items-center gap-2.5">
+                        <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
+                        <span>{error}</span>
+                    </div>
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={fetchMetrics}
+                        className="h-8 border-rose-300 text-rose-800 hover:bg-rose-100 rounded-xl text-xs"
+                    >
+                        Try Again
+                    </Button>
+                </div>
+            )}
 
             {/* QUICK ACTIONS BAR */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
@@ -232,9 +254,13 @@ export default function AdminDashboardPage() {
                         </div>
                     </div>
                     <div>
-                        <div className="text-3xl font-black text-slate-900 tracking-tight">
-                            {metrics?.users?.total ?? 0}
-                        </div>
+                        {loading && !metrics ? (
+                            <Skeleton className="h-9 w-24 rounded-lg my-1" />
+                        ) : (
+                            <div className="text-3xl font-black text-slate-900 tracking-tight">
+                                {metrics?.users?.total ?? 0}
+                            </div>
+                        )}
                         <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 mt-3 pt-2.5 border-t border-slate-100">
                             <span className="text-emerald-600 font-bold flex items-center gap-1">
                                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -257,16 +283,20 @@ export default function AdminDashboardPage() {
                         </div>
                     </div>
                     <div>
-                        <div className="text-3xl font-black text-slate-900 tracking-tight">
-                            {metrics?.workspaces?.total ?? 0}
-                        </div>
+                        {loading && !metrics ? (
+                            <Skeleton className="h-9 w-24 rounded-lg my-1" />
+                        ) : (
+                            <div className="text-3xl font-black text-slate-900 tracking-tight">
+                                {metrics?.workspaces?.total ?? 0}
+                            </div>
+                        )}
                         <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 mt-3 pt-2.5 border-t border-slate-100">
                             <span className="text-blue-600 font-bold flex items-center gap-1">
                                 <span className="h-2 w-2 rounded-full bg-blue-500" />
                                 {metrics?.workspaces?.active ?? 0} Operational
                             </span>
                             <span className="text-slate-400 font-bold">
-                                {metrics?.workspaces?.suspended ?? 0} Offline
+                                {metrics?.workspaces?.suspended ?? 0} Suspended
                             </span>
                         </div>
                     </div>
@@ -281,9 +311,13 @@ export default function AdminDashboardPage() {
                         </div>
                     </div>
                     <div>
-                        <div className="text-3xl font-black text-slate-900 tracking-tight">
-                            ₹{(metrics?.revenue?.total ?? 0).toLocaleString("en-IN")}
-                        </div>
+                        {loading && !metrics ? (
+                            <Skeleton className="h-9 w-28 rounded-lg my-1" />
+                        ) : (
+                            <div className="text-3xl font-black text-slate-900 tracking-tight">
+                                ₹{(metrics?.revenue?.total ?? 0).toLocaleString("en-IN")}
+                            </div>
+                        )}
                         <div className="flex items-center justify-between text-[11px] font-semibold text-emerald-600 mt-3 pt-2.5 border-t border-slate-100">
                             <span className="flex items-center gap-1 font-bold">
                                 <TrendingUp size={14} />
@@ -305,9 +339,13 @@ export default function AdminDashboardPage() {
                         </div>
                     </div>
                     <div>
-                        <div className="text-3xl font-black text-slate-900 tracking-tight">
-                            {metrics?.whatsapp?.connected_accounts ?? 0} <span className="text-base text-slate-400 font-bold">/ {metrics?.whatsapp?.total_accounts ?? 0}</span>
-                        </div>
+                        {loading && !metrics ? (
+                            <Skeleton className="h-9 w-24 rounded-lg my-1" />
+                        ) : (
+                            <div className="text-3xl font-black text-slate-900 tracking-tight">
+                                {metrics?.whatsapp?.connected_accounts ?? 0} <span className="text-base text-slate-400 font-bold">/ {metrics?.whatsapp?.total_accounts ?? 0}</span>
+                            </div>
+                        )}
                         <div className="flex items-center justify-between text-[11px] font-semibold text-purple-700 mt-3 pt-2.5 border-t border-slate-100">
                             <span className="font-bold flex items-center gap-1">
                                 <span className="h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
@@ -341,110 +379,120 @@ export default function AdminDashboardPage() {
                     </div>
 
                     <div className="h-72 w-full pt-2">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={revenueChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                <defs>
-                                    <linearGradient id="colorSub" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#35877D" stopOpacity={0.4} />
-                                        <stop offset="95%" stopColor="#35877D" stopOpacity={0.0} />
-                                    </linearGradient>
-                                    <linearGradient id="colorCred" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
-                                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#64748b' }} stroke="#cbd5e1" />
-                                <YAxis tick={{ fontSize: 11, fill: '#64748b' }} stroke="#cbd5e1" />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#ffffff', borderRadius: '16px', borderColor: '#e2e8f0', fontSize: '12px', fontWeight: 'bold', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
-                                    formatter={(value: any) => [`₹${Number(value).toLocaleString("en-IN")}`, 'Amount']}
-                                />
-                                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                                <Area type="monotone" dataKey="subscriptions" name="Subscription Plans" stroke="#35877D" strokeWidth={3} fillOpacity={1} fill="url(#colorSub)" />
-                                <Area type="monotone" dataKey="credits" name="Credit Top-ups" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorCred)" />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                        {loading && !metrics ? (
+                            <div className="h-full flex items-center justify-center">
+                                <Skeleton className="h-56 w-full rounded-2xl" />
+                            </div>
+                        ) : (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={revenueChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorSub" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#35877D" stopOpacity={0.4} />
+                                            <stop offset="95%" stopColor="#35877D" stopOpacity={0.0} />
+                                        </linearGradient>
+                                        <linearGradient id="colorCred" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} tickFormatter={(val) => `₹${val / 1000}k`} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: "#0f172a", borderRadius: "12px", border: "none", color: "#fff", fontSize: "12px" }}
+                                        formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, ""]}
+                                    />
+                                    <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
+                                    <Area type="monotone" dataKey="subscriptions" name="Subscriptions" stroke="#35877D" strokeWidth={2} fillOpacity={1} fill="url(#colorSub)" />
+                                    <Area type="monotone" dataKey="credits" name="Credits Top-Up" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorCred)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        )}
                     </div>
                 </Card>
 
-                {/* User & Workspace Growth Chart */}
+                {/* Customer & Workspace Growth Bar Chart */}
                 <Card className="p-6 bg-white border border-slate-200/80 rounded-3xl space-y-4 shadow-xs">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div>
                             <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
                                 <Users size={16} className="text-blue-600" />
-                                Account &amp; Workspace Growth
+                                Customer &amp; Workspace Growth
                             </h3>
                             <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                                User registrations vs tenant workspace activations
+                                Monthly new users and workspaces onboarded
                             </p>
                         </div>
                         <Button asChild variant="ghost" size="sm" className="text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-xl">
-                            <Link href="/workspaces">Workspaces <ArrowUpRight size={14} /></Link>
+                            <Link href="/users">Customer Directory <ArrowUpRight size={14} /></Link>
                         </Button>
                     </div>
 
                     <div className="h-72 w-full pt-2">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={growthChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#64748b' }} stroke="#cbd5e1" />
-                                <YAxis tick={{ fontSize: 11, fill: '#64748b' }} stroke="#cbd5e1" />
-                                <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderRadius: '16px', borderColor: '#e2e8f0', fontSize: '12px', fontWeight: 'bold', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
-                                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                                <Bar dataKey="users" name="New User Accounts" fill="#35877D" radius={[8, 8, 0, 0]} />
-                                <Bar dataKey="workspaces" name="New Workspaces" fill="#3b82f6" radius={[8, 8, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                        {loading && !metrics ? (
+                            <div className="h-full flex items-center justify-center">
+                                <Skeleton className="h-56 w-full rounded-2xl" />
+                            </div>
+                        ) : (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={growthChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                                    <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderRadius: "12px", border: "none", color: "#fff", fontSize: "12px" }} />
+                                    <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
+                                    <Bar dataKey="users" name="New Customers" fill="#35877D" radius={[6, 6, 0, 0]} />
+                                    <Bar dataKey="workspaces" name="New Workspaces" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        )}
                     </div>
                 </Card>
             </div>
 
-            {/* SYSTEM HEALTH & RECENT REVENUE GRID */}
+            {/* THREE-COLUMN PLATFORM HEALTH & ACTIVITY HUB */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Infrastructure Services Health */}
+                {/* System Services Health Matrix */}
                 <Card className="p-6 bg-white border border-slate-200/80 rounded-3xl space-y-4 shadow-xs lg:col-span-1">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                         <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                            <Activity size={16} className="text-emerald-600" />
-                            Infrastructure Status
+                            <Activity size={16} className="text-[#35877D]" />
+                            System Health &amp; Subsystems
                         </h3>
-                        <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            Healthy
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            Normal
                         </span>
                     </div>
 
-                    <div className="space-y-3">
-                        {systemServices.map((svc, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/80 border border-slate-100 text-xs">
-                                <div className="flex items-center gap-2.5">
+                    <div className="space-y-2.5">
+                        {systemServices.map((srv, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50/70 border border-slate-100 text-xs">
+                                <div className="flex items-center gap-2">
                                     <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="font-bold text-slate-800">{svc.name}</span>
+                                    <span className="font-bold text-slate-800">{srv.name}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[10px] text-slate-400 font-mono font-bold">{svc.latency}</span>
-                                    <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                                        {svc.status}
+                                    <span className="text-[10px] text-slate-400 font-mono">{srv.latency}</span>
+                                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                                        {srv.status}
                                     </span>
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    <div className="pt-2 text-center">
-                        <Link href="/system" className="text-xs font-bold text-[#35877D] hover:underline inline-flex items-center gap-1">
-                            Inspect Server Health Diagnostics <ArrowUpRight size={13} />
-                        </Link>
-                    </div>
+                    <Button asChild variant="outline" className="w-full h-9 rounded-xl text-xs font-bold border-slate-200 text-slate-600 hover:text-[#35877D]">
+                        <Link href="/system">Diagnostic Diagnostics Center</Link>
+                    </Button>
                 </Card>
 
-                {/* Recent User Registrations */}
+                {/* Recent Customer Registrations */}
                 <Card className="p-6 bg-white border border-slate-200/80 rounded-3xl space-y-4 shadow-xs lg:col-span-1">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                         <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
                             <UserPlus size={16} className="text-[#35877D]" />
-                            Recent Registrations
+                            Recent Customers
                         </h3>
                         <Button asChild variant="ghost" size="sm" className="text-xs font-bold text-[#35877D] hover:bg-[#35877D]/10 rounded-xl">
                             <Link href="/users">View All <ArrowUpRight size={14} /></Link>
@@ -452,21 +500,38 @@ export default function AdminDashboardPage() {
                     </div>
 
                     <div className="divide-y divide-slate-100">
-                        {metrics?.recent_users?.length === 0 ? (
-                            <p className="py-6 text-center text-xs text-slate-400 font-medium">No recent user registrations.</p>
-                        ) : (
-                            metrics?.recent_users?.map((u) => (
-                                <div key={u.id} className="py-3 flex items-center justify-between text-xs">
-                                    <div className="flex items-center gap-2.5">
-                                        <div className="h-9 w-9 rounded-full bg-[#35877D]/10 text-[#35877D] font-black text-xs flex items-center justify-center shrink-0 border border-[#35877D]/20">
-                                            {u.name.charAt(0).toUpperCase()}
+                        {loading && !metrics ? (
+                            <div className="space-y-3 py-2">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="flex items-center justify-between py-2">
+                                        <div className="flex items-center gap-2.5">
+                                            <Skeleton className="h-8 w-8 rounded-full" />
+                                            <div className="space-y-1">
+                                                <Skeleton className="h-3.5 w-24" />
+                                                <Skeleton className="h-3 w-32" />
+                                            </div>
                                         </div>
-                                        <div>
+                                        <Skeleton className="h-5 w-14 rounded-full" />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : !metrics?.recent_users || metrics.recent_users.length === 0 ? (
+                            <div className="py-8 text-center text-xs text-slate-400 font-medium">
+                                No recent user registrations found.
+                            </div>
+                        ) : (
+                            metrics.recent_users.map((u) => (
+                                <div key={u.id} className="py-3 flex items-center justify-between text-xs">
+                                    <div className="flex items-center gap-2.5 min-w-0">
+                                        <div className="h-9 w-9 rounded-full bg-[#35877D]/10 text-[#35877D] font-black text-xs flex items-center justify-center shrink-0 border border-[#35877D]/20">
+                                            {u.name ? u.name.charAt(0).toUpperCase() : "U"}
+                                        </div>
+                                        <div className="min-w-0">
                                             <p className="font-bold text-slate-900 truncate max-w-36">{u.name}</p>
                                             <p className="text-[10px] text-slate-500 font-medium truncate max-w-36">{u.email}</p>
                                         </div>
                                     </div>
-                                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${
                                         u.status === "suspended"
                                             ? "bg-rose-50 text-rose-700 border border-rose-200"
                                             : "bg-emerald-50 text-emerald-700 border border-emerald-200"
@@ -492,20 +557,37 @@ export default function AdminDashboardPage() {
                     </div>
 
                     <div className="divide-y divide-slate-100">
-                        {metrics?.recent_transactions?.length === 0 ? (
-                            <p className="py-6 text-center text-xs text-slate-400 font-medium">No transactions recorded yet.</p>
+                        {loading && !metrics ? (
+                            <div className="space-y-3 py-2">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="flex items-center justify-between py-2">
+                                        <div className="space-y-1">
+                                            <Skeleton className="h-3.5 w-28" />
+                                            <Skeleton className="h-3 w-20" />
+                                        </div>
+                                        <div className="space-y-1 text-right">
+                                            <Skeleton className="h-3.5 w-16" />
+                                            <Skeleton className="h-4 w-12 rounded" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : !metrics?.recent_transactions || metrics.recent_transactions.length === 0 ? (
+                            <div className="py-8 text-center text-xs text-slate-400 font-medium">
+                                No transactions recorded yet.
+                            </div>
                         ) : (
-                            metrics?.recent_transactions?.map((t) => (
+                            metrics.recent_transactions.map((t) => (
                                 <div key={t.id} className="py-3 flex items-center justify-between text-xs">
-                                    <div>
+                                    <div className="min-w-0">
                                         <p className="font-bold text-slate-900 truncate max-w-36">
                                             {t.company_name || t.user_name || t.user_email || "Customer Invoice"}
                                         </p>
-                                        <p className="text-[10px] text-slate-500 font-medium uppercase">
+                                        <p className="text-[10px] text-slate-500 font-medium uppercase truncate">
                                             {t.type || "Subscription"} • {t.credits ? `+${t.credits} Credits` : "Plan"}
                                         </p>
                                     </div>
-                                    <div className="text-right">
+                                    <div className="text-right shrink-0">
                                         <p className="font-black text-emerald-600">₹{(t.amount ?? 0).toLocaleString("en-IN")}</p>
                                         <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             {t.status || "paid"}

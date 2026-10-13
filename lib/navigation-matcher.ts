@@ -3,6 +3,8 @@
  * Ensures STRICTLY AT MOST ONE LEAF MENU ITEM IS ACTIVE AT ANY TIME.
  */
 
+import type { ElementType } from "react";
+
 export interface LeafNavigationItem {
     id: string;
     label: string;
@@ -10,7 +12,7 @@ export interface LeafNavigationItem {
     exact?: boolean;
     patterns?: string[];
     roles?: string[];
-    icon?: any;
+    icon?: ElementType;
     badgeKey?: string;
 }
 
@@ -18,7 +20,7 @@ export interface GroupNavigationItem {
     id: string;
     label: string;
     href?: string;
-    icon?: any;
+    icon?: ElementType;
     roles?: string[];
     subItems: LeafNavigationItem[];
 }

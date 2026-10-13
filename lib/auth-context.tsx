@@ -29,9 +29,19 @@ function isEmpty(val: unknown) {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [token, setToken] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("admin_auth_token");
+        }
+        return null;
+    });
     const [user, setUser] = useState<AdminUser | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState<boolean>(() => {
+        if (typeof window !== "undefined") {
+            return Boolean(localStorage.getItem("admin_auth_token"));
+        }
+        return false;
+    });
     const router = useRouter();
     const pathname = usePathname();
     const isFirstRender = useRef(true);
@@ -124,14 +134,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Initial load / browser reload check
     useEffect(() => {
-        const storedToken = typeof window !== "undefined" ? localStorage.getItem("admin_auth_token") : null;
-        if (storedToken) {
-            setToken(storedToken);
-            fetchAdminProfile(storedToken);
-        } else {
-            setIsLoading(false);
+        if (token) {
+            fetchAdminProfile(token);
         }
-    }, [fetchAdminProfile]);
+    }, [token, fetchAdminProfile]);
 
     // Background auth & permission check on page navigation (route changes)
     useEffect(() => {

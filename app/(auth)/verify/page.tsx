@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { AdminAuthSplitLayout } from "@/components/auth/AdminAuthSplitLayout";
 
 function VerifyContent() {
     const router = useRouter();
@@ -45,7 +47,7 @@ function VerifyContent() {
                     setStatus("error");
                     setMessage(data.message || "Failed to verify admin email. The token might be invalid or expired.");
                 }
-            } catch (err) {
+            } catch {
                 setStatus("error");
                 setMessage("Could not connect to the verification server. Please try again.");
             }
@@ -55,21 +57,9 @@ function VerifyContent() {
     }, [token, login]);
 
     return (
-        <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-8 shadow-md text-center space-y-6 z-10">
-            {/* Brand Logo Header */}
-            <div className="flex justify-center items-center gap-2 mb-2">
-                <img
-                    src="/images/logo.png"
-                    alt="Connectly360"
-                    className="h-9 w-auto object-contain"
-                />
-                <span className="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-[#35877D]/10 text-[#35877D] border border-[#35877D]/20">
-                    Admin Console
-                </span>
-            </div>
-
+        <Card className="w-full bg-white border border-slate-200/90 shadow-xl shadow-slate-200/40 rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-5 text-center">
             {/* Status Indicator */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-2">
                 {status === "loading" && (
                     <div className="h-14 w-14 rounded-2xl bg-[#35877D]/10 flex items-center justify-center text-[#35877D]">
                         <Loader2 size={32} className="animate-spin" />
@@ -88,23 +78,23 @@ function VerifyContent() {
             </div>
 
             {/* Status Message Text */}
-            <div className="space-y-2">
-                <h1 className="text-xl font-extrabold text-slate-900">
+            <div className="space-y-1.5">
+                <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
                     {status === "loading" && "Admin Email Verification"}
                     {status === "success" && "Verification Complete"}
                     {status === "error" && "Verification Failed"}
                 </h1>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed px-4">
+                <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
                     {message}
                 </p>
             </div>
 
             {/* Action Buttons if Failed */}
             {status === "error" && (
-                <div className="pt-4 flex flex-col gap-2">
+                <div className="pt-2 flex flex-col gap-2">
                     <Button
                         onClick={() => router.push("/login")}
-                        className="w-full h-11 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold shadow-sm"
+                        className="w-full h-11 bg-[#35877D] hover:bg-[#2b7068] text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm"
                     >
                         Back to Admin Sign In
                     </Button>
@@ -116,19 +106,23 @@ function VerifyContent() {
                     Redirecting to Admin Dashboard...
                 </div>
             )}
-        </div>
+        </Card>
     );
 }
 
 export default function AdminVerifyPage() {
     return (
-        <Suspense fallback={
-            <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-8 shadow-md text-center space-y-4">
-                <Loader2 size={32} className="animate-spin text-[#35877D] mx-auto" />
-                <p className="text-xs font-semibold text-slate-500">Loading verification details...</p>
-            </div>
-        }>
-            <VerifyContent />
-        </Suspense>
+        <AdminAuthSplitLayout>
+            <Suspense
+                fallback={
+                    <Card className="w-full bg-white border border-slate-200 shadow-sm rounded-2xl sm:rounded-3xl p-8 flex flex-col items-center justify-center min-h-[300px] space-y-3">
+                        <Loader2 className="animate-spin text-[#35877D]" size={32} />
+                        <p className="text-xs font-semibold text-slate-500">Loading verification details...</p>
+                    </Card>
+                }
+            >
+                <VerifyContent />
+            </Suspense>
+        </AdminAuthSplitLayout>
     );
 }

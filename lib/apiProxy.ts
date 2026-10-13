@@ -94,12 +94,13 @@ export async function handleApiProxy(
             status: apiRes.status,
             headers: responseHeaders,
         });
-    } catch (error: any) {
-        console.error("[connectly360-app apiProxy error]:", error);
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
+        console.error("[connectly360-admin apiProxy error]:", errorMessage);
         return NextResponse.json(
             {
                 success: false,
-                message: process.env.NODE_ENV === "development" ? (error?.message || "Internal Server Error") : "Internal Server Error"
+                message: process.env.NODE_ENV === "development" ? errorMessage : "Internal Server Error"
             },
             { status: 500 }
         );

@@ -11,15 +11,9 @@ import {
     Activity,
     MessageSquare,
     Megaphone,
-    Bot,
-    Zap,
-    UserCheck,
     ShieldAlert,
-    Server,
     Webhook,
-    Terminal,
     Settings,
-    ToggleRight,
     CheckSquare,
     Key
 } from "lucide-react";
@@ -49,7 +43,7 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
         ]
     },
     {
-        section: "CUSTOMERS",
+        section: "PLATFORM MANAGEMENT",
         items: [
             {
                 id: "admin-users",
@@ -73,20 +67,8 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
                 patterns: ["/subscriptions/**"]
             },
             {
-                id: "admin-tasks",
-                label: "Tasks & Follow-ups",
-                icon: CheckSquare,
-                href: "/tasks",
-                patterns: ["/tasks/**"]
-            }
-        ]
-    },
-    {
-        section: "REVENUE & BILLING",
-        items: [
-            {
                 id: "admin-billing",
-                label: "Billing & Sales",
+                label: "Billing & Transactions",
                 icon: CreditCard,
                 href: "/billing",
                 exact: true
@@ -103,18 +85,11 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
                 label: "Credit Packages",
                 icon: Package,
                 href: "/credits/packages"
-            },
-            {
-                id: "admin-payment-gateway",
-                label: "Payment Gateway",
-                icon: ShieldCheck,
-                href: "/billing/gateway",
-                patterns: ["/settings/payment-gateway"]
             }
         ]
     },
     {
-        section: "WHATSAPP",
+        section: "WHATSAPP MANAGEMENT",
         items: [
             {
                 id: "admin-whatsapp",
@@ -125,14 +100,8 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
                 patterns: ["/settings/whatsapp"]
             },
             {
-                id: "admin-whatsapp-waba",
-                label: "WABA Monitoring",
-                icon: Activity,
-                href: "/whatsapp/waba"
-            },
-            {
                 id: "admin-whatsapp-messages",
-                label: "Message Monitor",
+                label: "Messaging Diagnostics",
                 icon: MessageSquare,
                 href: "/whatsapp/messages"
             },
@@ -146,72 +115,14 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
         ]
     },
     {
-        section: "AI & AUTOMATION",
+        section: "OPERATIONS",
         items: [
-            {
-                id: "admin-ai-usage",
-                label: "AI Usage",
-                icon: Bot,
-                href: "/ai/usage",
-                patterns: ["/ai/**"]
-            },
-            {
-                id: "admin-automations",
-                label: "Automation Monitor",
-                icon: Zap,
-                href: "/automations",
-                exact: true
-            },
-            {
-                id: "admin-auto-replies",
-                label: "Auto-Reply Rules",
-                icon: MessageSquare,
-                href: "/automations/auto-replies",
-                patterns: ["/automations/auto-replies/**"]
-            }
-        ]
-    },
-    {
-        section: "ADMINISTRATION",
-        items: [
-            {
-                id: "admin-administrators",
-                label: "Administrators",
-                icon: ShieldCheck,
-                href: "/administrators",
-                patterns: ["/administrators/**"]
-            },
-            {
-                id: "admin-roles",
-                label: "Roles & Permissions",
-                icon: UserCheck,
-                href: "/roles",
-                patterns: ["/roles/**"]
-            }
-        ]
-    },
-    {
-        section: "PLATFORM",
-        items: [
-            {
-                id: "admin-audit-logs",
-                label: "Audit Logs",
-                icon: ShieldAlert,
-                href: "/audit-logs",
-                patterns: ["/audit-logs/**"]
-            },
             {
                 id: "admin-system",
                 label: "System Health",
                 icon: Activity,
                 href: "/system",
                 exact: true
-            },
-            {
-                id: "admin-queue",
-                label: "Queue Monitor",
-                icon: Server,
-                href: "/platform/queue"
             },
             {
                 id: "admin-webhooks",
@@ -221,41 +132,50 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
                 patterns: ["/system/webhooks"]
             },
             {
-                id: "admin-api-logs",
-                label: "API Logs",
-                icon: Terminal,
-                href: "/platform/api-logs"
+                id: "admin-audit-logs",
+                label: "Audit Logs",
+                icon: ShieldAlert,
+                href: "/audit-logs",
+                patterns: ["/audit-logs/**"]
+            },
+            {
+                id: "admin-tasks",
+                label: "Admin Tasks",
+                icon: CheckSquare,
+                href: "/tasks",
+                patterns: ["/tasks/**"]
             },
             {
                 id: "admin-api-keys",
-                label: "API Keys",
+                label: "API Keys & Telemetry",
                 icon: Key,
                 href: "/platform/api-keys"
             }
         ]
     },
     {
-        section: "CONFIGURATION",
+        section: "ADMINISTRATION",
         items: [
+            {
+                id: "admin-administrators",
+                label: "Platform Admins",
+                icon: ShieldCheck,
+                href: "/administrators",
+                patterns: ["/administrators/**"]
+            },
+            {
+                id: "admin-roles",
+                label: "Roles & Permissions",
+                icon: ShieldCheck,
+                href: "/roles",
+                patterns: ["/roles/**"]
+            },
             {
                 id: "admin-settings",
                 label: "Platform Settings",
                 icon: Settings,
                 href: "/settings",
                 exact: true
-            },
-            {
-                id: "admin-inbox-settings",
-                label: "Inbox Settings",
-                icon: MessageSquare,
-                href: "/settings/inbox",
-                patterns: ["/settings/inbox"]
-            },
-            {
-                id: "admin-feature-flags",
-                label: "Feature Flags",
-                icon: ToggleRight,
-                href: "/settings/feature-flags"
             }
         ]
     }

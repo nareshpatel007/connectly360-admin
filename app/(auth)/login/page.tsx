@@ -1,156 +1,247 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useAuth } from "@/lib/auth-context";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
+import { ArrowRight, Loader2, AlertCircle, ShieldAlert } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Lock, Mail, ArrowRight, AlertCircle, Eye, EyeOff, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth-context";
+import { AdminAuthSplitLayout } from "@/components/auth/AdminAuthSplitLayout";
+import { AuthInput } from "@/components/auth/AuthInput";
+import { AuthPasswordInput } from "@/components/auth/AuthPasswordInput";
 import { toast } from "sonner";
 
-export default function AdminLoginPage() {
+function AdminLoginContent() {
+    const router = useRouter();
     const { login } = useAuth();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    // Load remembered email on initial mount
+    useEffect(() => {
+        try {
+            const savedEmail = localStorage.getItem("connectly360_admin_remembered_email");
+            if (savedEmail) {
+                setEmail(savedEmail);
+                setRememberMe(true);
+            }
+        } catch {
+            // ignore localStorage errors
+        }
+    }, []);
+
+    const validateForm = () => {
+        const errors: { email?: string; password?: string } = {};
+        if (!email.trim()) {
+            errors.email = "Administrator email is required.";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+            errors.email = "Please enter a valid administrator email address.";
+        }
+
+        if (!password) {
+            errors.password = "Password is required.";
+        } else if (password.length < 6) {
+            errors.password = "Password must be at least 6 characters.";
+        }
+
+        setFieldErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        setError("");
+        setError(null);
+
+        if (!validateForm()) {
+            return;
+        }
+
+        setIsLoading(true);
 
         try {
             const res = await fetch("/api/admin/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email: email.trim(), password }),
             });
 
             const data = await res.json();
+
             if (data.status && data.data?.access_token) {
-                toast.success("Welcome back, Administrator!");
+                // Check if user has admin privileges
+                const role = (data.data.role || "").toLowerCase();
+                const isAdmin = data.data.is_admin === 1 || ["super_admin", "owner", "admin"].includes(role);
+
+                if (!isAdmin) {
+                    setError("Access denied: You do not have platform administrator privileges.");
+                    setIsLoading(false);
+                    return;
+                }
+
+                // Handle remember me preference
+                try {
+                    if (rememberMe) {
+                        localStorage.setItem("connectly360_admin_remembered_email", email.trim());
+                    } else {
+                        localStorage.removeItem("connectly360_admin_remembered_email");
+                    }
+                } catch {
+                    // ignore
+                }
+
+                toast.success(`Welcome back, ${data.data.name || "Administrator"}!`);
                 login(data.data.access_token, {
                     id: data.data.user_id,
-                    name: data.data.name,
+                    name: data.data.name || "Administrator",
                     email: data.data.email,
                     role: data.data.role,
                     is_admin: 1,
-                    tenant_id: data.data.tenant_id
+                    tenant_id: data.data.tenant_id,
                 });
             } else {
                 setError(data.message || "Invalid credentials or unauthorized admin access.");
             }
-        } catch (err: any) {
-            setError("Server connection failed. Please check network or API status.");
+        } catch {
+            setError("Unable to connect to Connectly360 Admin API. Please check your network or server status.");
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="w-full max-w-md space-y-6 z-10">
-            {/* Header / Branding */}
-            <div className="text-center space-y-3">
-                <div className="flex justify-center items-center gap-2">
-                    <img
-                        src="/images/logo.png"
-                        alt="Connectly360 Logo"
-                        className="h-9 w-auto object-contain"
-                    />
-                </div>
+        <Card className="w-full bg-white border border-slate-200/90 shadow-xl shadow-slate-200/40 rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-5">
+            {/* Form Header */}
+            <div className="space-y-1 text-left">
+                <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
+                    Sign in to Admin Console
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                    Enter your administrator credentials to access platform controls.
+                </p>
             </div>
 
-            {/* Admin Login Card */}
-            <Card className="p-6 sm:p-8 bg-white border border-slate-200 rounded-3xl shadow-md space-y-5">
-                {error && (
-                    <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2.5">
-                        <AlertCircle size={16} className="shrink-0 mt-0.5" />
-                        <span>{error}</span>
-                    </div>
-                )}
+            {/* Error Banner */}
+            {error && (
+                <div
+                    role="alert"
+                    aria-live="polite"
+                    className="flex items-start gap-2.5 p-3.5 bg-rose-50/90 border border-rose-200 rounded-xl text-rose-800 text-xs font-medium leading-relaxed animate-in fade-in slide-in-from-top-1 duration-200"
+                >
+                    <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
+                    <div className="flex-1">{error}</div>
+                </div>
+            )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Email Input */}
-                    <div className="space-y-1.5">
-                        <Label htmlFor="email" className="text-xs font-bold text-slate-900">
-                            Email address
-                        </Label>
-                        <div className="relative">
-                            <Mail size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
-                            <Input
-                                id="email"
-                                type="email"
-                                required
-                                autoComplete="email"
-                                disabled={loading}
-                                placeholder="admin@connectly360.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="pl-10 h-11 bg-slate-50 border-slate-200 text-slate-900 focus-visible:ring-[#35877D] focus-visible:border-[#35877D] rounded-xl text-xs sm:text-sm font-medium"
-                            />
-                        </div>
-                    </div>
+            {/* Form */}
+            <form onSubmit={handleLogin} className="space-y-4" noValidate>
+                {/* Email Address */}
+                <AuthInput
+                    id="email"
+                    label="Administrator Email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    disabled={isLoading}
+                    placeholder="admin@connectly360.com"
+                    value={email}
+                    error={fieldErrors.email}
+                    onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (fieldErrors.email) {
+                            setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                        }
+                    }}
+                />
 
-                    {/* Password Input */}
-                    <div className="space-y-1.5">
-                        <div className="flex justify-between items-center">
-                            <Label htmlFor="password" className="text-xs font-bold text-slate-900">
-                                Password
-                            </Label>
-                            <Link
-                                href="/forgot-password"
-                                className="text-xs font-bold text-[#35877D] hover:text-[#2c6f66] hover:underline"
-                            >
-                                Forgot password?
-                            </Link>
-                        </div>
-                        <div className="relative">
-                            <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
-                            <Input
-                                id="password"
-                                type={showPassword ? "text" : "password"}
-                                required
-                                autoComplete="current-password"
-                                disabled={loading}
-                                placeholder="••••••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="pl-10 pr-10 h-11 bg-slate-50 border-slate-200 text-slate-900 focus-visible:ring-[#35877D] focus-visible:border-[#35877D] rounded-xl text-xs sm:text-sm font-medium"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 focus:outline-none"
-                            >
-                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                            </button>
-                        </div>
-                    </div>
+                {/* Password & Forgot Password */}
+                <AuthPasswordInput
+                    id="password"
+                    label="Password"
+                    required
+                    autoComplete="current-password"
+                    disabled={isLoading}
+                    placeholder="••••••••••••"
+                    value={password}
+                    error={fieldErrors.password}
+                    rightLabelAction={
+                        <Link
+                            href="/forgot-password"
+                            className="text-xs font-semibold text-[#35877D] hover:text-[#286f66] hover:underline transition-colors focus:outline-none"
+                            tabIndex={isLoading ? -1 : 0}
+                        >
+                            Forgot password?
+                        </Link>
+                    }
+                    onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (fieldErrors.password) {
+                            setFieldErrors((prev) => ({ ...prev, password: undefined }));
+                        }
+                    }}
+                />
 
-                    {/* Submit Button */}
-                    <Button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full h-11 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm flex items-center justify-center gap-2 cursor-pointer border-0 mt-2 transition-all"
-                    >
-                        {loading ? (
-                            <>
-                                <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                <span>Authenticating Admin...</span>
-                            </>
-                        ) : (
-                            <>
-                                <span>Sign in to Admin Console</span>
-                                <ArrowRight size={15} />
-                            </>
-                        )}
-                    </Button>
-                </form>
-            </Card>
-        </div>
+                {/* Remember Me Checkbox */}
+                <div className="flex items-center justify-between pt-0.5">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={rememberMe}
+                            disabled={isLoading}
+                            onChange={(e) => setRememberMe(e.target.checked)}
+                            className="h-4 w-4 rounded border-slate-300 text-[#35877D] focus:ring-[#35877D] cursor-pointer"
+                        />
+                        <span className="text-xs text-slate-600 font-medium">Remember my session email</span>
+                    </label>
+                </div>
+
+                {/* Submit Primary Button */}
+                <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-[#35877D] hover:bg-[#2b7068] active:scale-[0.99] text-white font-semibold h-11 rounded-xl gap-2 cursor-pointer shadow-sm shadow-[#35877D]/25 transition-all text-xs sm:text-sm mt-1 focus-visible:ring-2 focus-visible:ring-[#35877D]/40"
+                >
+                    {isLoading ? (
+                        <>
+                            <Loader2 className="animate-spin shrink-0" size={16} />
+                            <span>Authenticating Administrator...</span>
+                        </>
+                    ) : (
+                        <>
+                            <span>Access Platform Console</span>
+                            <ArrowRight size={16} />
+                        </>
+                    )}
+                </Button>
+            </form>
+
+            {/* Security Notice Footer */}
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-center gap-2 text-center text-[11px] text-slate-400 font-medium">
+                <ShieldAlert size={13} className="text-slate-400 shrink-0" />
+                <span>Restricted to authorized personnel. All attempts are audit logged.</span>
+            </div>
+        </Card>
+    );
+}
+
+export default function AdminLoginPage() {
+    return (
+        <AdminAuthSplitLayout>
+            <Suspense
+                fallback={
+                    <Card className="w-full bg-white border border-slate-200 shadow-sm rounded-2xl sm:rounded-3xl p-8 flex flex-col items-center justify-center min-h-[360px] space-y-3">
+                        <Loader2 className="animate-spin text-[#35877D]" size={32} />
+                        <p className="text-xs font-semibold text-slate-500">Loading admin authentication...</p>
+                    </Card>
+                }
+            >
+                <AdminLoginContent />
+            </Suspense>
+        </AdminAuthSplitLayout>
     );
 }
