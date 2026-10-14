@@ -74,16 +74,6 @@ function AdminLoginContent() {
             const data = await res.json();
 
             if (data.status && data.data?.access_token) {
-                // Check if user has admin privileges
-                const role = (data.data.role || "").toLowerCase();
-                const isAdmin = data.data.is_admin === 1 || ["super_admin", "owner", "admin"].includes(role);
-
-                if (!isAdmin) {
-                    setError("Access denied: You do not have platform administrator privileges.");
-                    setIsLoading(false);
-                    return;
-                }
-
                 // Handle remember me preference
                 try {
                     if (rememberMe) {
