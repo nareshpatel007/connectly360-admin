@@ -106,13 +106,13 @@ export default function AdminWhatsappPage() {
                                         </td>
                                         <td className="p-4 font-mono font-bold text-emerald-600 flex items-center gap-1.5">
                                             <Phone size={13} className="text-emerald-500" />
-                                            <span>{a.phone_number || "+91 98765 43210"}</span>
+                                            <span>{a.phone_number || "Not configured"}</span>
                                         </td>
                                         <td className="p-4 font-mono text-[11px] text-slate-500">
-                                            {a.waba_id ? `••••${a.waba_id.slice(-8)}` : "waba_meta_984120"}
+                                            {a.waba_id ? `••••${a.waba_id.slice(-8)}` : "—"}
                                         </td>
                                         <td className="p-4 font-mono text-[11px] text-slate-500">
-                                            {a.phone_number_id ? `••••${a.phone_number_id.slice(-8)}` : "phone_id_554812"}
+                                            {a.phone_number_id ? `••••${a.phone_number_id.slice(-8)}` : "—"}
                                         </td>
                                         <td className="p-4">
                                             <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${

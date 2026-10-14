@@ -1,28 +1,25 @@
 import { useQuery, useMutation, UseQueryOptions } from "@tanstack/react-query";
+import { adminFetch, getAdminAuthToken, adminApi, ApiResponse } from "./api-client";
+
+export { adminFetch, getAdminAuthToken, adminApi };
+export type { ApiResponse };
 
 // Base API URL
 const API_BASE = "/api";
 
-async function apiFetch(url: string, options: RequestInit = {}) {
-    const headers = {
-        ...options.headers,
-    } as Record<string, string>;
-
+export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
+    const token = getAdminAuthToken();
+    const headers: Record<string, string> = {
+        ...(options.headers as Record<string, string> || {}),
+    };
     if (!headers["Content-Type"] && !(options.body instanceof FormData)) {
         headers["Content-Type"] = "application/json";
     }
-
-    if (typeof window !== "undefined") {
-        const token = localStorage.getItem("admin_auth_token") || localStorage.getItem("auth_token");
-        if (token) {
-            headers["Authorization"] = `Bearer ${token}`;
-        }
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+        headers["X-Api-Token"] = token;
     }
-
-    return fetch(url, {
-        ...options,
-        headers,
-    });
+    return fetch(url.startsWith("/") ? url : `/${url}`, { ...options, headers });
 }
 
 // -------------------------------------------------------------
