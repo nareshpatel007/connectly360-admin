@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+    Users,
     Search,
     Filter,
     CheckCircle2,
@@ -188,46 +189,47 @@ export default function AdminUsersPage() {
                 title="Users & Accounts"
                 description="Manage registered platform user accounts, subscription tier levels, credit ledgers, and security suspensions."
                 breadcrumbs={[{ label: "Users & Accounts" }]}
-                badge={`${meta.total} Accounts`}
+                icon={Users}
+                badge={`${meta.total}`}
                 actions={
                     <Button
                         onClick={fetchUsers}
                         variant="outline"
                         size="sm"
-                        className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
+                        className="h-9 px-3.5 rounded-lg border-[#E5E9EE] bg-white text-[#172033] hover:bg-slate-50 text-xs font-medium cursor-pointer shadow-2xs flex items-center gap-1.5"
                     >
-                        <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                        <RefreshCw size={13} className={`text-[#5F6B7A] ${loading ? "animate-spin" : ""}`} />
                         <span>Reload List</span>
                     </Button>
                 }
             />
 
             {/* Filter Bar */}
-            <Card className="p-4 bg-white border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+            <Card className="p-3.5 bg-white border border-[#E5E9EE] rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
                 <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 w-full sm:w-96">
                     <div className="relative w-full">
-                        <Search size={14} className="absolute left-3.5 top-3 text-slate-400" />
+                        <Search size={14} className="absolute left-3 top-2.5 text-[#8A95A3]" />
                         <Input
                             placeholder="Search by name, email, company brand..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-9 h-10 bg-slate-50/80 border-slate-200 text-slate-900 placeholder:text-slate-400 rounded-xl text-xs font-medium focus-visible:ring-[#35877D]"
+                            className="pl-8.5 h-9 bg-white border-[#E5E9EE] text-[#172033] placeholder:text-[#8A95A3] rounded-lg text-xs font-normal focus-visible:ring-[#2F8F83]"
                         />
                     </div>
-                    <Button type="submit" size="sm" className="h-10 px-4 bg-[#35877D] hover:bg-[#2c6f66] text-white rounded-xl text-xs font-bold cursor-pointer border-0 shadow-2xs">
+                    <Button type="submit" size="sm" className="h-9 px-4 bg-[#2F8F83] hover:bg-[#267A70] text-white rounded-lg text-xs font-medium cursor-pointer border-0 shadow-2xs">
                         Search
                     </Button>
                 </form>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <Filter size={14} className="text-slate-400 shrink-0" />
+                <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                    <Filter size={14} className="text-[#8A95A3] shrink-0" />
                     <select
                         value={statusFilter}
                         onChange={(e) => {
                             setStatusFilter(e.target.value);
                             setPage(1);
                         }}
-                        className="h-10 px-3 bg-slate-50/80 border border-slate-200 text-slate-800 rounded-xl text-xs font-semibold focus:outline-none cursor-pointer"
+                        className="h-9 px-3 bg-white border border-[#E5E9EE] text-[#172033] rounded-lg text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#2F8F83] cursor-pointer"
                     >
                         <option value="">All Account Statuses</option>
                         <option value="active">Active Accounts</option>
@@ -237,20 +239,20 @@ export default function AdminUsersPage() {
             </Card>
 
             {/* Users Data Table */}
-            <Card className="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs">
+            <Card className="bg-white border border-[#E5E9EE] rounded-xl overflow-hidden shadow-2xs">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                <th className="p-4">User Identity</th>
-                                <th className="p-4">Tenant Workspace</th>
-                                <th className="p-4">Plan &amp; Credits</th>
-                                <th className="p-4">Joined Date</th>
-                                <th className="p-4">Status</th>
-                                <th className="p-4 text-right">Actions</th>
+                            <tr className="border-b border-[#E5E9EE] bg-[#F7F9FA] text-[11px] font-semibold text-[#8A95A3] uppercase tracking-wider">
+                                <th className="p-3.5">User Identity</th>
+                                <th className="p-3.5">Tenant Workspace</th>
+                                <th className="p-3.5">Plan &amp; Credits</th>
+                                <th className="p-3.5">Joined Date</th>
+                                <th className="p-3.5">Status</th>
+                                <th className="p-3.5 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 text-xs font-medium">
+                        <tbody className="divide-y divide-[#E5E9EE] text-xs font-normal">
                             {loading ? (
                                 <tr>
                                     <td colSpan={6} className="p-8 text-center text-slate-500 font-semibold">

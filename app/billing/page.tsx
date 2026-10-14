@@ -175,15 +175,16 @@ export default function AdminBillingPage() {
                 title="Payment Transactions &amp; Recurring Billing"
                 description="Razorpay transaction history, refund processing, recurring payment mandates, and workspace credit top-ups."
                 breadcrumbs={[{ label: "Billing Management" }]}
-                badge={`${meta.total} Records`}
+                icon={CreditCard}
+                badge={`${meta.total}`}
                 actions={
                     <Button
                         onClick={fetchTransactions}
                         variant="outline"
                         size="sm"
-                        className="h-9 border-slate-200 bg-white text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-2xs"
+                        className="h-9 px-3.5 rounded-lg border-[#E5E9EE] bg-white text-[#172033] hover:bg-slate-50 text-xs font-medium cursor-pointer shadow-2xs flex items-center gap-1.5"
                     >
-                        <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                        <RefreshCw size={13} className={`text-[#5F6B7A] ${loading ? "animate-spin" : ""}`} />
                         <span>Reload Records</span>
                     </Button>
                 }

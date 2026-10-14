@@ -118,294 +118,358 @@ export default function AdminDashboardPage() {
     ];
 
     return (
-        <div className="space-y-6 font-sans">
-            {/* HERO MASTER CONTROL BANNER */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-teal-50/90 via-emerald-50/50 to-white p-6 sm:p-8 text-slate-900 shadow-sm border border-[#35877D]/20 font-sans">
-                {/* Subtle Background Glows */}
-                <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-[#35877D]/10 blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-blue-400/10 blur-3xl pointer-events-none" />
-
-                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                    <div className="space-y-2 max-w-2xl">
-                        <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#35877D]/10 text-[#35877D] border border-[#35877D]/25 text-[10px] font-black uppercase tracking-wider">
-                                <Activity size={12} className="animate-pulse text-[#35877D]" /> Platform Operations &amp; Master Control
-                            </span>
-                        </div>
-                        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
-                            Platform Overview &amp; Health Hub
-                        </h1>
-                        <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                            Real-time command center monitoring total users, multi-tenant workspace isolation, WhatsApp WABA infrastructure, billing revenue, and server health.
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-3 shrink-0 self-stretch sm:self-auto justify-end">
-                        <div className="hidden sm:flex flex-col items-end px-4 py-2 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 shadow-2xs">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Time Window</span>
-                            <div className="flex items-center gap-1.5 text-xs font-extrabold text-slate-900 mt-0.5">
-                                <Calendar size={13} className="text-[#35877D]" />
-                                <select
-                                    value={dateRange}
-                                    onChange={(e) => setDateRange(e.target.value)}
-                                    className="bg-transparent text-slate-900 font-extrabold focus:outline-none cursor-pointer"
-                                >
-                                    <option value="today" className="bg-white text-slate-900">Today</option>
-                                    <option value="7_days" className="bg-white text-slate-900">Last 7 Days</option>
-                                    <option value="30_days" className="bg-white text-slate-900">Last 30 Days</option>
-                                    <option value="this_month" className="bg-white text-slate-900">This Month</option>
-                                    <option value="last_month" className="bg-white text-slate-900">Last Month</option>
-                                    <option value="this_year" className="bg-white text-slate-900">This Year</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <Button
-                            onClick={fetchMetrics}
-                            disabled={loading}
-                            size="sm"
-                            className="h-10 px-4 bg-[#35877D] hover:bg-[#2b6e66] text-white rounded-2xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md shadow-[#35877D]/20 transition-all border-0"
+        <div className="space-y-5 pb-12 font-sans w-full">
+            {/* 1. COMPACT PAGE HEADER */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E5E9EE] pb-4">
+                <div>
+                    <h1 className="text-2xl font-semibold text-[#172033] tracking-tight">Dashboard</h1>
+                    <p className="text-[13px] text-[#5F6B7A] mt-0.5">
+                        Welcome back, <span className="font-medium text-[#172033]">Platform Admin</span>. Here&apos;s what&apos;s happening with your platform today.
+                    </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                    <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E5E9EE] rounded-lg text-xs font-medium text-[#5F6B7A] shadow-2xs">
+                        <Calendar size={13} className="text-[#8A95A3]" />
+                        <select
+                            value={dateRange}
+                            onChange={(e) => setDateRange(e.target.value)}
+                            className="bg-transparent text-[#172033] font-medium focus:outline-none cursor-pointer"
                         >
-                            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                            <span>{loading ? "Refreshing..." : "Refresh Data"}</span>
-                        </Button>
+                            <option value="today">Today</option>
+                            <option value="7_days">Last 7 Days</option>
+                            <option value="30_days">Last 30 Days</option>
+                            <option value="this_month">This Month</option>
+                            <option value="last_month">Last Month</option>
+                            <option value="this_year">This Year</option>
+                        </select>
                     </div>
+
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={fetchMetrics}
+                        disabled={loading}
+                        className="h-9 px-3.5 rounded-lg border-[#E5E9EE] bg-white text-[#172033] hover:bg-slate-50 text-xs font-medium cursor-pointer shadow-2xs"
+                    >
+                        <RefreshCw size={13} className={`mr-1.5 text-[#5F6B7A] ${loading ? "animate-spin" : ""}`} />
+                        Refresh Data
+                    </Button>
                 </div>
             </div>
 
             {/* ERROR BANNER IF FETCH FAILED */}
             {error && (
-                <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between gap-4 text-rose-800 text-xs font-medium">
+                <div className="bg-[#FFF0F0] border border-[#FCD8D8] rounded-xl p-3.5 flex items-center justify-between gap-3 shadow-2xs">
                     <div className="flex items-center gap-2.5">
-                        <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
-                        <span>{error}</span>
+                        <AlertCircle className="h-4 w-4 text-[#D95C5C] shrink-0" />
+                        <span className="text-xs text-[#B32626] font-medium">{error}</span>
                     </div>
                     <Button
                         size="sm"
                         variant="outline"
                         onClick={fetchMetrics}
-                        className="h-8 border-rose-300 text-rose-800 hover:bg-rose-100 rounded-xl text-xs"
+                        className="h-8 border-[#FCD8D8] text-[#B32626] hover:bg-rose-100 rounded-lg text-xs"
                     >
                         Try Again
                     </Button>
                 </div>
             )}
 
-            {/* QUICK ACTIONS BAR */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                <Button asChild variant="outline" className="h-12 bg-white border-slate-200/80 hover:border-[#35877D] hover:bg-[#35877D]/5 text-slate-700 hover:text-[#35877D] rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-2xs transition-all hover:scale-[1.02]">
-                    <Link href="/users">
-                        <div className="h-7 w-7 rounded-lg bg-[#35877D]/10 text-[#35877D] flex items-center justify-center">
-                            <UserPlus size={14} />
+            {/* 2. PLATFORM & INFRASTRUCTURE SUMMARY CARD */}
+            <Card className="bg-white border-[#E5E9EE] rounded-xl p-4 sm:p-5 shadow-2xs">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    {/* Left: Avatar & Platform Info */}
+                    <div className="flex items-center gap-3.5">
+                        <div className="h-11 w-11 rounded-lg bg-[#E8F6F3] text-[#2F8F83] border border-[#BFE4DD] flex items-center justify-center font-semibold text-lg shrink-0">
+                            A
                         </div>
-                        <span>Manage Users</span>
-                    </Link>
-                </Button>
-                <Button asChild variant="outline" className="h-12 bg-white border-slate-200/80 hover:border-blue-500 hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-2xs transition-all hover:scale-[1.02]">
-                    <Link href="/workspaces">
-                        <div className="h-7 w-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                            <Building2 size={14} />
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <h2 className="font-semibold text-[#172033] text-base leading-none">
+                                    Connectly360 Master Control
+                                </h2>
+                                <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 text-[#5F6B7A] tracking-wider uppercase">
+                                    PRODUCTION ENGINE
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-xs text-[#5F6B7A]">
+                                <span>Platform Architecture:</span>
+                                <span className="font-mono text-[11px] text-[#2F8F83] bg-[#F7F9FA] px-2 py-0.5 rounded border border-[#E5E9EE] font-medium">
+                                    v1.0.0 (PHP 8.2 / Laravel 10)
+                                </span>
+                                <span className="text-slate-300">•</span>
+                                <span>Tenant Isolation: Strict Multi-Tenant</span>
+                            </div>
                         </div>
-                        <span>Workspaces</span>
-                    </Link>
-                </Button>
-                <Button asChild variant="outline" className="h-12 bg-white border-slate-200/80 hover:border-emerald-500 hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-2xs transition-all hover:scale-[1.02]">
-                    <Link href="/billing">
-                        <div className="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                            <CreditCard size={14} />
+                    </div>
+
+                    {/* Right: Quick KPI & Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-[#E5E9EE]">
+                        <div className="flex items-center gap-2.5 bg-[#F7F9FA] px-3.5 py-2 rounded-lg border border-[#E5E9EE]">
+                            <div>
+                                <span className="text-[10px] font-medium text-[#8A95A3] uppercase tracking-wider block">Total Platform Revenue</span>
+                                <div className="flex items-center gap-1 text-[#172033] font-semibold text-lg leading-tight mt-0.5">
+                                    <IndianRupee size={15} className="text-[#2F8F83]" />
+                                    <span>{(metrics?.revenue?.total ?? 0).toLocaleString("en-IN")}</span>
+                                </div>
+                            </div>
                         </div>
-                        <span>Billing &amp; Sales</span>
-                    </Link>
-                </Button>
-                <Button asChild variant="outline" className="h-12 bg-white border-slate-200/80 hover:border-purple-500 hover:bg-purple-50 text-slate-700 hover:text-purple-600 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-2xs transition-all hover:scale-[1.02]">
-                    <Link href="/whatsapp">
-                        <div className="h-7 w-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                            <MessageCircle size={14} />
+                        <div className="flex items-center gap-2">
+                            <Button
+                                size="sm"
+                                asChild
+                                className="h-9 px-3.5 rounded-lg bg-[#2F8F83] hover:bg-[#267A70] text-white text-xs font-medium cursor-pointer border-0 shadow-2xs"
+                            >
+                                <Link href="/users">Manage Users</Link>
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                asChild
+                                className="h-9 px-3 rounded-lg border-[#E5E9EE] bg-white text-[#5F6B7A] hover:text-[#172033] hover:bg-slate-50 text-xs font-medium cursor-pointer shadow-2xs"
+                            >
+                                <Link href="/workspaces">Workspaces</Link>
+                            </Button>
                         </div>
-                        <span>WhatsApp WABA</span>
-                    </Link>
-                </Button>
-                <Button asChild variant="outline" className="h-12 bg-white border-slate-200/80 hover:border-amber-500 hover:bg-amber-50 text-slate-700 hover:text-amber-600 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-2xs transition-all hover:scale-[1.02]">
-                    <Link href="/audit-logs">
-                        <div className="h-7 w-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                            <ShieldAlert size={14} />
+                    </div>
+                </div>
+            </Card>
+
+            {/* 3. WHATSAPP INFRASTRUCTURE STATUS CARD */}
+            <Card className="bg-white border-[#E5E9EE] rounded-xl p-4 sm:p-5 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium bg-[#EAF8F2] text-[#268263] border border-[#BFE4DD]/50">
+                                <span className="h-2 w-2 rounded-full bg-[#2E9B72]" />
+                                Connected
+                            </span>
+                            <span className="text-xs font-medium text-[#172033]">
+                                WhatsApp Cloud API Infrastructure ({metrics?.whatsapp?.connected_accounts ?? 1}/{metrics?.whatsapp?.total_accounts ?? 1} Accounts Connected)
+                            </span>
                         </div>
-                        <span>Audit Trail</span>
-                    </Link>
-                </Button>
-                <Button asChild variant="outline" className="h-12 bg-white border-slate-200/80 hover:border-cyan-500 hover:bg-cyan-50 text-slate-700 hover:text-cyan-600 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-2xs transition-all hover:scale-[1.02]">
-                    <Link href="/system">
-                        <div className="h-7 w-7 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
-                            <Activity size={14} />
+                        <p className="text-xs text-[#5F6B7A]">
+                            Official Meta Cloud API • Multi-tenant webhook routing, token management, and message queuing operational.
+                        </p>
+                    </div>
+                    <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="h-8.5 px-3.5 rounded-lg border-[#E5E9EE] bg-white hover:bg-slate-50 text-xs font-medium text-[#172033] shrink-0 cursor-pointer"
+                    >
+                        <Link href="/whatsapp/waba">
+                            Manage WABA
+                            <ArrowUpRight size={13} className="ml-1 text-[#8A95A3]" />
+                        </Link>
+                    </Button>
+                </div>
+            </Card>
+
+            {/* 4. OPERATIONAL KPI METRIC CARDS (4 cards grid) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {/* Metric 1: Total Platform Users */}
+                <Card className="bg-white border-[#E5E9EE] rounded-xl p-4 space-y-2 shadow-2xs">
+                    <div className="flex items-center justify-between">
+                        <div className="h-8 w-8 rounded-lg bg-[#E8F6F3] text-[#2F8F83] flex items-center justify-center shrink-0">
+                            <Users size={16} />
                         </div>
-                        <span>System Health</span>
-                    </Link>
-                </Button>
+                        <span className="text-[10px] font-medium text-[#268263] bg-[#EAF8F2] border border-[#BFE4DD]/40 px-2 py-0.5 rounded-full">
+                            {metrics?.users?.active ?? 0} Active
+                        </span>
+                    </div>
+                    <div>
+                        <p className="text-xs font-medium text-[#5F6B7A]">Total Platform Users</p>
+                        <h3 className="text-2xl font-semibold text-[#172033] mt-0.5">
+                            {loading && !metrics ? (
+                                <Skeleton className="h-7 w-14 mt-1" />
+                            ) : (
+                                metrics?.users?.total ?? 0
+                            )}
+                        </h3>
+                    </div>
+                </Card>
+
+                {/* Metric 2: Active Workspaces */}
+                <Card className="bg-white border-[#E5E9EE] rounded-xl p-4 space-y-2 shadow-2xs">
+                    <div className="flex items-center justify-between">
+                        <div className="h-8 w-8 rounded-lg bg-[#EEF4FF] text-[#4F7FCB] flex items-center justify-center shrink-0">
+                            <Building2 size={16} />
+                        </div>
+                        <span className="text-[10px] font-medium text-[#4F7FCB] bg-[#EEF4FF] border border-[#D0E1FD] px-2 py-0.5 rounded-full">
+                            Operational
+                        </span>
+                    </div>
+                    <div>
+                        <p className="text-xs font-medium text-[#5F6B7A]">Active Workspaces</p>
+                        <h3 className="text-2xl font-semibold text-[#172033] mt-0.5">
+                            {loading && !metrics ? (
+                                <Skeleton className="h-7 w-14 mt-1" />
+                            ) : (
+                                metrics?.workspaces?.total ?? 0
+                            )}
+                        </h3>
+                    </div>
+                </Card>
+
+                {/* Metric 3: Total Platform Revenue */}
+                <Card className="bg-white border-[#E5E9EE] rounded-xl p-4 space-y-2 shadow-2xs">
+                    <div className="flex items-center justify-between">
+                        <div className="h-8 w-8 rounded-lg bg-[#F0FDF4] text-[#2E9B72] flex items-center justify-center shrink-0">
+                            <IndianRupee size={16} />
+                        </div>
+                        <span className="text-[10px] font-medium text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
+                            INR (₹)
+                        </span>
+                    </div>
+                    <div>
+                        <p className="text-xs font-medium text-[#5F6B7A]">Total Platform Revenue</p>
+                        <h3 className="text-2xl font-semibold text-[#172033] mt-0.5">
+                            {loading && !metrics ? (
+                                <Skeleton className="h-7 w-20 mt-1" />
+                            ) : (
+                                `₹${(metrics?.revenue?.total ?? 0).toLocaleString("en-IN")}`
+                            )}
+                        </h3>
+                    </div>
+                </Card>
+
+                {/* Metric 4: WhatsApp Messages */}
+                <Card className="bg-white border-[#E5E9EE] rounded-xl p-4 space-y-2 shadow-2xs">
+                    <div className="flex items-center justify-between">
+                        <div className="h-8 w-8 rounded-lg bg-[#FFF7E6] text-[#D79A2B] flex items-center justify-center shrink-0">
+                            <MessageCircle size={16} />
+                        </div>
+                        <span className="text-[10px] font-medium text-[#8C580B] bg-[#FFF7E6] border border-[#FFE7BA] px-2 py-0.5 rounded-full">
+                            Cloud API
+                        </span>
+                    </div>
+                    <div>
+                        <p className="text-xs font-medium text-[#5F6B7A]">WhatsApp Messages</p>
+                        <h3 className="text-2xl font-semibold text-[#172033] mt-0.5">
+                            {loading && !metrics ? (
+                                <Skeleton className="h-7 w-16 mt-1" />
+                            ) : (
+                                (metrics?.whatsapp?.total_messages ?? 0).toLocaleString()
+                            )}
+                        </h3>
+                    </div>
+                </Card>
             </div>
 
-            {/* METRICS KPI GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Users Stat Card */}
-                <Card className="p-5 bg-white border border-slate-200/80 rounded-3xl space-y-3 shadow-xs hover:shadow-md transition-all hover:-translate-y-0.5">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Total Platform Users</span>
-                        <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-[#35877D] to-[#25635b] text-white flex items-center justify-center shadow-md shadow-[#35877D]/20">
-                            <Users size={20} />
+            {/* 5. QUICK ACTIONS TILES */}
+            <div className="space-y-2">
+                <h3 className="text-[11px] font-semibold text-[#8A95A3] uppercase tracking-wider px-0.5">Quick Actions</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                    <Link
+                        href="/users"
+                        className="p-3 bg-white border border-[#E5E9EE] hover:border-[#BFE4DD] hover:bg-[#F2FAF8] rounded-xl flex flex-col items-center justify-center text-center gap-1.5 group transition-colors shadow-2xs"
+                    >
+                        <div className="h-8 w-8 rounded-lg bg-[#E8F6F3] text-[#2F8F83] flex items-center justify-center">
+                            <UserPlus size={16} />
                         </div>
-                    </div>
-                    <div>
-                        {loading && !metrics ? (
-                            <Skeleton className="h-9 w-24 rounded-lg my-1" />
-                        ) : (
-                            <div className="text-3xl font-black text-slate-900 tracking-tight">
-                                {metrics?.users?.total ?? 0}
-                            </div>
-                        )}
-                        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 mt-3 pt-2.5 border-t border-slate-100">
-                            <span className="text-emerald-600 font-bold flex items-center gap-1">
-                                <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                                {metrics?.users?.active ?? 0} Active
-                            </span>
-                            <span className="text-rose-600 font-bold flex items-center gap-1">
-                                <span className="h-2 w-2 rounded-full bg-rose-500" />
-                                {metrics?.users?.suspended ?? 0} Suspended
-                            </span>
-                        </div>
-                    </div>
-                </Card>
+                        <span className="text-xs font-medium text-[#172033] group-hover:text-[#2F8F83]">Manage Users</span>
+                    </Link>
 
-                {/* Workspaces Stat Card */}
-                <Card className="p-5 bg-white border border-slate-200/80 rounded-3xl space-y-3 shadow-xs hover:shadow-md transition-all hover:-translate-y-0.5">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Active Workspaces</span>
-                        <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
-                            <Building2 size={20} />
+                    <Link
+                        href="/workspaces"
+                        className="p-3 bg-white border border-[#E5E9EE] hover:border-[#BFE4DD] hover:bg-[#F2FAF8] rounded-xl flex flex-col items-center justify-center text-center gap-1.5 group transition-colors shadow-2xs"
+                    >
+                        <div className="h-8 w-8 rounded-lg bg-[#EEF4FF] text-[#4F7FCB] flex items-center justify-center">
+                            <Building2 size={16} />
                         </div>
-                    </div>
-                    <div>
-                        {loading && !metrics ? (
-                            <Skeleton className="h-9 w-24 rounded-lg my-1" />
-                        ) : (
-                            <div className="text-3xl font-black text-slate-900 tracking-tight">
-                                {metrics?.workspaces?.total ?? 0}
-                            </div>
-                        )}
-                        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 mt-3 pt-2.5 border-t border-slate-100">
-                            <span className="text-blue-600 font-bold flex items-center gap-1">
-                                <span className="h-2 w-2 rounded-full bg-blue-500" />
-                                {metrics?.workspaces?.active ?? 0} Operational
-                            </span>
-                            <span className="text-slate-400 font-bold">
-                                {metrics?.workspaces?.suspended ?? 0} Suspended
-                            </span>
-                        </div>
-                    </div>
-                </Card>
+                        <span className="text-xs font-medium text-[#172033] group-hover:text-[#2F8F83]">Workspaces</span>
+                    </Link>
 
-                {/* Revenue Stat Card */}
-                <Card className="p-5 bg-white border border-slate-200/80 rounded-3xl space-y-3 shadow-xs hover:shadow-md transition-all hover:-translate-y-0.5">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Total Platform Revenue</span>
-                        <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
-                            <IndianRupee size={20} />
+                    <Link
+                        href="/billing"
+                        className="p-3 bg-white border border-[#E5E9EE] hover:border-[#BFE4DD] hover:bg-[#F2FAF8] rounded-xl flex flex-col items-center justify-center text-center gap-1.5 group transition-colors shadow-2xs"
+                    >
+                        <div className="h-8 w-8 rounded-lg bg-[#F0FDF4] text-[#2E9B72] flex items-center justify-center">
+                            <CreditCard size={16} />
                         </div>
-                    </div>
-                    <div>
-                        {loading && !metrics ? (
-                            <Skeleton className="h-9 w-28 rounded-lg my-1" />
-                        ) : (
-                            <div className="text-3xl font-black text-slate-900 tracking-tight">
-                                ₹{(metrics?.revenue?.total ?? 0).toLocaleString("en-IN")}
-                            </div>
-                        )}
-                        <div className="flex items-center justify-between text-[11px] font-semibold text-emerald-600 mt-3 pt-2.5 border-t border-slate-100">
-                            <span className="flex items-center gap-1 font-bold">
-                                <TrendingUp size={14} />
-                                Subscriptions &amp; Credits
-                            </span>
-                            <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-black border border-emerald-200">
-                                INR (₹)
-                            </span>
-                        </div>
-                    </div>
-                </Card>
+                        <span className="text-xs font-medium text-[#172033] group-hover:text-[#2F8F83]">Billing &amp; Sales</span>
+                    </Link>
 
-                {/* WhatsApp Stat Card */}
-                <Card className="p-5 bg-white border border-slate-200/80 rounded-3xl space-y-3 shadow-xs hover:shadow-md transition-all hover:-translate-y-0.5">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">WhatsApp WABA</span>
-                        <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-700 text-white flex items-center justify-center shadow-md shadow-purple-500/20">
-                            <MessageCircle size={20} />
+                    <Link
+                        href="/whatsapp/waba"
+                        className="p-3 bg-white border border-[#E5E9EE] hover:border-[#BFE4DD] hover:bg-[#F2FAF8] rounded-xl flex flex-col items-center justify-center text-center gap-1.5 group transition-colors shadow-2xs"
+                    >
+                        <div className="h-8 w-8 rounded-lg bg-[#FFF7E6] text-[#D79A2B] flex items-center justify-center">
+                            <MessageCircle size={16} />
                         </div>
-                    </div>
-                    <div>
-                        {loading && !metrics ? (
-                            <Skeleton className="h-9 w-24 rounded-lg my-1" />
-                        ) : (
-                            <div className="text-3xl font-black text-slate-900 tracking-tight">
-                                {metrics?.whatsapp?.connected_accounts ?? 0} <span className="text-base text-slate-400 font-bold">/ {metrics?.whatsapp?.total_accounts ?? 0}</span>
-                            </div>
-                        )}
-                        <div className="flex items-center justify-between text-[11px] font-semibold text-purple-700 mt-3 pt-2.5 border-t border-slate-100">
-                            <span className="font-bold flex items-center gap-1">
-                                <span className="h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
-                                {(metrics?.whatsapp?.total_messages ?? 0).toLocaleString()} Messages
-                            </span>
-                            <span className="text-slate-500 font-medium">
-                                {metrics?.whatsapp?.total_campaigns ?? 0} Campaigns
-                            </span>
+                        <span className="text-xs font-medium text-[#172033] group-hover:text-[#2F8F83]">WhatsApp WABA</span>
+                    </Link>
+
+                    <Link
+                        href="/system/webhooks"
+                        className="p-3 bg-white border border-[#E5E9EE] hover:border-[#BFE4DD] hover:bg-[#F2FAF8] rounded-xl flex flex-col items-center justify-center text-center gap-1.5 group transition-colors shadow-2xs"
+                    >
+                        <div className="h-8 w-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                            <ShieldAlert size={16} />
                         </div>
-                    </div>
-                </Card>
+                        <span className="text-xs font-medium text-[#172033] group-hover:text-[#2F8F83]">Audit Trail</span>
+                    </Link>
+
+                    <Link
+                        href="/system"
+                        className="p-3 bg-white border border-[#E5E9EE] hover:border-[#BFE4DD] hover:bg-[#F2FAF8] rounded-xl flex flex-col items-center justify-center text-center gap-1.5 group transition-colors shadow-2xs"
+                    >
+                        <div className="h-8 w-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center">
+                            <Activity size={16} />
+                        </div>
+                        <span className="text-xs font-medium text-[#172033] group-hover:text-[#2F8F83]">System Health</span>
+                    </Link>
+                </div>
             </div>
 
-            {/* ANALYTICS CHARTS SECTION */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 6. ANALYTICS CHARTS SECTION */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Revenue Overview Chart */}
-                <Card className="p-6 bg-white border border-slate-200/80 rounded-3xl space-y-4 shadow-xs">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <Card className="p-4 sm:p-5 bg-white border border-[#E5E9EE] rounded-xl space-y-4 shadow-2xs">
+                    <div className="flex items-center justify-between border-b border-[#E5E9EE] pb-3">
                         <div>
-                            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                                <TrendingUp size={16} className="text-[#35877D]" />
+                            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+                                <TrendingUp size={15} className="text-[#2F8F83]" />
                                 Revenue Breakdown &amp; Trends
                             </h3>
-                            <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                            <p className="text-xs text-[#5F6B7A] mt-0.5">
                                 Subscription plans vs Credit top-up sales over time
                             </p>
                         </div>
-                        <Button asChild variant="ghost" size="sm" className="text-xs font-bold text-[#35877D] hover:bg-[#35877D]/10 rounded-xl">
-                            <Link href="/billing">Billing Log <ArrowUpRight size={14} /></Link>
+                        <Button asChild variant="ghost" size="sm" className="text-xs font-medium text-[#2F8F83] hover:text-[#267A70] hover:bg-[#E8F6F3]">
+                            <Link href="/billing">Billing Log <ArrowUpRight size={13} className="ml-1" /></Link>
                         </Button>
                     </div>
 
-                    <div className="h-72 w-full pt-2">
+                    <div className="h-64 w-full pt-2">
                         {loading && !metrics ? (
                             <div className="h-full flex items-center justify-center">
-                                <Skeleton className="h-56 w-full rounded-2xl" />
+                                <Skeleton className="h-52 w-full rounded-xl" />
                             </div>
                         ) : (
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={revenueChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorSub" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#35877D" stopOpacity={0.4} />
-                                            <stop offset="95%" stopColor="#35877D" stopOpacity={0.0} />
+                                            <stop offset="5%" stopColor="#2F8F83" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#2F8F83" stopOpacity={0.0} />
                                         </linearGradient>
                                         <linearGradient id="colorCred" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
+                                            <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#10B981" stopOpacity={0.0} />
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                                    <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} tickFormatter={(val) => `₹${val / 1000}k`} />
+                                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#8A95A3" }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fontSize: 11, fill: "#8A95A3" }} axisLine={false} tickLine={false} tickFormatter={(val) => `₹${val / 1000}k`} />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: "#0f172a", borderRadius: "12px", border: "none", color: "#fff", fontSize: "12px" }}
+                                        contentStyle={{ backgroundColor: "#172033", borderRadius: "8px", border: "none", color: "#fff", fontSize: "12px" }}
                                         formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, ""]}
                                     />
                                     <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
-                                    <Area type="monotone" dataKey="subscriptions" name="Subscriptions" stroke="#35877D" strokeWidth={2} fillOpacity={1} fill="url(#colorSub)" />
-                                    <Area type="monotone" dataKey="credits" name="Credits Top-Up" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorCred)" />
+                                    <Area type="monotone" dataKey="subscriptions" name="Subscriptions" stroke="#2F8F83" strokeWidth={2} fillOpacity={1} fill="url(#colorSub)" />
+                                    <Area type="monotone" dataKey="credits" name="Credits Top-Up" stroke="#10B981" strokeWidth={2} fillOpacity={1} fill="url(#colorCred)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         )}
@@ -413,37 +477,37 @@ export default function AdminDashboardPage() {
                 </Card>
 
                 {/* Customer & Workspace Growth Bar Chart */}
-                <Card className="p-6 bg-white border border-slate-200/80 rounded-3xl space-y-4 shadow-xs">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <Card className="p-4 sm:p-5 bg-white border border-[#E5E9EE] rounded-xl space-y-4 shadow-2xs">
+                    <div className="flex items-center justify-between border-b border-[#E5E9EE] pb-3">
                         <div>
-                            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                                <Users size={16} className="text-blue-600" />
+                            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+                                <Users size={15} className="text-[#4F7FCB]" />
                                 Customer &amp; Workspace Growth
                             </h3>
-                            <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                            <p className="text-xs text-[#5F6B7A] mt-0.5">
                                 Monthly new users and workspaces onboarded
                             </p>
                         </div>
-                        <Button asChild variant="ghost" size="sm" className="text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-xl">
-                            <Link href="/users">Customer Directory <ArrowUpRight size={14} /></Link>
+                        <Button asChild variant="ghost" size="sm" className="text-xs font-medium text-[#4F7FCB] hover:text-[#3867b3] hover:bg-[#EEF4FF]">
+                            <Link href="/users">Customer Directory <ArrowUpRight size={13} className="ml-1" /></Link>
                         </Button>
                     </div>
 
-                    <div className="h-72 w-full pt-2">
+                    <div className="h-64 w-full pt-2">
                         {loading && !metrics ? (
                             <div className="h-full flex items-center justify-center">
-                                <Skeleton className="h-56 w-full rounded-2xl" />
+                                <Skeleton className="h-52 w-full rounded-xl" />
                             </div>
                         ) : (
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={growthChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                                    <YAxis tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                                    <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderRadius: "12px", border: "none", color: "#fff", fontSize: "12px" }} />
+                                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#8A95A3" }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fontSize: 11, fill: "#8A95A3" }} axisLine={false} tickLine={false} />
+                                    <Tooltip contentStyle={{ backgroundColor: "#172033", borderRadius: "8px", border: "none", color: "#fff", fontSize: "12px" }} />
                                     <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "10px" }} />
-                                    <Bar dataKey="users" name="New Customers" fill="#35877D" radius={[6, 6, 0, 0]} />
-                                    <Bar dataKey="workspaces" name="New Workspaces" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                                    <Bar dataKey="users" name="New Customers" fill="#2F8F83" radius={[4, 4, 0, 0]} />
+                                    <Bar dataKey="workspaces" name="New Workspaces" fill="#4F7FCB" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         )}
@@ -451,30 +515,30 @@ export default function AdminDashboardPage() {
                 </Card>
             </div>
 
-            {/* THREE-COLUMN PLATFORM HEALTH & ACTIVITY HUB */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* 7. THREE-COLUMN PLATFORM HEALTH & ACTIVITY HUB */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* System Services Health Matrix */}
-                <Card className="p-6 bg-white border border-slate-200/80 rounded-3xl space-y-4 shadow-xs lg:col-span-1">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                            <Activity size={16} className="text-[#35877D]" />
+                <Card className="p-4 sm:p-5 bg-white border border-[#E5E9EE] rounded-xl space-y-3.5 shadow-2xs lg:col-span-1">
+                    <div className="flex items-center justify-between border-b border-[#E5E9EE] pb-3">
+                        <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+                            <Activity size={15} className="text-[#2F8F83]" />
                             System Health &amp; Subsystems
                         </h3>
-                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#EAF8F2] text-[#268263] border border-[#BFE4DD]/50">
                             Normal
                         </span>
                     </div>
 
-                    <div className="space-y-2.5">
+                    <div className="space-y-2">
                         {systemServices.map((srv, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50/70 border border-slate-100 text-xs">
+                            <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-[#F7F9FA] border border-[#E5E9EE] text-xs">
                                 <div className="flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="font-bold text-slate-800">{srv.name}</span>
+                                    <span className="h-2 w-2 rounded-full bg-[#2E9B72]" />
+                                    <span className="font-medium text-[#172033]">{srv.name}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[10px] text-slate-400 font-mono">{srv.latency}</span>
-                                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                                    <span className="text-[10px] text-[#8A95A3] font-mono">{srv.latency}</span>
+                                    <span className="text-[10px] font-medium text-[#268263] bg-[#EAF8F2] px-2 py-0.5 rounded-md">
                                         {srv.status}
                                     </span>
                                 </div>
@@ -482,30 +546,30 @@ export default function AdminDashboardPage() {
                         ))}
                     </div>
 
-                    <Button asChild variant="outline" className="w-full h-9 rounded-xl text-xs font-bold border-slate-200 text-slate-600 hover:text-[#35877D]">
+                    <Button asChild variant="outline" className="w-full h-8.5 rounded-lg text-xs font-medium border-[#E5E9EE] text-[#5F6B7A] hover:text-[#172033] hover:bg-slate-50 shadow-2xs">
                         <Link href="/system">Diagnostic Diagnostics Center</Link>
                     </Button>
                 </Card>
 
                 {/* Recent Customer Registrations */}
-                <Card className="p-6 bg-white border border-slate-200/80 rounded-3xl space-y-4 shadow-xs lg:col-span-1">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                            <UserPlus size={16} className="text-[#35877D]" />
+                <Card className="p-4 sm:p-5 bg-white border border-[#E5E9EE] rounded-xl space-y-3.5 shadow-2xs lg:col-span-1">
+                    <div className="flex items-center justify-between border-b border-[#E5E9EE] pb-3">
+                        <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+                            <UserPlus size={15} className="text-[#2F8F83]" />
                             Recent Customers
                         </h3>
-                        <Button asChild variant="ghost" size="sm" className="text-xs font-bold text-[#35877D] hover:bg-[#35877D]/10 rounded-xl">
-                            <Link href="/users">View All <ArrowUpRight size={14} /></Link>
+                        <Button asChild variant="ghost" size="sm" className="text-xs font-medium text-[#2F8F83] hover:text-[#267A70] hover:bg-[#E8F6F3]">
+                            <Link href="/users">View All <ArrowUpRight size={13} className="ml-1" /></Link>
                         </Button>
                     </div>
 
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-[#E5E9EE]">
                         {loading && !metrics ? (
                             <div className="space-y-3 py-2">
                                 {[1, 2, 3, 4].map((i) => (
                                     <div key={i} className="flex items-center justify-between py-2">
                                         <div className="flex items-center gap-2.5">
-                                            <Skeleton className="h-8 w-8 rounded-full" />
+                                            <Skeleton className="h-8 w-8 rounded-lg" />
                                             <div className="space-y-1">
                                                 <Skeleton className="h-3.5 w-24" />
                                                 <Skeleton className="h-3 w-32" />
@@ -516,25 +580,25 @@ export default function AdminDashboardPage() {
                                 ))}
                             </div>
                         ) : !metrics?.recent_users || metrics.recent_users.length === 0 ? (
-                            <div className="py-8 text-center text-xs text-slate-400 font-medium">
+                            <div className="py-8 text-center text-xs text-[#8A95A3] font-normal">
                                 No recent user registrations found.
                             </div>
                         ) : (
                             metrics.recent_users.map((u) => (
-                                <div key={u.id} className="py-3 flex items-center justify-between text-xs">
+                                <div key={u.id} className="py-2.5 flex items-center justify-between text-xs">
                                     <div className="flex items-center gap-2.5 min-w-0">
-                                        <div className="h-9 w-9 rounded-full bg-[#35877D]/10 text-[#35877D] font-black text-xs flex items-center justify-center shrink-0 border border-[#35877D]/20">
+                                        <div className="h-8 w-8 rounded-lg bg-[#E8F6F3] text-[#2F8F83] border border-[#BFE4DD] font-medium text-xs flex items-center justify-center shrink-0">
                                             {u.name ? u.name.charAt(0).toUpperCase() : "U"}
                                         </div>
                                         <div className="min-w-0">
-                                            <p className="font-bold text-slate-900 truncate max-w-36">{u.name}</p>
-                                            <p className="text-[10px] text-slate-500 font-medium truncate max-w-36">{u.email}</p>
+                                            <p className="font-medium text-[#172033] truncate max-w-36">{u.name}</p>
+                                            <p className="text-[11px] text-[#5F6B7A] truncate max-w-36">{u.email}</p>
                                         </div>
                                     </div>
-                                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${
                                         u.status === "suspended"
                                             ? "bg-rose-50 text-rose-700 border border-rose-200"
-                                            : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                            : "bg-[#EAF8F2] text-[#268263] border border-[#BFE4DD]/50"
                                     }`}>
                                         {u.status || "active"}
                                     </span>
@@ -545,18 +609,18 @@ export default function AdminDashboardPage() {
                 </Card>
 
                 {/* Recent Transactions & Top-Ups */}
-                <Card className="p-6 bg-white border border-slate-200/80 rounded-3xl space-y-4 shadow-xs lg:col-span-1">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                        <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                            <CreditCard size={16} className="text-emerald-600" />
+                <Card className="p-4 sm:p-5 bg-white border border-[#E5E9EE] rounded-xl space-y-3.5 shadow-2xs lg:col-span-1">
+                    <div className="flex items-center justify-between border-b border-[#E5E9EE] pb-3">
+                        <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+                            <CreditCard size={15} className="text-[#2E9B72]" />
                             Recent Sales &amp; Top-Ups
                         </h3>
-                        <Button asChild variant="ghost" size="sm" className="text-xs font-bold text-[#35877D] hover:bg-[#35877D]/10 rounded-xl">
-                            <Link href="/billing">Billing Log <ArrowUpRight size={14} /></Link>
+                        <Button asChild variant="ghost" size="sm" className="text-xs font-medium text-[#2F8F83] hover:text-[#267A70] hover:bg-[#E8F6F3]">
+                            <Link href="/billing">Billing Log <ArrowUpRight size={13} className="ml-1" /></Link>
                         </Button>
                     </div>
 
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-[#E5E9EE]">
                         {loading && !metrics ? (
                             <div className="space-y-3 py-2">
                                 {[1, 2, 3, 4].map((i) => (
@@ -573,23 +637,23 @@ export default function AdminDashboardPage() {
                                 ))}
                             </div>
                         ) : !metrics?.recent_transactions || metrics.recent_transactions.length === 0 ? (
-                            <div className="py-8 text-center text-xs text-slate-400 font-medium">
+                            <div className="py-8 text-center text-xs text-[#8A95A3] font-normal">
                                 No transactions recorded yet.
                             </div>
                         ) : (
                             metrics.recent_transactions.map((t) => (
-                                <div key={t.id} className="py-3 flex items-center justify-between text-xs">
+                                <div key={t.id} className="py-2.5 flex items-center justify-between text-xs">
                                     <div className="min-w-0">
-                                        <p className="font-bold text-slate-900 truncate max-w-36">
+                                        <p className="font-medium text-[#172033] truncate max-w-36">
                                             {t.company_name || t.user_name || t.user_email || "Customer Invoice"}
                                         </p>
-                                        <p className="text-[10px] text-slate-500 font-medium uppercase truncate">
+                                        <p className="text-[11px] text-[#5F6B7A] uppercase truncate">
                                             {t.type || "Subscription"} • {t.credits ? `+${t.credits} Credits` : "Plan"}
                                         </p>
                                     </div>
                                     <div className="text-right shrink-0">
-                                        <p className="font-black text-emerald-600">₹{(t.amount ?? 0).toLocaleString("en-IN")}</p>
-                                        <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <p className="font-semibold text-[#268263]">₹{(t.amount ?? 0).toLocaleString("en-IN")}</p>
+                                        <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-[#EAF8F2] text-[#268263] border border-[#BFE4DD]/50">
                                             {t.status || "paid"}
                                         </span>
                                     </div>
