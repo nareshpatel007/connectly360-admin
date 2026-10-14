@@ -67,7 +67,7 @@ export default function AdminPaymentGatewaySettingsPage() {
         setLoading(true);
         try {
             const token = getAuthToken();
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/admin/payment-settings`, {
+            const res = await fetch("/api/admin/payment-settings", {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -137,7 +137,7 @@ export default function AdminPaymentGatewaySettingsPage() {
             if (form.live_key_secret) payload.live_key_secret = form.live_key_secret;
             if (form.live_webhook_secret) payload.live_webhook_secret = form.live_webhook_secret;
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/admin/payment-settings`, {
+            const res = await fetch("/api/admin/payment-settings", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -163,7 +163,7 @@ export default function AdminPaymentGatewaySettingsPage() {
         setTesting(true);
         try {
             const token = getAuthToken();
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/admin/payment-settings/test`, {
+            const res = await fetch("/api/admin/payment-settings/test", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

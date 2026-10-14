@@ -41,7 +41,7 @@ function VerifyContent() {
                     setStatus("success");
                     setMessage("Admin email verified successfully! Logging you in...");
                     setTimeout(() => {
-                        login(data.data.access_token);
+                        login(data.data.access_token, data.data?.user);
                     }, 1200);
                 } else {
                     setStatus("error");

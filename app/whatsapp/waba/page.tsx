@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth-context";
 
 interface WabaAccount {
     id: number;
@@ -36,14 +37,28 @@ interface WabaAccount {
 }
 
 export default function AdminWabaMonitoringPage() {
+    const { token } = useAuth();
     const [accounts, setAccounts] = useState<WabaAccount[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
+    const getAuthToken = () => token || (typeof window !== "undefined" ? localStorage.getItem("admin_auth_token") : null) || "";
+
     const fetchAccounts = async () => {
+        const authToken = getAuthToken();
+        if (!authToken) {
+            setIsLoading(false);
+            return;
+        }
+
         setIsRefreshing(true);
         try {
-            const res = await fetch("/api/admin/whatsapp");
+            const res = await fetch("/api/admin/whatsapp", {
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "X-Api-Token": authToken
+                }
+            });
             const json = await res.json();
             if (json.status && Array.isArray(json.data)) {
                 setAccounts(json.data);
@@ -58,7 +73,7 @@ export default function AdminWabaMonitoringPage() {
 
     useEffect(() => {
         fetchAccounts();
-    }, []);
+    }, [token]);
 
     const registeredCount = accounts.filter(a => a.registration_status === "REGISTERED" || a.connection_status === "connected").length;
     const pendingCount = accounts.filter(a => a.registration_status === "REGISTRATION_PENDING" || a.connection_status === "pending_registration").length;

@@ -33,6 +33,7 @@ import {
     DialogTitle
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
 
 interface AdminApiKeyItem {
     id: number;
@@ -53,6 +54,7 @@ interface AdminApiKeyItem {
 }
 
 export default function AdminPlatformApiKeysPage() {
+    const { token } = useAuth();
     const [keys, setKeys] = useState<AdminApiKeyItem[]>([]);
     const [counts, setCounts] = useState({ total: 0, active: 0, revoked: 0, expired: 0 });
     const [isLoading, setIsLoading] = useState(true);
@@ -67,7 +69,15 @@ export default function AdminPlatformApiKeysPage() {
     const [revokeReason, setRevokeReason] = useState("");
     const [isRevoking, setIsRevoking] = useState(false);
 
+    const getAuthToken = () => token || (typeof window !== "undefined" ? localStorage.getItem("admin_auth_token") : null) || "";
+
     const fetchKeys = async (indicator = false) => {
+        const authToken = getAuthToken();
+        if (!authToken) {
+            setIsLoading(false);
+            return;
+        }
+
         if (indicator) setIsRefreshing(true);
         try {
             const params = new URLSearchParams();
@@ -75,8 +85,17 @@ export default function AdminPlatformApiKeysPage() {
             if (envFilter !== "all") params.append("environment", envFilter);
             if (searchQuery.trim()) params.append("search", searchQuery.trim());
 
-            const res = await fetch(`/api/admin/api-keys?${params.toString()}`);
+            const res = await fetch(`/api/admin/api-keys?${params.toString()}`, {
+                headers: {
+                    "Authorization": `Bearer ${authToken}`,
+                    "X-Api-Token": authToken
+                }
+            });
             const json = await res.json();
+            if (res.status === 401) {
+                toast.error("Session expired or unauthorized. Please re-authenticate.");
+                return;
+            }
             if (json.success) {
                 setKeys(json.data || []);
                 if (json.counts) setCounts(json.counts);
@@ -93,22 +112,31 @@ export default function AdminPlatformApiKeysPage() {
 
     useEffect(() => {
         fetchKeys();
-    }, [statusFilter, envFilter]);
+    }, [statusFilter, envFilter, token]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchKeys();
         }, 300);
         return () => clearTimeout(timer);
-    }, [searchQuery]);
+    }, [searchQuery, token]);
 
     const handleConfirmRevoke = async () => {
         if (!selectedKey) return;
+        const authToken = getAuthToken();
+        if (!authToken) {
+            toast.error("Authentication required to revoke API key.");
+            return;
+        }
         setIsRevoking(true);
         try {
             const res = await fetch(`/api/admin/api-keys/${selectedKey.id}/revoke`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authToken}`,
+                    "X-Api-Token": authToken
+                },
                 body: JSON.stringify({ reason: revokeReason.trim() || "Administrative security action" }),
             });
             const json = await res.json();

@@ -41,30 +41,54 @@ export async function handleApiProxy(
 
         const clientAuth = req.headers.get("Authorization");
         const clientCookie = req.headers.get("cookie");
+        const incomingContentType = req.headers.get("content-type") || "";
+
+        const hasValidAuth = Boolean(
+            clientAuth &&
+            !clientAuth.includes("undefined") &&
+            !clientAuth.includes("null") &&
+            clientAuth.replace("Bearer", "").trim().length > 10
+        );
 
         const headers: Record<string, string> = {
-            "Content-Type": "application/json",
             "Requested-Domain": SITE_URL,
             "X-Api-Token": API_TOKEN,
-            "Authorization": clientAuth || `Bearer ${API_TOKEN}`
         };
+
+        if (hasValidAuth && clientAuth) {
+            headers["Authorization"] = clientAuth;
+        }
 
         if (clientCookie) {
             headers["Cookie"] = clientCookie;
         }
 
+        let bodyPayload: any = undefined;
+
+        // Handle body for non-GET/HEAD requests
+        if (method !== "GET" && method !== "HEAD") {
+            if (incomingContentType.includes("multipart/form-data")) {
+                headers["Content-Type"] = incomingContentType;
+                const arrayBuf = await req.arrayBuffer();
+                bodyPayload = Buffer.from(arrayBuf);
+            } else if (incomingContentType.includes("application/x-www-form-urlencoded")) {
+                headers["Content-Type"] = "application/x-www-form-urlencoded";
+                const formText = await req.text().catch(() => "");
+                bodyPayload = formText;
+            } else {
+                headers["Content-Type"] = "application/json";
+                const jsonBody = await req.json().catch(() => null);
+                if (jsonBody !== null) {
+                    bodyPayload = JSON.stringify(jsonBody);
+                }
+            }
+        }
+
         const fetchOptions: RequestInit = {
             method,
             headers,
+            body: bodyPayload,
         };
-
-        // Don't pass a body for GET or HEAD requests
-        if (method !== "GET" && method !== "HEAD") {
-            const body = await req.json().catch(() => null);
-            if (body) {
-                fetchOptions.body = JSON.stringify(body);
-            }
-        }
 
         const rawApiUrl = getApiUrl();
         const baseUrl = rawApiUrl.endsWith("/") ? rawApiUrl.slice(0, -1) : rawApiUrl;
